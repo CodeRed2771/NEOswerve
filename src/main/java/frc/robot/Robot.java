@@ -104,9 +104,9 @@ public class Robot extends TimedRobot {
 		// Issue the drive command using the parameters from
 		// above that have been tweaked as needed
 		
-		DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount,
-				driveRotAxisAmount);
-
+		// DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount,
+		// 		driveRotAxisAmount);
+				DriveTrain.fieldCentricDrive(0, 0,	0);
 	
 
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
