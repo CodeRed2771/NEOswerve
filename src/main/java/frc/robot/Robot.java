@@ -112,7 +112,6 @@ public class Robot extends TimedRobot {
 		// 		driveRotAxisAmount);
 				DriveTrain.fieldCentricDrive(0, 0,	0);
 	
-
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {

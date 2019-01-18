@@ -5,13 +5,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ModuleOrig {
+public class Modul {
 	private WPI_TalonSRX drive, turn;
 	private final double FULL_ROTATION = 4096d, TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
 	private final int TURN_IZONE, DRIVE_IZONE;
 	private double turnZeroPos = 0;
 	private double currentDriveSetpoint = 0;
-	
+	private boolean isReversed = false;
+		
 	/**
 	 * Lets make a new module :)
 	 * @param driveTalonID First I gotta know what talon we are using for driving
@@ -21,7 +22,7 @@ public class ModuleOrig {
 	 * @param tD I probably need to know the D constant for the turning PID
 	 * @param tIZone I might not need to know the I Zone value for the turning PID
 	 */
-	public ModuleOrig(int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos) {
+	public Modul(int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos) {
 		drive = new WPI_TalonSRX(driveTalonID);
 		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
 		DRIVE_P = dP;
@@ -57,7 +58,6 @@ public class ModuleOrig {
 		turn.selectProfileSlot(0, 0);
 		
 		turn.configClosedloopRamp(.1, 0);
-		
 	}
 	
 	public void setFollower(int talonToFollow) {
@@ -92,7 +92,7 @@ public class ModuleOrig {
 	 * @param p value from -1 to 1
 	 */
 	public void setDrivePower(double p) {
-		this.drive.set(p);
+		this.drive.set((isReversed ? -1 : 1) * p);
 	}
 
 	/**
@@ -196,20 +196,28 @@ public class ModuleOrig {
 	 */	
 	public void setTurnOrientation(double position) {
 		double base = getTurnRotations() * FULL_ROTATION;
+		double currentTurnPosition = getTurnPosition();
+		double reverseTurnPosition = (position + 0.5) % 1.0; 
+		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
+		double disntanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
+		double closestTurnPosition = disntanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition : position;
+		isReversed = closestTurnPosition != position;
+		this.drive.set((isReversed ? -1 : 1) * this.drive.get());
+
 		if (getTurnRelativePosition() >= 0) {
-			if ((base + (position * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
+			if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
 				base += FULL_ROTATION;
-			} else if ((base + (position * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
+			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
 				base -= FULL_ROTATION;
 			}
-			turn.set(ControlMode.Position, (((position * FULL_ROTATION) + (base))));
+			turn.set(ControlMode.Position, (((closestTurnPosition * FULL_ROTATION) + (base))));
 		} else {
-			if ((base - ((1-position) * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
+			if ((base - ((1-closestTurnPosition) * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
 				base += FULL_ROTATION;
-			} else if ((base -((1-position) * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
+			} else if ((base -((1-closestTurnPosition) * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
 				base -= FULL_ROTATION;
 			}
-			turn.set(ControlMode.Position, (base- (((1-position) * FULL_ROTATION))));	
+			turn.set(ControlMode.Position, (base- (((1-closestTurnPosition) * FULL_ROTATION))));	
 		}
 	}
 	
