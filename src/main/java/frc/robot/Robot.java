@@ -4,6 +4,7 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot {
 	Compressor compressor;
 	SendableChooser<String> autoChooser;
 	SendableChooser<String> positionChooser;
+	AnalogInput line;
 
 	@Override
 	public void robotInit() {
@@ -59,6 +61,7 @@ public class Robot extends TimedRobot {
 
 		Calibration.loadSwerveCalibration();
 
+		line = new AnalogInput(0);
 	
 		compressor = new Compressor(0);
 		compressor.setClosedLoopControl(true);
@@ -71,6 +74,7 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Show Turn Encoders", true);
 		
+		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
