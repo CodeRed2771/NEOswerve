@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Show Turn Encoders", true);
 		
-		SmartDashboard.putNumber("line sensor", line.getAverageValue());
+		
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -88,6 +88,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+
+		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 		
@@ -103,6 +105,15 @@ public class Robot extends TimedRobot {
 				driveRotAxisAmount = -.70;
 			else
 				driveRotAxisAmount = .70;
+		}
+
+		if(gamepad.getHID(0).getRawButton(1)){
+			Vision.setLED(true);
+			Vision.setVisionMode();
+		}
+		if(gamepad.getHID(0).getRawButton(2)){
+			Vision.setLED(false);
+			Vision.setDriverMode();
 		}
 		
 		// Issue the drive command using the parameters from

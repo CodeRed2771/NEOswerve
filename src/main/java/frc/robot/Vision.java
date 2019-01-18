@@ -31,9 +31,17 @@ public class Vision {
 		return instance;
     }
     
-    public static void turnLEDon() {
-        table.getEntry("ledMode").forceSetNumber(0); // 0 - on, 1 = off, 2 - blink
-    }
+    public static void setLED(boolean turnOn) {
+        table.getEntry("ledMode").forceSetNumber(turnOn ? 3 : 1); // 3 - on, 1 = off, 2 - blink
+	}
+	
+	public static void setDriverMode(){
+		table.getEntry("camMode").forceSetNumber(1);
+	}
+
+	public static void setVisionMode(){
+		table.getEntry("camMode").forceSetNumber(0);
+	}
 
     public static void codeExample() {
         double targetOffsetAngle_Horizontal = table.getEntry("tx").getDouble(0);
