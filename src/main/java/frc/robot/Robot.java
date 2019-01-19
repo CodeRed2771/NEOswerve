@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.*;
 
 /* 2018 Xena - PowerUp
 
@@ -44,16 +45,53 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 			Right Trigger - force open claw during intake
 			
 */
-public class Robot extends TimedRobot {
 
+public class Robot extends TimedRobot{
+
+	// Settup stuff
 	KeyMap gamepad;
 	Compressor compressor;
 	SendableChooser<String> autoChooser;
 	SendableChooser<String> positionChooser;
 	AnalogInput line;
+	final String cargoTracking = "Cargo Tracking";
+	// Vision crap	
+	NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+	private boolean inAutoMode = false;
+
+	// // Position Chooser
+	// positionChooser = new SendableChooser<String>();
+	// positionChooser.addObject("Left", "L");
+	// positionChooser.addDefault("Center", "C");
+	// positionChooser.addObject("Right", "R");
+	// SmartDashboard.putData("Position", positionChooser);
+
+	// /* Auto Stuff */
+	// String autoSelected;
+	// AutoBaseClass mAutoProgram;
+	// // Auto options
+	// final String testProgram = "Test Program";
+	// final String targetTracking = "Target Tracking";
+	
+	// End setup stuff
+
+	// Make the robot move crap
+	/* 
+		leftBack.set(-js.getRawAxis(1) * .75);
+		leftFront.set(-js.getRawAxis(1) * .75);
+		rightBack.set(js.getRawAxis(3) * .75);
+		rightFront.set(js.getRawAxis(3) * .75);
+	*/
 
 	@Override
 	public void robotInit() {
+
+		/* Auto Chooser */
+		autoChooser = new SendableChooser<>();
+		// autoChooser.addOption(targetTracking, targetTracking);
+		// Put options to smart dashboard
+		SmartDashboard.putData("Auto choices", autoChooser);
+
 		gamepad = new KeyMap();
 		RobotGyro.getInstance();
 		DriveTrain.getInstance();
@@ -66,8 +104,7 @@ public class Robot extends TimedRobot {
 		compressor = new Compressor(0);
 		compressor.setClosedLoopControl(true);
 
-		DriveTrain.setDrivePIDValues(Calibration.AUTO_DRIVE_P, Calibration.AUTO_DRIVE_I,
-				Calibration.AUTO_DRIVE_D);
+		DriveTrain.setDrivePIDValues(Calibration.AUTO_DRIVE_P, Calibration.AUTO_DRIVE_I, Calibration.AUTO_DRIVE_D);
 
 		RobotGyro.reset(); // this is also done in auto init in case it wasn't
 							// settled here yet
@@ -107,22 +144,31 @@ public class Robot extends TimedRobot {
 				driveRotAxisAmount = .70;
 		}
 
+		// A
 		if(gamepad.getHID(0).getRawButton(1)){
 			Vision.setLED(true);
 			Vision.setVisionMode();
+
+			DriveAuto.driveInches(10, 0, 1);
+inAutoMode = true;
 		}
 		if(gamepad.getHID(0).getRawButton(2)){
 			Vision.setLED(false);
 			Vision.setDriverMode();
+			inAutoMode = false;
+
 		}
+
 		
 		// Issue the drive command using the parameters from
 		// above that have been tweaked as needed
 		
-		// DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount,
-		// 		driveRotAxisAmount);
-				DriveTrain.fieldCentricDrive(0, 0,	0);
-	
+		if (!inAutoMode) {
+		DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount,
+				driveRotAxisAmount);
+				// DriveTrain.fieldCentricDrive(0, 0,	0);
+		}
+		
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
@@ -136,32 +182,80 @@ public class Robot extends TimedRobot {
 
 	}
 
+
+
 	
 	@Override
 	public void autonomousInit() {
-		
 
+		// String selectedPos = positionChooser.getSelected();
+		// SmartDashboard.putString("Position Chooser Selected", selectedPos);
+		// char robotPosition = selectedPos.toCharArray()[0];
+		// System.out.println("Robot position: " + robotPosition);
+
+		// mAutoProgram = null;
+
+		// switch (autoSelected) {
+		// 	case targetTracking:
+		// 		mAutoProgram = new TargetTracking('C');
+		// 		break;
+		// }
+
+		// DriveTrain.setAllTurnOrientiation(0);
+		// DriveAuto.reset();
+
+		// if (mAutoProgram != null) {
+		// 	mAutoProgram.start();
+		// } else {
+		// 	System.out.println("No auto program started in switch statement");
+		// }
 	}
 
 	@Override
 	public void autonomousPeriodic() {
+		// double targetOffsetAngle_Horizontal = table.getEntry("tx").getDouble(0);
+			// // double targetOffsetAngle_Vertical = table.getEntry("ty").getDouble(0);
+			// 	// double targetArea = table.getEntry("ta").getDouble(0);
+			// 	// // double targetSkew = table.getEntry("ts").getDouble(0);
+			// double targetCount = table.getEntry("tv").getDouble(0);
+			// // double turnP = .03;
+			// 	// double distP = .12;
+			// 	// double turnSpeed = 0;
+			// 	// double fwdSpeed = 0;
 
+			// 	// fwdSpeed = (5 - targetArea) * distP;
+			// 	// turnSpeed = targetOffsetAngle_Horizontal * turnP;
 
+			// 	// SmartDashboard.putNumber("Target Area", targetArea);
+			// 	// SmartDashboard.putNumber("Horizontal Offset Angle", targetOffsetAngle_Horizontal);
+			// 	// SmartDashboard.putNumber("Vertical Offset Angle", targetOffsetAngle_Vertical);
+			// 	// SmartDashboard.putNumber("target Count", targetCount);
+			// 	// SmartDashboard.putNumber("fwd speed", fwdSpeed);
+			// 	// SmartDashboard.putNumber("turn speed", turnSpeed);
+
+			// if (targetCount > 0) {
+			// 	DriveAuto.turnDegrees(targetOffsetAngle_Horizontal, 0);
+			// } else {
+			// 	DriveAuto.turnDegrees(90, 0);
+		// }
+
+		
+
+		// DriveAuto.tick();
+		// mAutoProgram = new TargetTracking('C');
+		// mAutoProgram.start();
 	}
 
 	@Override
 	public void teleopInit() {
 		DriveAuto.stop();
-	
 	}
 
 	@Override
-	public void testInit() {
-	}
+	public void testInit() { }
 
 	@Override
-	public void testPeriodic() {
-	}
+	public void testPeriodic() { }
 
 	public void disabledInit() {
 		DriveTrain.allowTurnEncoderReset(); // allows the turn encoders to be
@@ -186,21 +280,36 @@ public class Robot extends TimedRobot {
 
 	}
 
+	// Is this used?
 	private double powerOf2PreserveSign(double v) {
 		return (v > 0) ? Math.pow(v, 2) : -Math.pow(v, 2);
 	}
 
+	// Is this used?
 	private double powerOf3PreserveSign(double v) {
 		return Math.pow(v, 3);
 	}
 
+	// Is this used?
 	private static Double round2(Double val) {
 		// added this back in on 1/15/18
 		return new BigDecimal(val.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
+	// Is this used?
 	private static Double round0(Double val) {
 		// added this back in on 1/15/18
 		return new BigDecimal(val.toString()).setScale(0, RoundingMode.HALF_UP).doubleValue();
+	}
+
+
+	/// Auto Crap
+	// This is sorta used.
+	public void driveInches(double distance, double angle, double maxPower) {
+		DriveAuto.driveInches(distance, angle, maxPower);
+	}
+
+	public void turnDegrees(double degrees, double maxPower) {
+		DriveAuto.turnDegrees(degrees, maxPower);
 	}
 }
