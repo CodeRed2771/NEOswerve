@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,6 +59,9 @@ public class Robot extends TimedRobot {
 	// Vision crap
 	NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 	private boolean inAutoMode = false;
+	private PIDController pidDrive;
+	private Vision pidVision;
+	private double kVisionP = .01;
 
 	// // Position Chooser
 	// positionChooser = new SendableChooser<String>();
@@ -75,13 +79,6 @@ public class Robot extends TimedRobot {
 
 	// End setup stuff
 
-	// Make the robot move crap
-	/*
-	 * leftBack.set(-js.getRawAxis(1) * .75); leftFront.set(-js.getRawAxis(1) *
-	 * .75); rightBack.set(js.getRawAxis(3) * .75); rightFront.set(js.getRawAxis(3)
-	 * * .75);
-	 */
-
 	@Override
 	public void robotInit() {
 
@@ -95,6 +92,9 @@ public class Robot extends TimedRobot {
 		RobotGyro.getInstance();
 		DriveTrain.getInstance();
 		DriveAuto.getInstance();
+		pidVision = Vision.getInstance();
+
+		pidDrive = new PIDController(kVisionP, 0, 0, pidVision, DriveTrain.getInstance());
 
 		Calibration.loadSwerveCalibration();
 
@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
 							// settled here yet
 
 		SmartDashboard.putBoolean("Show Turn Encoders", true);
-
+		SmartDashboard.putNumber("Vision P", kVisionP);
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -127,6 +127,11 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
+		double newP = SmartDashboard.getNumber("Vision P",0);
+		if (newP != kVisionP) {
+			kVisionP = newP;
+			pidDrive.setP(kVisionP);
+		}
 
 		double driveYAxisAmount = gamepad.getSwerveYAxis();
 		double driveXAxisAmount = -gamepad.getSwerveXAxis();
@@ -146,21 +151,29 @@ public class Robot extends TimedRobot {
 			Vision.setLED(true);
 			Vision.setVisionTrackingMode();
 
-			DriveAuto.driveInches(10, 0, 1);
+			//DriveAuto.driveInches(10, 0, 1);
 			inAutoMode = true;
+
+			// pid method
+			pidDrive.enable();
 		}
 		if (gamepad.getHID(0).getRawButton(2)) {
 			Vision.setLED(false);
 			Vision.setDriverMode();
-			inAutoMode = false;
+			
+			pidDrive.disable();
 
+			inAutoMode = false;
 		}
 
 		if (inAutoMode) {
-			if (Vision.targetInfoIsValid()) {
+			if (Vision.targetInfoIsValid() && !pidDrive.isEnabled()) {
 				if (DriveAuto.turnCompleted()) {   // if we're done with any prior turning
 					DriveAuto.turnDegrees(Vision.offsetFromTarget(), .7);
 				}
+			}
+			if (pidDrive.isEnabled()) {  
+				SmartDashboard.putNumber("PID Error", pidVision.pidGet());
 			}
 		} else {
 			// Issue the drive command using the parameters from

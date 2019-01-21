@@ -7,8 +7,9 @@
 
 package frc.robot;
 
-import static org.junit.Assert.assertEquals;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -21,14 +22,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * where the image happens not to be valid the instant you check it.  With this 
  * code, if it was valid up to a half second earlier, it uses those values.
  * Your code should check targetInfoIsValid() before bothering to read the data.
- * If the targetInfo is not valid, the offset function will return a 0 offset.
+ * If the targetInfo is not valid, the data function will return a 0.
  * 
  */
-public class Vision {
+public class Vision implements PIDSource {
     private static Vision instance;
     private static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 	private static long lastValidReadTime; 
 	private static double storedOffsetFromTarget = 0;
+	private static double storedTargetArea = 0;
+	private static double storedTargetSkew = 0;
 
     public static Vision getInstance() {
 		if (instance == null) {
@@ -57,6 +60,7 @@ public class Vision {
 		if (inVisionTrackingMode() && targetCount() > 0) {
 			lastValidReadTime = System.currentTimeMillis();
 			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
+			storedTargetArea = table.getEntry("ta").getDouble(0);
 		}
 	}
 
@@ -89,8 +93,34 @@ public class Vision {
 			return 0;
 	}
 
+	public static double targetArea() {
+		readTarget();
+		if (targetInfoIsValid()) {
+			return storedTargetArea;
+		} else
+			return 0;
+	}
+
+	public static double targetSkew() {
+		readTarget();
+		if (targetInfoIsValid()) {
+			return storedTargetSkew;
+		} else
+			return 0;
+	}
+
 	public static int targetCount() {
 		return (int)table.getEntry("tv").getDouble(0);
+	}
+
+	public PIDSourceType getPIDSourceType() {
+		return PIDSourceType.kDisplacement;
+	}
+	public void setPIDSourceType(PIDSourceType pType ) {
+
+	}
+	public double pidGet() {
+		return offsetFromTarget();
 	}
 
     public static void codeExample() {
