@@ -17,31 +17,6 @@ public abstract class AutoBaseClass {
 
 	public abstract void tick();
 
-	public String getGameData() {
-		return DriverStation.getInstance().getGameSpecificMessage();
-	}
-	
-	public boolean isSwitchLeft() {
-		return (getGameData().toCharArray()[0] == 'L');
-	}
-	public boolean isSwitchRight() {
-		return (getGameData().toCharArray()[0] == 'R');
-	}
-	public boolean isScaleLeft() {
-		return (getGameData().toCharArray()[1] == 'L');
-	}
-	public boolean isScaleRight() {
-		return (getGameData().toCharArray()[1] == 'R');
-	}
-	
-	public char getMySwitchSide() {
-		return getGameData().charAt(0);
-	}
-	
-	public char getMyScaleSide() {
-		return getGameData().charAt(1);
-	}
-	
 	public void start() {
 		mAutoTimer.setStage(0);
 		mIsRunning = true;

@@ -7,15 +7,28 @@
 
 package frc.robot;
 
+import static org.junit.Assert.assertEquals;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Add your docs here.
+ * Vision
+ * 
+ * To track a vision target
+ * Call setVisionTrackingMode() to entable tracking
+ * Call "Vision.tick()" in your periodic loop to continually check for a target
+ * and store the horizontal offset for when you ask for it.  This avoids the issue
+ * where the image happens not to be valid the instant you check it.  With this 
+ * code, if it was valid up to a half second earlier, it uses those values.
+ * Your code should check targetInfoIsValid() before bothering to read the data.
+ * If the targetInfo is not valid, the offset function will return a 0 offset.
+ * 
  */
 public class Vision {
     private static Vision instance;
     private static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+	private static long lastValidReadTime; 
+	private static double storedOffsetFromTarget = 0;
 
     public static Vision getInstance() {
 		if (instance == null) {
@@ -29,18 +42,55 @@ public class Vision {
 			}
 		}
 		return instance;
-    }
-    
+	}
+	
+	public Vision() {
+		// set the last valid read time to an old time to make it invalid
+		lastValidReadTime = System.currentTimeMillis() - 5000;  // 5 seconds back in time
+	}
+
+	public static void tick() {
+		readTarget();
+	}
+	
+	public static void readTarget() {
+		if (inVisionTrackingMode() && targetCount() > 0) {
+			lastValidReadTime = System.currentTimeMillis();
+			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
+		}
+	}
+
     public static void setLED(boolean turnOn) {
         table.getEntry("ledMode").forceSetNumber(turnOn ? 3 : 1); // 3 - on, 1 = off, 2 - blink
 	}
 	
+	public static boolean inVisionTrackingMode() {
+		return (table.getEntry("camMode").getNumber(0).intValue() == 0);
+	}
+
 	public static void setDriverMode(){
 		table.getEntry("camMode").forceSetNumber(1);
 	}
 
-	public static void setVisionMode(){
+	public static void setVisionTrackingMode(){
 		table.getEntry("camMode").forceSetNumber(0);
+	}
+
+	public static boolean targetInfoIsValid() {
+		readTarget();
+		return  (System.currentTimeMillis() - lastValidReadTime) < 500;  // less than 500 ms old
+	}
+
+	public static double offsetFromTarget() {
+		readTarget();
+		if (targetInfoIsValid()) {
+			return storedOffsetFromTarget;
+		} else
+			return 0;
+	}
+
+	public static int targetCount() {
+		return (int)table.getEntry("tv").getDouble(0);
 	}
 
     public static void codeExample() {

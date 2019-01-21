@@ -46,7 +46,7 @@ import edu.wpi.first.networktables.*;
 			
 */
 
-public class Robot extends TimedRobot{
+public class Robot extends TimedRobot {
 
 	// Settup stuff
 	KeyMap gamepad;
@@ -55,7 +55,7 @@ public class Robot extends TimedRobot{
 	SendableChooser<String> positionChooser;
 	AnalogInput line;
 	final String cargoTracking = "Cargo Tracking";
-	// Vision crap	
+	// Vision crap
 	NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 	private boolean inAutoMode = false;
 
@@ -72,16 +72,15 @@ public class Robot extends TimedRobot{
 	// // Auto options
 	// final String testProgram = "Test Program";
 	// final String targetTracking = "Target Tracking";
-	
+
 	// End setup stuff
 
 	// Make the robot move crap
-	/* 
-		leftBack.set(-js.getRawAxis(1) * .75);
-		leftFront.set(-js.getRawAxis(1) * .75);
-		rightBack.set(js.getRawAxis(3) * .75);
-		rightFront.set(js.getRawAxis(3) * .75);
-	*/
+	/*
+	 * leftBack.set(-js.getRawAxis(1) * .75); leftFront.set(-js.getRawAxis(1) *
+	 * .75); rightBack.set(js.getRawAxis(3) * .75); rightFront.set(js.getRawAxis(3)
+	 * * .75);
+	 */
 
 	@Override
 	public void robotInit() {
@@ -100,7 +99,7 @@ public class Robot extends TimedRobot{
 		Calibration.loadSwerveCalibration();
 
 		line = new AnalogInput(0);
-	
+
 		compressor = new Compressor(0);
 		compressor.setClosedLoopControl(true);
 
@@ -110,8 +109,7 @@ public class Robot extends TimedRobot{
 							// settled here yet
 
 		SmartDashboard.putBoolean("Show Turn Encoders", true);
-		
-		
+
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -129,13 +127,12 @@ public class Robot extends TimedRobot{
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
-		
+
 		double driveYAxisAmount = gamepad.getSwerveYAxis();
 		double driveXAxisAmount = -gamepad.getSwerveXAxis();
 		double driveRotAxisAmount = powerOf3PreserveSign(gamepad.getSwerveRotAxis());
 
-		
-		// put some rotational power restrictions in place to make it 
+		// put some rotational power restrictions in place to make it
 		// more controlled
 		if (Math.abs(driveRotAxisAmount) > .70) {
 			if (driveRotAxisAmount < 0)
@@ -145,46 +142,46 @@ public class Robot extends TimedRobot{
 		}
 
 		// A
-		if(gamepad.getHID(0).getRawButton(1)){
+		if (gamepad.getHID(0).getRawButton(1)) {
 			Vision.setLED(true);
-			Vision.setVisionMode();
+			Vision.setVisionTrackingMode();
 
 			DriveAuto.driveInches(10, 0, 1);
-inAutoMode = true;
+			inAutoMode = true;
 		}
-		if(gamepad.getHID(0).getRawButton(2)){
+		if (gamepad.getHID(0).getRawButton(2)) {
 			Vision.setLED(false);
 			Vision.setDriverMode();
 			inAutoMode = false;
 
 		}
 
-		
-		// Issue the drive command using the parameters from
-		// above that have been tweaked as needed
-		
-		if (!inAutoMode) {
-		DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount,
-				driveRotAxisAmount);
-				// DriveTrain.fieldCentricDrive(0, 0,	0);
+		if (inAutoMode) {
+			if (Vision.targetInfoIsValid()) {
+				if (DriveAuto.turnCompleted()) {   // if we're done with any prior turning
+					DriveAuto.turnDegrees(Vision.offsetFromTarget(), .7);
+				}
+			}
+		} else {
+			// Issue the drive command using the parameters from
+			// above that have been tweaked as needed
+			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
+			// DriveTrain.fieldCentricDrive(0, 0, 0);
 		}
-		
+
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
-			DriveTrain.showDriveEncodersOnDash(); 
+			DriveTrain.showDriveEncodersOnDash();
 		}
-		
+
 		DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P", Calibration.TURN_P),
 				SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
 				SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
 
 	}
 
-
-
-	
 	@Override
 	public void autonomousInit() {
 
@@ -196,50 +193,50 @@ inAutoMode = true;
 		// mAutoProgram = null;
 
 		// switch (autoSelected) {
-		// 	case targetTracking:
-		// 		mAutoProgram = new TargetTracking('C');
-		// 		break;
+		// case targetTracking:
+		// mAutoProgram = new TargetTracking('C');
+		// break;
 		// }
 
 		// DriveTrain.setAllTurnOrientiation(0);
 		// DriveAuto.reset();
 
 		// if (mAutoProgram != null) {
-		// 	mAutoProgram.start();
+		// mAutoProgram.start();
 		// } else {
-		// 	System.out.println("No auto program started in switch statement");
+		// System.out.println("No auto program started in switch statement");
 		// }
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		// double targetOffsetAngle_Horizontal = table.getEntry("tx").getDouble(0);
-			// // double targetOffsetAngle_Vertical = table.getEntry("ty").getDouble(0);
-			// 	// double targetArea = table.getEntry("ta").getDouble(0);
-			// 	// // double targetSkew = table.getEntry("ts").getDouble(0);
-			// double targetCount = table.getEntry("tv").getDouble(0);
-			// // double turnP = .03;
-			// 	// double distP = .12;
-			// 	// double turnSpeed = 0;
-			// 	// double fwdSpeed = 0;
+		// // double targetOffsetAngle_Vertical = table.getEntry("ty").getDouble(0);
+		// // double targetArea = table.getEntry("ta").getDouble(0);
+		// // // double targetSkew = table.getEntry("ts").getDouble(0);
+		// double targetCount = table.getEntry("tv").getDouble(0);
+		// // double turnP = .03;
+		// // double distP = .12;
+		// // double turnSpeed = 0;
+		// // double fwdSpeed = 0;
 
-			// 	// fwdSpeed = (5 - targetArea) * distP;
-			// 	// turnSpeed = targetOffsetAngle_Horizontal * turnP;
+		// // fwdSpeed = (5 - targetArea) * distP;
+		// // turnSpeed = targetOffsetAngle_Horizontal * turnP;
 
-			// 	// SmartDashboard.putNumber("Target Area", targetArea);
-			// 	// SmartDashboard.putNumber("Horizontal Offset Angle", targetOffsetAngle_Horizontal);
-			// 	// SmartDashboard.putNumber("Vertical Offset Angle", targetOffsetAngle_Vertical);
-			// 	// SmartDashboard.putNumber("target Count", targetCount);
-			// 	// SmartDashboard.putNumber("fwd speed", fwdSpeed);
-			// 	// SmartDashboard.putNumber("turn speed", turnSpeed);
+		// // SmartDashboard.putNumber("Target Area", targetArea);
+		// // SmartDashboard.putNumber("Horizontal Offset Angle",
+		// targetOffsetAngle_Horizontal);
+		// // SmartDashboard.putNumber("Vertical Offset Angle",
+		// targetOffsetAngle_Vertical);
+		// // SmartDashboard.putNumber("target Count", targetCount);
+		// // SmartDashboard.putNumber("fwd speed", fwdSpeed);
+		// // SmartDashboard.putNumber("turn speed", turnSpeed);
 
-			// if (targetCount > 0) {
-			// 	DriveAuto.turnDegrees(targetOffsetAngle_Horizontal, 0);
-			// } else {
-			// 	DriveAuto.turnDegrees(90, 0);
+		// if (targetCount > 0) {
+		// DriveAuto.turnDegrees(targetOffsetAngle_Horizontal, 0);
+		// } else {
+		// DriveAuto.turnDegrees(90, 0);
 		// }
-
-		
 
 		// DriveAuto.tick();
 		// mAutoProgram = new TargetTracking('C');
@@ -252,10 +249,12 @@ inAutoMode = true;
 	}
 
 	@Override
-	public void testInit() { }
+	public void testInit() {
+	}
 
 	@Override
-	public void testPeriodic() { }
+	public void testPeriodic() {
+	}
 
 	public void disabledInit() {
 		DriveTrain.allowTurnEncoderReset(); // allows the turn encoders to be
@@ -272,11 +271,9 @@ inAutoMode = true;
 
 		SmartDashboard.putNumber("Gyro PID Get", round0(RobotGyro.getInstance().pidGet()));
 
-
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
 		}
-
 
 	}
 
@@ -301,7 +298,6 @@ inAutoMode = true;
 		// added this back in on 1/15/18
 		return new BigDecimal(val.toString()).setScale(0, RoundingMode.HALF_UP).doubleValue();
 	}
-
 
 	/// Auto Crap
 	// This is sorta used.
