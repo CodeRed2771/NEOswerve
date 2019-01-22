@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
 	private PIDController pidDrive;
 	private Vision pidVision;
 	private double kVisionP = .01;
+	private double kVisionD = 0;
 
 	// // Position Chooser
 	// positionChooser = new SendableChooser<String>();
@@ -94,7 +95,7 @@ public class Robot extends TimedRobot {
 		DriveAuto.getInstance();
 		pidVision = Vision.getInstance();
 
-		pidDrive = new PIDController(kVisionP, 0, 0, pidVision, DriveTrain.getInstance());
+		pidDrive = new PIDController(kVisionP, 0, kVisionD, pidVision, DriveTrain.getInstance());
 
 		Calibration.loadSwerveCalibration();
 
@@ -110,6 +111,8 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Show Turn Encoders", true);
 		SmartDashboard.putNumber("Vision P", kVisionP);
+		SmartDashboard.putNumber("Vision D", kVisionD);
+
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -127,10 +130,16 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
-		double newP = SmartDashboard.getNumber("Vision P",0);
+		double newP = SmartDashboard.getNumber("Vision P", 0);
+		double newD = SmartDashboard.getNumber("Vision D", 0);
+
 		if (newP != kVisionP) {
 			kVisionP = newP;
 			pidDrive.setP(kVisionP);
+		}
+		if (newD != kVisionD) {
+			kVisionD = newD;
+			pidDrive.setD(kVisionD);
 		}
 
 		double driveYAxisAmount = gamepad.getSwerveYAxis();
@@ -156,6 +165,7 @@ public class Robot extends TimedRobot {
 
 			// pid method
 			pidDrive.enable();
+			pidDrive.setSetpoint(0);
 		}
 		if (gamepad.getHID(0).getRawButton(2)) {
 			Vision.setLED(false);
