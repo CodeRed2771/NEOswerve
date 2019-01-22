@@ -120,7 +120,7 @@ public class Vision implements PIDSource {
 
 	}
 	public double pidGet() {
-		return offsetFromTarget();
+		return -offsetFromTarget();
 	}
 
     public static void codeExample() {

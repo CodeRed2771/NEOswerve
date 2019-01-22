@@ -18,10 +18,10 @@ public class Calibration {
 	
 	// PRACTICE
 	
-	private final static double DT_A_ABS_ZERO_INITIAL = .551; //Practice Robot Calibration
-	private final static double DT_B_ABS_ZERO_INITIAL = .905; //Practice Robot Calibration
-	private final static double DT_C_ABS_ZERO_INITIAL = .514; //Practice Robot Calibration
-	private final static double DT_D_ABS_ZERO_INITIAL = .26; //Practice Robot Calibration`
+	private final static double DT_A_ABS_ZERO_INITIAL = .549; //Practice Robot Calibration
+	private final static double DT_B_ABS_ZERO_INITIAL = .904; //Practice Robot Calibration
+	private final static double DT_C_ABS_ZERO_INITIAL = .793; //Practice Robot Calibration
+	private final static double DT_D_ABS_ZERO_INITIAL = .256; //Practice Robot Calibration`
 	public static final double ARM_ABS_ZERO = 0.454;  // Absolute encoder value in horizontal position
 	
 	// COMPETIION

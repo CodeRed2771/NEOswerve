@@ -13,40 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
-/* 2018 Xena - PowerUp
-
- 	Controls
-		DRIVER
-			Left Stick moves robot in X Y plane
-			Right Stick rotates robot
-			A - puts arm in horizontal position
-			B - puts arm in travel (up) position
-			X - resets the arm encoder
-			Start - puts lift in high speed
-			Back  - puts lift in low gear
-			
-		MANIPULATOR
-			A - lift to bottom position, arm horizontal
-			B - lift to switch position, arm in switch pos
-			Y - lift to scale position, arm in scale pos
-			X - arm over the top
-			Start - arm in travel (up) position
-			Dpad Left (DL) - arm modifier
-				DL A - portal height, arm level
-				DL B - second cube height, arm level
-			Dpad Right (DR) - lift modifier
-				DR A - lift to low scale
-				DR B - lift to med scale
-				DR Y - lift to high scale
-			Right Bumper - Start Intake and lower arm
-			Left Bumper - Drop cube
-			Back - eject cube
-			Right Stick Y - manual arm
-			Left Stick Y - manual lift
-			Right Trigger - force open claw during intake
-			
-*/
-
 public class Robot extends TimedRobot {
 
 	// Settup stuff
@@ -61,31 +27,31 @@ public class Robot extends TimedRobot {
 	private boolean inAutoMode = false;
 	private PIDController pidDrive;
 	private Vision pidVision;
-	private double kVisionP = .01;
+	private double kVisionP = .1;
 	private double kVisionD = 0;
 
-	// // Position Chooser
-	// positionChooser = new SendableChooser<String>();
-	// positionChooser.addObject("Left", "L");
-	// positionChooser.addDefault("Center", "C");
-	// positionChooser.addObject("Right", "R");
-	// SmartDashboard.putData("Position", positionChooser);
-
 	// /* Auto Stuff */
-	// String autoSelected;
-	// AutoBaseClass mAutoProgram;
-	// // Auto options
-	// final String testProgram = "Test Program";
-	// final String targetTracking = "Target Tracking";
+	String autoSelected;
+	AutoBaseClass mAutoProgram;
+	// Auto options
+	final String testProgram = "Test Program";
+	final String targetTracking = "Target Tracking";
 
 	// End setup stuff
 
 	@Override
 	public void robotInit() {
 
+		// Position Chooser
+		positionChooser = new SendableChooser<String>();
+		positionChooser.addObject("Left", "L");
+		positionChooser.addDefault("Center", "C");
+		positionChooser.addObject("Right", "R");
+		SmartDashboard.putData("Position", positionChooser);
+
 		/* Auto Chooser */
 		autoChooser = new SendableChooser<>();
-		// autoChooser.addOption(targetTracking, targetTracking);
+		autoChooser.addOption(targetTracking, targetTracking);
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
 
@@ -124,9 +90,12 @@ public class Robot extends TimedRobot {
 	 * TELEOP PERIODIC
 	 * 
 	 */
+
 	@Override
 	public void teleopPeriodic() {
 
+		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
+			
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
