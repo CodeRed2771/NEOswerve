@@ -85,6 +85,18 @@ public class Vision implements PIDSource {
 		return  (System.currentTimeMillis() - lastValidReadTime) < 500;  // less than 500 ms old
 	}
 
+	public static double distance(){
+		// Min distance = 3ft 5in
+			// Target area at 4ft - .82
+			// Target area at 5ft - .7
+			// Target area at 6ft - .48
+			// Target area at 7ft - .3
+			// Target area at 8ft - .1
+		// Max distance = 13ft 4in
+
+		return targetArea();
+	}
+
 	public static double offsetFromTarget() {
 		readTarget();
 		if (targetInfoIsValid()) {
@@ -97,8 +109,9 @@ public class Vision implements PIDSource {
 		readTarget();
 		if (targetInfoIsValid()) {
 			return storedTargetArea;
-		} else
+		} else {
 			return 0;
+		}
 	}
 
 	public static double targetSkew() {

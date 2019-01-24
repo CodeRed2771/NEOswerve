@@ -95,6 +95,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
+		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
 			
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
@@ -130,11 +131,11 @@ public class Robot extends TimedRobot {
 			Vision.setVisionTrackingMode();
 
 			//DriveAuto.driveInches(10, 0, 1);
-			inAutoMode = true;
+			// inAutoMode = true;
 
 			// pid method
-			pidDrive.enable();
-			pidDrive.setSetpoint(0);
+			// pidDrive.enable();
+			// pidDrive.setSetpoint(0);
 		}
 		if (gamepad.getHID(0).getRawButton(2)) {
 			Vision.setLED(false);
