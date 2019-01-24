@@ -27,8 +27,8 @@ public class Robot extends TimedRobot {
 	private boolean inAutoMode = false;
 	private PIDController pidDrive;
 	private Vision pidVision;
-	private double kVisionP = .1;
-	private double kVisionD = 0;
+	private double kVisionP = .2;
+	private double kVisionD = 0.03;
 
 	// /* Auto Stuff */
 	String autoSelected;
