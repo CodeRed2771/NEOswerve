@@ -32,6 +32,7 @@ public class Vision implements PIDSource {
 	private static double storedTargetArea = 0;
 	private static double storedTargetSkew = 0;
 	private static boolean inRotationalTrackingMode = true;
+	private static double dis = 0;
 
 	public static Vision getInstance() {
 		if (instance == null) {
@@ -61,6 +62,7 @@ public class Vision implements PIDSource {
 			lastValidReadTime = System.currentTimeMillis();
 			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
 			storedTargetArea = table.getEntry("ta").getDouble(0);
+		
 		}
 	}
 
@@ -94,7 +96,10 @@ public class Vision implements PIDSource {
 		// Target area at 8ft - .1
 		// Max distance = 13ft 4in
 
-		return targetArea();
+		dis = -5.3991 * targetArea() + 8.5915;
+
+		return dis;
+
 	}
 
 	public static double offsetFromTarget() {
@@ -103,6 +108,7 @@ public class Vision implements PIDSource {
 			return storedOffsetFromTarget;
 		} else
 			return 0;
+
 	}
 
 	public static double targetArea() {

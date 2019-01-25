@@ -79,6 +79,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Vision P", kVisionP);
 		SmartDashboard.putNumber("Vision D", kVisionD);
 
+
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -93,6 +94,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+
+		SmartDashboard.putNumber("Distance", Vision.distance());
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
