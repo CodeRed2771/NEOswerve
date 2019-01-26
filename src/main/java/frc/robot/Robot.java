@@ -22,17 +22,19 @@ public class Robot extends TimedRobot {
 	SendableChooser<String> positionChooser;
 	AnalogInput line;
 	final String cargoTracking = "Cargo Tracking";
-	// Vision crap
-	NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+
 	private boolean inAutoMode = false;
-	// private PIDController pidDrive;
+
 	private PIDController pidDistance;
 	private PIDController pidStrafe;
+
 	private Vision pidVision;
 	private double kVisionP = .2;
 	private double kVisionD = 0.03;
+
 	private FWDOutput fwdOutput;
 	private STROutput strOutput;
+
 	private STRVision strVision;
 
 	// /* Auto Stuff */
@@ -69,8 +71,6 @@ public class Robot extends TimedRobot {
 		strOutput = new STROutput();
 		strVision = new STRVision();
 
-		// pidDrive = new PIDController(kVisionP, 0, kVisionD, pidVision, DriveTrain.getInstance());
-
 		pidDistance = new PIDController(0.02, 0, 0, pidVision, fwdOutput);
 		pidStrafe = new PIDController(0.02, 0, 0, strVision, strOutput);
 
@@ -104,20 +104,13 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putNumber("Version", 2.7);
-		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
-
-		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
-		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
-
-		SmartDashboard.putNumber("line sensor", line.getAverageValue());
-
-		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
+		
+		SmartDashboard.putNumber("Version", 2.8);
+		
 		double newP = SmartDashboard.getNumber("Vision P", 0);
 		double newD = SmartDashboard.getNumber("Vision D", 0);
 
-		Vision.tick();
-
+		
 		// if (newP != kVisionP) {
 		// 	kVisionP = newP;
 		// 	pidDrive.setP(kVisionP);
@@ -140,20 +133,19 @@ public class Robot extends TimedRobot {
 				driveRotAxisAmount = .70;
 		}
 
+		Vision.tick();
+
 		// A
 		if (gamepad.getHID(0).getRawButton(1)) {
 			
-			// DriveTrain.setDistancePIDMode();
+			inAutoMode = true;
+	
 			Vision.setTargetTrackingMode();
 			pidDistance.setSetpoint(72);
 			pidDistance.enable();
 			pidStrafe.setSetpoint(0);
 			pidStrafe.enable();
-			// pid method
-			// pidDrive.enable();
-			// pidDrive.setSetpoint(72);
-
-			inAutoMode = true;
+	
 		}
 		// B
 		if (gamepad.getHID(0).getRawButton(2)) {
@@ -162,8 +154,7 @@ public class Robot extends TimedRobot {
 
 			pidDistance.disable();
 			pidStrafe.disable();
-			// pidDrive.disable();
-
+	
 			inAutoMode = false;
 		}
 
@@ -185,19 +176,27 @@ public class Robot extends TimedRobot {
 			
 			DriveTrain.swerveDrive(fwd, str, 0);
 
-			if (Vision.targetInfoIsValid() && !pidDistance.isEnabled()) {
-				if (DriveAuto.turnCompleted()) { // if we're done with any prior turning
-					DriveAuto.turnDegrees(Vision.offsetFromTarget(), .71);
-				}
-			}
-			SmartDashboard.putNumber("PID Error", pidVision.pidGet());
+			SmartDashboard.putNumber("fwd", fwd);
+			SmartDashboard.putNumber("str", str);
+
 		} else {
+			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
+	
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
-			// DriveTrain.fieldCentricDrive(0, 0, 0);
 		}
 
+
+		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
+
+		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
+		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
+
+		SmartDashboard.putNumber("line sensor", line.getAverageValue());
+
+		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
+		
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
@@ -205,6 +204,7 @@ public class Robot extends TimedRobot {
 			DriveTrain.showDriveEncodersOnDash();
 		}
 
+		// in case we're tweaking the PID via Dashboard, update the values
 		DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P", Calibration.TURN_P),
 				SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
 				SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
@@ -239,34 +239,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-		// double targetOffsetAngle_Horizontal = table.getEntry("tx").getDouble(0);
-		// // double targetOffsetAngle_Vertical = table.getEntry("ty").getDouble(0);
-		// // double targetArea = table.getEntry("ta").getDouble(0);
-		// // // double targetSkew = table.getEntry("ts").getDouble(0);
-		// double targetCount = table.getEntry("tv").getDouble(0);
-		// // double turnP = .03;
-		// // double distP = .12;
-		// // double turnSpeed = 0;
-		// // double fwdSpeed = 0;
-
-		// // fwdSpeed = (5 - targetArea) * distP;
-		// // turnSpeed = targetOffsetAngle_Horizontal * turnP;
-
-		// // SmartDashboard.putNumber("Target Area", targetArea);
-		// // SmartDashboard.putNumber("Horizontal Offset Angle",
-		// targetOffsetAngle_Horizontal);
-		// // SmartDashboard.putNumber("Vertical Offset Angle",
-		// targetOffsetAngle_Vertical);
-		// // SmartDashboard.putNumber("target Count", targetCount);
-		// // SmartDashboard.putNumber("fwd speed", fwdSpeed);
-		// // SmartDashboard.putNumber("turn speed", turnSpeed);
-
-		// if (targetCount > 0) {
-		// DriveAuto.turnDegrees(targetOffsetAngle_Horizontal, 0);
-		// } else {
-		// DriveAuto.turnDegrees(90, 0);
-		// }
-
+	
 		// DriveAuto.tick();
 		// mAutoProgram = new TargetTracking('C');
 		// mAutoProgram.start();
