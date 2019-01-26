@@ -63,6 +63,8 @@ public class Vision implements PIDSource {
 
 	public static void tick() {
 		readTarget();
+		SmartDashboard.putBoolean("Rotation Tracking Mode", inRotationalTrackingMode);
+
 	}
 
 	public static void readTarget() {
@@ -86,7 +88,7 @@ public class Vision implements PIDSource {
 		table.getEntry("camMode").forceSetNumber(1);
 	}
 
-	public static void setVisionTrackingMode() {
+	private static void setVisionTrackingMode() {
 		table.getEntry("camMode").forceSetNumber(0);
 	}
 
@@ -95,20 +97,12 @@ public class Vision implements PIDSource {
 		return (System.currentTimeMillis() - lastValidReadTime) < 500; // less than 500 ms old
 	}
 
-	public static double distance(double ta) {
-		// dis = -5.3991 * targetArea() + 8.5915; // Converts targetArea() to ft
-		dis = -8.1435 * ta + 9.657;
-		dis = Math.round(dis);
-		return dis;
-	}
-
 	public static double offsetFromTarget() {
 		readTarget();
 		if (targetInfoIsValid()) {
 			return storedOffsetFromTarget;
 		} else
 			return 0;
-
 	}
 
 	public static double targetArea() {
@@ -121,9 +115,17 @@ public class Vision implements PIDSource {
 	}
 
 	public static double getDistanceFromTarget() {
-		double area = targetArea();
+		// Min distance = 3ft 5in
+		// Target area at 4ft - .82
+		// Target area at 5ft - .7
+		// Target area at 6ft - .48
+		// Target area at 7ft - .3
+		// Target area at 8ft - .1
+		// Max distance = 13ft 4in
 
-		return area * .1;
+		dis = -5.3991 * targetArea() + 8.5915;
+
+		return dis;
 	}
 
 	public static double targetSkew() {
@@ -138,9 +140,15 @@ public class Vision implements PIDSource {
 		return (int) table.getEntry("tv").getDouble(0);
 	}
 
-	public void setRotationalTrackingMode() {
+	public static void setRotationalTrackingMode() {
 		// this controls what data pidGet returns
 		inRotationalTrackingMode = true;
+	}
+
+	public static void setTargetTrackingMode() {
+		setLED(true);
+		setVisionTrackingMode();
+		setRotationalTrackingMode();
 	}
 
 	public void setDistanceTrackingMode() {
@@ -162,7 +170,7 @@ public class Vision implements PIDSource {
 		
 		if (inRotationalTrackingMode) {
 			double offset = -offsetFromTarget();
-			int maxOffset = 7;
+			int maxOffset = 4;
 
 			// to control the max rotational speed, we cap the "error" to a certain limit
 

@@ -11,7 +11,8 @@ public class Module {
 	private final int TURN_IZONE, DRIVE_IZONE;
 	private double turnZeroPos = 0;
 	private double currentDriveSetpoint = 0;
-	
+	private boolean isReversed = false;
+		
 	/**
 	 * Lets make a new module :)
 	 * @param driveTalonID First I gotta know what talon we are using for driving
@@ -57,7 +58,6 @@ public class Module {
 		turn.selectProfileSlot(0, 0);
 		
 		turn.configClosedloopRamp(.1, 0);
-		
 	}
 	
 	public void setFollower(int talonToFollow) {
@@ -92,7 +92,7 @@ public class Module {
 	 * @param p value from -1 to 1
 	 */
 	public void setDrivePower(double p) {
-		this.drive.set(p);
+		this.drive.set((isReversed ? -1 : 1) * p);
 	}
 
 	/**
@@ -196,20 +196,28 @@ public class Module {
 	 */	
 	public void setTurnOrientation(double position) {
 		double base = getTurnRotations() * FULL_ROTATION;
+		double currentTurnPosition = getTurnPosition();
+		double reverseTurnPosition = (position + 0.5) % 1.0; 
+		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
+		double disntanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
+		double closestTurnPosition = disntanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition : position;
+		isReversed = closestTurnPosition != position;
+		this.drive.set((isReversed ? -1 : 1) * this.drive.get());
+
 		if (getTurnRelativePosition() >= 0) {
-			if ((base + (position * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
+			if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
 				base += FULL_ROTATION;
-			} else if ((base + (position * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
+			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
 				base -= FULL_ROTATION;
 			}
-			turn.set(ControlMode.Position, (((position * FULL_ROTATION) + (base))));
+			turn.set(ControlMode.Position, (((closestTurnPosition * FULL_ROTATION) + (base))));
 		} else {
-			if ((base - ((1-position) * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
+			if ((base - ((1-closestTurnPosition) * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
 				base += FULL_ROTATION;
-			} else if ((base -((1-position) * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
+			} else if ((base -((1-closestTurnPosition) * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION/2) {
 				base -= FULL_ROTATION;
 			}
-			turn.set(ControlMode.Position, (base- (((1-position) * FULL_ROTATION))));	
+			turn.set(ControlMode.Position, (base- (((1-closestTurnPosition) * FULL_ROTATION))));	
 		}
 	}
 	

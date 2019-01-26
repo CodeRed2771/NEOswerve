@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		SmartDashboard.putNumber("Distance", Vision.distance(Vision.targetArea()));
+		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
@@ -105,6 +105,8 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 		double newP = SmartDashboard.getNumber("Vision P", 0);
 		double newD = SmartDashboard.getNumber("Vision D", 0);
+
+		Vision.tick();
 
 		if (newP != kVisionP) {
 			kVisionP = newP;
@@ -130,15 +132,12 @@ public class Robot extends TimedRobot {
 
 		// A
 		if (gamepad.getHID(0).getRawButton(1)) {
-			Vision.setLED(true);
-			Vision.setVisionTrackingMode();
 
-			//DriveAuto.driveInches(10, 0, 1);
-			// inAutoMode = true;
+			Vision.setTargetTrackingMode();
 
 			// pid method
-			// pidDrive.enable();
-			// pidDrive.setSetpoint(0);
+			pidDrive.enable();
+			pidDrive.setSetpoint(0);
 		}
 		if (gamepad.getHID(0).getRawButton(2)) {
 			Vision.setLED(false);
