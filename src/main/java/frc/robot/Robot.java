@@ -27,10 +27,13 @@ public class Robot extends TimedRobot {
 	private boolean inAutoMode = false;
 	// private PIDController pidDrive;
 	private PIDController pidDistance;
+	private PIDController pidStrafe;
 	private Vision pidVision;
 	private double kVisionP = .2;
 	private double kVisionD = 0.03;
 	private FWDOutput fwdOutput;
+	private STROutput strOutput;
+	private STRVision strVision;
 
 	// /* Auto Stuff */
 	String autoSelected;
@@ -63,10 +66,13 @@ public class Robot extends TimedRobot {
 		pidVision = Vision.getInstance();
 
 		fwdOutput = new FWDOutput();
+		strOutput = new STROutput();
+		strVision = new STRVision();
 
 		// pidDrive = new PIDController(kVisionP, 0, kVisionD, pidVision, DriveTrain.getInstance());
 
 		pidDistance = new PIDController(0.02, 0, 0, pidVision, fwdOutput);
+		pidStrafe = new PIDController(0.02, 0, 0, strVision, strOutput);
 
 		Calibration.loadSwerveCalibration();
 
@@ -98,7 +104,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putNumber("Version", 2.6);
+		SmartDashboard.putNumber("Version", 2.7);
 		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
@@ -141,6 +147,8 @@ public class Robot extends TimedRobot {
 			Vision.setTargetTrackingMode();
 			pidDistance.setSetpoint(72);
 			pidDistance.enable();
+			pidStrafe.setSetpoint(0);
+			pidStrafe.enable();
 			// pid method
 			// pidDrive.enable();
 			// pidDrive.setSetpoint(72);
@@ -153,6 +161,7 @@ public class Robot extends TimedRobot {
 			Vision.setDriverMode();
 
 			pidDistance.disable();
+			pidStrafe.disable();
 			// pidDrive.disable();
 
 			inAutoMode = false;
@@ -160,16 +169,21 @@ public class Robot extends TimedRobot {
 
 		if (inAutoMode) {
 			double fwd = fwdOutput.getValue();
+			double str = strOutput.getValue();
+
 			if(Vision.targetInfoIsValid()){
 				// pidDrive.enable();
 				pidDistance.enable();
+				pidStrafe.enable();
 			} else {
 				// pidDrive.disable();
 				pidDistance.disable();
+				pidStrafe.disable();
 				fwd = 0;
+				str = 0;
 			}
 			
-			DriveTrain.swerveDrive(fwdOutput.getValue(), 0, 0);
+			DriveTrain.swerveDrive(fwd, str, 0);
 
 			if (Vision.targetInfoIsValid() && !pidDistance.isEnabled()) {
 				if (DriveAuto.turnCompleted()) { // if we're done with any prior turning
