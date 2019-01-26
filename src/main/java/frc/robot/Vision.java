@@ -5,6 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+// Min distance = 3ft 5in
+// Target area at 4ft - .82
+// Target area at 5ft - .7
+// Target area at 6ft - .48
+// Target area at 7ft - .3
+// Target area at 8ft - .1
+// Max distance = 13ft 4in
+
 package frc.robot;
 
 import edu.wpi.first.networktables.*;
@@ -87,19 +95,11 @@ public class Vision implements PIDSource {
 		return (System.currentTimeMillis() - lastValidReadTime) < 500; // less than 500 ms old
 	}
 
-	public static double distance() {
-		// Min distance = 3ft 5in
-		// Target area at 4ft - .82
-		// Target area at 5ft - .7
-		// Target area at 6ft - .48
-		// Target area at 7ft - .3
-		// Target area at 8ft - .1
-		// Max distance = 13ft 4in
-
-		dis = -5.3991 * targetArea() + 8.5915;
-
+	public static double distance(double ta) {
+		// dis = -5.3991 * targetArea() + 8.5915; // Converts targetArea() to ft
+		dis = -8.1435 * ta + 9.657;
+		dis = Math.round(dis);
 		return dis;
-
 	}
 
 	public static double offsetFromTarget() {

@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		SmartDashboard.putNumber("Distance", Vision.distance());
+		SmartDashboard.putNumber("Distance", Vision.distance(Vision.targetArea()));
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
