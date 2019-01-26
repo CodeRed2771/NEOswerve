@@ -123,7 +123,7 @@ public class Vision implements PIDSource {
 		// Target area at 8ft - .1
 		// Max distance = 13ft 4in
 
-		dis = -5.3991 * targetArea() + 8.5915;
+		dis = -8.1435 * targetArea() + 9.657;
 
 		return dis;
 	}
