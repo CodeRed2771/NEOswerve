@@ -21,6 +21,6 @@ public class FWDOutput implements PIDOutput {
     }
 
     public double getValue() {
-        return value;
+        return -value;
     }
 }

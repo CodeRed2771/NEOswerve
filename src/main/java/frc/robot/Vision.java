@@ -94,7 +94,7 @@ public class Vision implements PIDSource {
 
 	public static boolean targetInfoIsValid() {
 		readTarget();
-		return (System.currentTimeMillis() - lastValidReadTime) < 500; // less than 500 ms old
+		return (System.currentTimeMillis() - lastValidReadTime) < 250; // less than 500 ms old
 	}
 
 	public static double offsetFromTarget() {
@@ -123,7 +123,7 @@ public class Vision implements PIDSource {
 		// Target area at 8ft - .1
 		// Max distance = 13ft 4in
 
-		dis = -8.1435 * targetArea() + 9.657;
+		dis = (-8.1435 * targetArea() + 9.657)*12;
 
 		return dis;
 	}
@@ -148,10 +148,10 @@ public class Vision implements PIDSource {
 	public static void setTargetTrackingMode() {
 		setLED(true);
 		setVisionTrackingMode();
-		setRotationalTrackingMode();
+		setDistanceTrackingMode();
 	}
 
-	public void setDistanceTrackingMode() {
+	public static void setDistanceTrackingMode() {
 		// this controls what data pidGet returns
 		inRotationalTrackingMode = false;
 	}
@@ -185,12 +185,6 @@ public class Vision implements PIDSource {
 		} else {
 			// do distance calculation
 			double dist = getDistanceFromTarget();
-			double maxDistance = 12;
-
-			if (dist > maxDistance) {
-				dist = maxDistance;
-			}
-
 			return dist;
 		}
 	}

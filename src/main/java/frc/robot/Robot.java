@@ -25,10 +25,12 @@ public class Robot extends TimedRobot {
 	// Vision crap
 	NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 	private boolean inAutoMode = false;
-	private PIDController pidDrive;
+	// private PIDController pidDrive;
+	private PIDController pidDistance;
 	private Vision pidVision;
 	private double kVisionP = .2;
 	private double kVisionD = 0.03;
+	private FWDOutput fwdOutput;
 
 	// /* Auto Stuff */
 	String autoSelected;
@@ -41,7 +43,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-
 		// Position Chooser
 		positionChooser = new SendableChooser<String>();
 		positionChooser.addObject("Left", "L");
@@ -61,7 +62,11 @@ public class Robot extends TimedRobot {
 		DriveAuto.getInstance();
 		pidVision = Vision.getInstance();
 
-		pidDrive = new PIDController(kVisionP, 0, kVisionD, pidVision, DriveTrain.getInstance());
+		fwdOutput = new FWDOutput();
+
+		// pidDrive = new PIDController(kVisionP, 0, kVisionD, pidVision, DriveTrain.getInstance());
+
+		pidDistance = new PIDController(0.02, 0, 0, pidVision, fwdOutput);
 
 		Calibration.loadSwerveCalibration();
 
@@ -79,7 +84,6 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Vision P", kVisionP);
 		SmartDashboard.putNumber("Vision D", kVisionD);
 
-
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -94,12 +98,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-
+		SmartDashboard.putNumber("Version", 2.6);
 		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
-			
+
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
@@ -108,14 +112,14 @@ public class Robot extends TimedRobot {
 
 		Vision.tick();
 
-		if (newP != kVisionP) {
-			kVisionP = newP;
-			pidDrive.setP(kVisionP);
-		}
-		if (newD != kVisionD) {
-			kVisionD = newD;
-			pidDrive.setD(kVisionD);
-		}
+		// if (newP != kVisionP) {
+		// 	kVisionP = newP;
+		// 	pidDrive.setP(kVisionP);
+		// }
+		// if (newD != kVisionD) {
+		// 	kVisionD = newD;
+		// 	pidDrive.setD(kVisionD);
+		// }
 
 		double driveYAxisAmount = gamepad.getSwerveYAxis();
 		double driveXAxisAmount = -gamepad.getSwerveXAxis();
@@ -132,31 +136,47 @@ public class Robot extends TimedRobot {
 
 		// A
 		if (gamepad.getHID(0).getRawButton(1)) {
-
+			
+			// DriveTrain.setDistancePIDMode();
 			Vision.setTargetTrackingMode();
-
+			pidDistance.setSetpoint(72);
+			pidDistance.enable();
 			// pid method
-			pidDrive.enable();
-			pidDrive.setSetpoint(0);
+			// pidDrive.enable();
+			// pidDrive.setSetpoint(72);
+
+			inAutoMode = true;
 		}
+		// B
 		if (gamepad.getHID(0).getRawButton(2)) {
 			Vision.setLED(false);
 			Vision.setDriverMode();
-			
-			pidDrive.disable();
+
+			pidDistance.disable();
+			// pidDrive.disable();
 
 			inAutoMode = false;
 		}
 
 		if (inAutoMode) {
-			if (Vision.targetInfoIsValid() && !pidDrive.isEnabled()) {
-				if (DriveAuto.turnCompleted()) {   // if we're done with any prior turning
-					DriveAuto.turnDegrees(Vision.offsetFromTarget(), .7);
+			double fwd = fwdOutput.getValue();
+			if(Vision.targetInfoIsValid()){
+				// pidDrive.enable();
+				pidDistance.enable();
+			} else {
+				// pidDrive.disable();
+				pidDistance.disable();
+				fwd = 0;
+			}
+			
+			DriveTrain.swerveDrive(fwdOutput.getValue(), 0, 0);
+
+			if (Vision.targetInfoIsValid() && !pidDistance.isEnabled()) {
+				if (DriveAuto.turnCompleted()) { // if we're done with any prior turning
+					DriveAuto.turnDegrees(Vision.offsetFromTarget(), .71);
 				}
 			}
-			if (pidDrive.isEnabled()) {  
-				SmartDashboard.putNumber("PID Error", pidVision.pidGet());
-			}
+			SmartDashboard.putNumber("PID Error", pidVision.pidGet());
 		} else {
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed

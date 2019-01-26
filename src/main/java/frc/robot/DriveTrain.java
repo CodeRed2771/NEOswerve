@@ -14,6 +14,7 @@ public class DriveTrain implements PIDOutput {
 	private static DriveTrain instance;
 	private static Module moduleA, moduleB, moduleC, moduleD;
 	private static PIDController pidControllerRot;
+	private static boolean inPIDRotationMode = true;
 
 	public static DriveTrain getInstance() {
 		if (instance == null) {
@@ -370,15 +371,17 @@ public class DriveTrain implements PIDOutput {
 		}
 
 		SmartDashboard.putNumber("swerve rot", rot);
+		SmartDashboard.putNumber("swerve fwd", fwd);
 
 		// SmartDashboard.putNumber("swerve a", a);
 		// SmartDashboard.putNumber("swerve b", b);
 		// SmartDashboard.putNumber("swerve c", c);
 		// SmartDashboard.putNumber("swerve d", d);
-		// SmartDashboard.putNumber("swerve wa1", wa1);
+		SmartDashboard.putNumber("swerve wa1", wa1);
 		// SmartDashboard.putNumber("swerve wa2", wa2);
 		// SmartDashboard.putNumber("swerve wa3", wa3);
 		// SmartDashboard.putNumber("swerve wa4", wa4);
+		SmartDashboard.putNumber("ws1", ws1);
 
 		DriveTrain.setTurnOrientation(angleToLoc(wa4), angleToLoc(wa2), angleToLoc(wa1), angleToLoc(wa3));
 		DriveTrain.setDrivePower(ws4, ws2, ws1, ws3);
@@ -488,13 +491,25 @@ public class DriveTrain implements PIDOutput {
 			pidControllerRot.setPID(Calibration.DT_ROT_PID_P, 0, Calibration.DT_ROT_PID_D);
 			pidControllerRot.setContinuous(true);
 		}
-		swerveDrive(pidFWD, pidSTR, output);
+		if(inPIDRotationMode){
+			swerveDrive(pidFWD, pidSTR, output);
+		} else {
+			swerveDrive(-output, pidSTR, 0);
+		}
 	}
 
 	public static void disablePID() {
 		if (getInstance() == null)
 			return;
 		pidControllerRot.disable();
+	}
+
+	public static void setDistancePIDMode(){
+		inPIDRotationMode = false;
+	}
+
+	public static void setRotationPIDMode(){
+		inPIDRotationMode = true;
 	}
 
 	public static double[] getAllAbsoluteTurnOrientations() {
