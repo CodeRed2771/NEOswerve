@@ -32,14 +32,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * If the targetInfo is not valid, the data function will return a 0.
  * 
  */
-public class Vision implements PIDSource {
+public class Vision {
 	private static Vision instance;
 	private static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 	private static long lastValidReadTime;
 	private static double storedOffsetFromTarget = 0;
 	private static double storedTargetArea = 0;
 	private static double storedTargetSkew = 0;
-	private static boolean inRotationalTrackingMode = true;
 	private static double dis = 0;
 
 	public static Vision getInstance() {
@@ -62,17 +61,17 @@ public class Vision implements PIDSource {
 	}
 
 	public static void tick() {
-		readTarget();
-		SmartDashboard.putBoolean("Rotation Tracking Mode", inRotationalTrackingMode);
-
+		readTargetInfo();
 	}
 
-	public static void readTarget() {
+	public static void readTargetInfo() {
 		if (inVisionTrackingMode() && targetCount() > 0) {
+			
 			lastValidReadTime = System.currentTimeMillis();
+
 			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
 			storedTargetArea = table.getEntry("ta").getDouble(0);
-		
+			storedTargetSkew = table.getEntry("ts").getDouble(0);
 		}
 	}
 
@@ -85,6 +84,7 @@ public class Vision implements PIDSource {
 	}
 
 	public static void setDriverMode() {
+		setLED(false);
 		table.getEntry("camMode").forceSetNumber(1);
 	}
 
@@ -93,12 +93,12 @@ public class Vision implements PIDSource {
 	}
 
 	public static boolean targetInfoIsValid() {
-		readTarget();
-		return (System.currentTimeMillis() - lastValidReadTime) < 250; // less than 500 ms old
+		readTargetInfo();
+		return (System.currentTimeMillis() - lastValidReadTime) < 300; // less than 500 ms old
 	}
 
 	public static double offsetFromTarget() {
-		readTarget();
+		readTargetInfo();
 		if (targetInfoIsValid()) {
 			return storedOffsetFromTarget;
 		} else
@@ -106,7 +106,7 @@ public class Vision implements PIDSource {
 	}
 
 	public static double targetArea() {
-		readTarget();
+		readTargetInfo();
 		if (targetInfoIsValid()) {
 			return storedTargetArea;
 		} else {
@@ -128,8 +128,8 @@ public class Vision implements PIDSource {
 		return dis;
 	}
 
-	public static double targetSkew() {
-		readTarget();
+	public static double getTargetSkew() {
+		readTargetInfo();
 		if (targetInfoIsValid()) {
 			return storedTargetSkew;
 		} else
@@ -140,53 +140,9 @@ public class Vision implements PIDSource {
 		return (int) table.getEntry("tv").getDouble(0);
 	}
 
-	public static void setRotationalTrackingMode() {
-		// this controls what data pidGet returns
-		inRotationalTrackingMode = true;
-	}
-
 	public static void setTargetTrackingMode() {
 		setLED(true);
 		setVisionTrackingMode();
-		setDistanceTrackingMode();
-	}
-
-	public static void setDistanceTrackingMode() {
-		// this controls what data pidGet returns
-		inRotationalTrackingMode = false;
-	}
-
-	public PIDSourceType getPIDSourceType() {
-		return PIDSourceType.kDisplacement;
-	}
-
-	public void setPIDSourceType(PIDSourceType pType) {
-
-	}
-
-	public double pidGet() {
-
-		SmartDashboard.putBoolean("Rotation Tracking Mode", inRotationalTrackingMode);
-		
-		if (inRotationalTrackingMode) {
-			double offset = -offsetFromTarget();
-			int maxOffset = 4;
-
-			// to control the max rotational speed, we cap the "error" to a certain limit
-
-			if (offset < -maxOffset) {
-				offset = -maxOffset;
-			}
-			if (offset > maxOffset) {
-				offset = maxOffset;
-			}
-
-			return offset;
-		} else {
-			// do distance calculation
-			double dist = getDistanceFromTarget();
-			return dist;
-		}
 	}
 
 	public static void codeExample() {

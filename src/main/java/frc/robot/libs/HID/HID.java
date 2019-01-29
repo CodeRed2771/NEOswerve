@@ -151,4 +151,8 @@ public class HID {
         }
 
     }
+
+    public Joystick getJoystick() {
+        return this.joystick;
+    }
 }

@@ -66,6 +66,7 @@ public class KeyMap {
         }
     }
 
+    
     public boolean getIntakeReverse() {
     	return getHID(gamepad1).button(intakeReverse);
     }
@@ -142,5 +143,24 @@ public class KeyMap {
     }
     public boolean liftScaleModifier() {
     	return getHID(gamepad2).button(liftScaleModifier);
+    }
+
+
+    /*
+     * 
+     * Provide some direct access to the commonly used F310 gamepad features
+     * 
+     */
+    public boolean getButtonA(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.A);
+    }
+    public boolean getButtonB(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.B);
+    }
+    public boolean getButtonX(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.X);
+    }
+    public boolean getButtonY(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.Y);
     }
 }
