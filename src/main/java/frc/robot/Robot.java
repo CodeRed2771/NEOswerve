@@ -107,6 +107,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Vision ROT I", Calibration.VISION_ROT_I);
 		SmartDashboard.putNumber("Vision ROT D", Calibration.VISION_ROT_D);
 
+		SmartDashboard.putBoolean("FWD seeking enabled", true);
+		SmartDashboard.putBoolean("STR seeking enabled", true);
+		SmartDashboard.putBoolean("ROT seeking enabled", true);
+
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
 		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
@@ -184,6 +188,16 @@ public class Robot extends TimedRobot {
 				fwd = 0;
 				str = 0;
 				rot = 0;
+			}
+
+			if (!SmartDashboard.getBoolean("FWD seeking enabled", true)) {
+				fwd=0;
+			}
+			if (!SmartDashboard.getBoolean("STR seeking enabled", true)) {
+				str=0;
+			}
+			if (!SmartDashboard.getBoolean("ROT seeking enabled", true)) {
+				rot=0;
 			}
 
 			DriveTrain.swerveDrive(fwd, str, rot);
