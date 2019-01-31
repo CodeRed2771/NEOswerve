@@ -4,11 +4,14 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,7 +30,7 @@ public class Robot extends TimedRobot {
 	private PIDController pidDistance;
 	private PIDController pidStrafe;
 	private PIDController pidRotation;
-
+	
 	private FWDOutput fwdOutput;
 	private STROutput strOutput;
 	private ROTOutput rotOutput;
@@ -42,6 +45,10 @@ public class Robot extends TimedRobot {
 	// Auto options
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
+
+	private ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
+	private NetworkTableEntry SB_vision_STR_P = visionTab.add("Vision STR P", Calibration.VISION_STR_P).getEntry();
+	private NetworkTableEntry SB_vision_FWD_DIST = visionTab.add("Vision FWD DIST", 48).getEntry();
 
 	// End setup stuff
 
@@ -76,17 +83,25 @@ public class Robot extends TimedRobot {
 
 		pidDistance = new PIDController(Calibration.VISION_FWD_P, Calibration.VISION_FWD_I, Calibration.VISION_FWD_D,
 				fwdVision, fwdOutput);
+		pidDistance.setPercentTolerance(7);
+		pidDistance.setOutputRange(-.4, 4);
+
 		pidStrafe = new PIDController(Calibration.VISION_STR_P, Calibration.VISION_STR_I, Calibration.VISION_STR_D,
 				strVision, strOutput);
+		pidStrafe.setPercentTolerance(7);
+		pidStrafe.setOutputRange(-.3, .3);
+
 		pidRotation = new PIDController(Calibration.VISION_ROT_P, Calibration.VISION_ROT_I, Calibration.VISION_ROT_D,
-				rotVision, rotOutput);
+				RobotGyro.getInstance(), rotOutput);
+		pidRotation.setOutputRange(-.25, .25);
+		pidRotation.setPercentTolerance(7);
 
 		Calibration.loadSwerveCalibration();
 
 		line = new AnalogInput(0);
 
-		compressor = new Compressor(0);
-		compressor.setClosedLoopControl(true);
+		// compressor = new Compressor(0);
+		// compressor.setClosedLoopControl(true);
 
 		DriveTrain.setDrivePIDValues(Calibration.AUTO_DRIVE_P, Calibration.AUTO_DRIVE_I, Calibration.AUTO_DRIVE_D);
 
@@ -99,7 +114,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Vision FWD I", Calibration.VISION_FWD_I);
 		SmartDashboard.putNumber("Vision FWD D", Calibration.VISION_FWD_D);
 
-		SmartDashboard.putNumber("Vision STR P", Calibration.VISION_STR_P);
+		//SmartDashboard.putNumber("Vision STR P", Calibration.VISION_STR_P);
 		SmartDashboard.putNumber("Vision STR I", Calibration.VISION_STR_I);
 		SmartDashboard.putNumber("Vision STR D", Calibration.VISION_STR_D);
 
@@ -150,14 +165,9 @@ public class Robot extends TimedRobot {
 
 			Vision.setTargetTrackingMode();
 
-			pidDistance.setSetpoint(72);
 			pidDistance.enable();
-
 			pidStrafe.setSetpoint(0);
-			pidStrafe.enable();
-
 			pidRotation.setSetpoint(0);
-			pidRotation.enable();
 		}
 		// B
 		if (gamepad.getButtonB(0)) {
@@ -178,6 +188,9 @@ public class Robot extends TimedRobot {
 			double rot = rotOutput.getValue();
 
 			if (Vision.targetInfoIsValid()) { // we're in auto mode and have a target in sight
+			
+				pidDistance.setSetpoint(SB_vision_FWD_DIST.getDouble(48));
+				
 				pidDistance.enable();
 				pidStrafe.enable();
 				pidRotation.enable();
@@ -199,6 +212,12 @@ public class Robot extends TimedRobot {
 			if (!SmartDashboard.getBoolean("ROT seeking enabled", true)) {
 				rot=0;
 			}
+
+			// limit output
+			// if (str > .4) { str = .4;}
+			// if (str < -.4) { str = -.4;}
+			// if (fwd > .5) { fwd = .5;}
+			// if (fwd < -.5) { fwd = -.5;}
 
 			DriveTrain.swerveDrive(fwd, str, rot);
 
@@ -223,9 +242,11 @@ public class Robot extends TimedRobot {
 	private void showDashboardInfo() {
 		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
 
+		//visionTab.add("Has Target", Vision.targetInfoIsValid());
+
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
-
+		SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
@@ -245,7 +266,7 @@ public class Robot extends TimedRobot {
 				SmartDashboard.getNumber("Vision FWD I", Calibration.VISION_FWD_I),
 				SmartDashboard.getNumber("Vision FWD D", Calibration.VISION_FWD_D));
 
-		pidStrafe.setPID(SmartDashboard.getNumber("Vision STR P", Calibration.VISION_STR_P),
+		pidStrafe.setPID(SB_vision_STR_P.getDouble(Calibration.VISION_STR_P),
 				SmartDashboard.getNumber("Vision STR I", Calibration.VISION_STR_I),
 				SmartDashboard.getNumber("Vision STR D", Calibration.VISION_STR_D));
 

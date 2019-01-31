@@ -33,15 +33,15 @@ public class Calibration {
 	public static final double ARM_ABS_ZERO = 0.18;
 	*/
 
-	public final static double VISION_FWD_P = 0.02;
+	public final static double VISION_FWD_P = 0.05;
 	public final static double VISION_FWD_I = 0;
-	public final static double VISION_FWD_D = 0;
+	public final static double VISION_FWD_D = 0.15;
 
-	public final static double VISION_STR_P = 0.02;
+	public final static double VISION_STR_P = 0.15;
 	public final static double VISION_STR_I = 0;
-	public final static double VISION_STR_D = 0;
+	public final static double VISION_STR_D = 0.2;
 	
-	public final static double VISION_ROT_P = 0.001;
+	public final static double VISION_ROT_P = 0.03;
 	public final static double VISION_ROT_I = 0;
 	public final static double VISION_ROT_D = 0;
 	
