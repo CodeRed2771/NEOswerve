@@ -94,7 +94,7 @@ public class Vision {
 
 	public static boolean targetInfoIsValid() {
 		readTargetInfo();
-		return (System.currentTimeMillis() - lastValidReadTime) < 300; // less than 500 ms old
+		return (System.currentTimeMillis() - lastValidReadTime) < 500; // less than 300 ms old
 	}
 
 	public static double offsetFromTarget() {

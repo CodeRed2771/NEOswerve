@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
@@ -15,6 +16,15 @@ import edu.wpi.first.wpilibj.PIDSourceType;
  */
 public class FWDVision implements PIDSource{
 
+	double targetArray[];
+	AnalogInput distSensor;
+	int arrayPos = 0;
+	int maxPos = 5;
+
+	public FWDVision(){
+		targetArray = new double[maxPos];
+		distSensor = new AnalogInput(1);
+	}
 
     public PIDSourceType getPIDSourceType() {
 		return PIDSourceType.kDisplacement;
@@ -25,7 +35,44 @@ public class FWDVision implements PIDSource{
 	}
 
 	public double pidGet() {
+		double targetSum = 0;
+		int targetCount = 0;
+		double averageDistance = 0;
 
-		return Vision.getDistanceFromTarget();
+		targetArray[arrayPos] = Vision.getDistanceFromTarget();
+		
+		// if we just got a zero, blank out the array
+		if (targetArray[arrayPos] == 0){
+			for(int i = 0; i < maxPos; i++){
+				targetArray[i] = 0;
+			}
+		}
+		arrayPos++;
+		
+		if(arrayPos >= maxPos)
+			arrayPos = 0;
+
+		for (int i = 0; i < maxPos; i++){
+			if (targetArray[i] != 0){
+				targetSum += targetArray[i];
+				targetCount++;
+			}
+		}
+		
+		if (targetCount == 0){
+			averageDistance = 0;
+		} else {
+			averageDistance = targetSum/targetCount;
+		}
+		
+		return averageDistance;
+		
+		// return Vision.getDistanceFromTarget();
 	}
+
+	public double getUSDistance(){
+		// return (distSensor.getAverageVoltage()/2)/2.54;
+		return distSensor.getVoltage();
+	}
+
 }
