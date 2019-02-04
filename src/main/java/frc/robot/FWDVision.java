@@ -71,8 +71,11 @@ public class FWDVision implements PIDSource{
 	}
 
 	public double getUSDistance(){
-		// return (distSensor.getAverageVoltage()/2)/2.54;
-		return distSensor.getVoltage();
+		double vPer5MM = 5 / 1024;
+		double rangeInMM = 5*(distSensor.getAverageVoltage()/vPer5MM);
+
+		return rangeInMM / 25.4;   // returns inches
+		
 	}
 
 }
