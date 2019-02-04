@@ -4,6 +4,8 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
@@ -17,6 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.libs.PIDSourceFilter.PIDGetFilter;
 
 public class Robot extends TimedRobot {
+
+	WPI_TalonSRX leftInake = new WPI_TalonSRX(10);
+	WPI_TalonSRX rightIntake = new WPI_TalonSRX(11);
+	// private WPI_TalonSRX leftIntake
 
 	// Setup stuff
 	KeyMap gamepad;
@@ -40,6 +46,9 @@ public class Robot extends TimedRobot {
 	private FWDVision fwdVision;
 	private ROTVision rotVision;
 
+	private boolean pidRotationEnabled = false;
+	private boolean pidStrafeEnabled = false;
+
 	// /* Auto Stuff */
 	String autoSelected;
 	AutoBaseClass mAutoProgram;
@@ -55,6 +64,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+		leftInake = new WPI_TalonSRX(10);
+		rightIntake = new WPI_TalonSRX(11);
+
 		// Position Chooser
 		positionChooser = new SendableChooser<String>();
 		positionChooser.addObject("Left", "L");
@@ -84,17 +96,17 @@ public class Robot extends TimedRobot {
 
 		pidDistance = new PIDController(Calibration.VISION_FWD_P, Calibration.VISION_FWD_I, Calibration.VISION_FWD_D,
 				fwdVision, fwdOutput);
-		pidDistance.setPercentTolerance(7);
-		pidDistance.setOutputRange(-.4, 4);
+		pidDistance.setPercentTolerance(15);
+		pidDistance.setOutputRange(-.4, .4); // First one is forward
 
 		pidStrafe = new PIDController(Calibration.VISION_STR_P, Calibration.VISION_STR_I, Calibration.VISION_STR_D,
 				strVision, strOutput);
-		pidStrafe.setPercentTolerance(7);
-		pidStrafe.setOutputRange(-.3, .3);
+		pidStrafe.setPercentTolerance(17);
+		pidStrafe.setOutputRange(-.35, .35);
 
 		pidRotation = new PIDController(Calibration.VISION_ROT_P, Calibration.VISION_ROT_I, Calibration.VISION_ROT_D,
 				RobotGyro.getInstance(), rotOutput);
-		pidRotation.setOutputRange(-.25, .25);
+		pidRotation.setOutputRange(-.2, .2);
 		pidRotation.setPercentTolerance(7);
 
 		Calibration.loadSwerveCalibration();
@@ -109,7 +121,7 @@ public class Robot extends TimedRobot {
 		RobotGyro.reset(); // this is also done in auto init in case it wasn't
 							// settled here yet
 
-		SmartDashboard.putBoolean("Show Turn Encoders", true);
+		SmartDashboard.putBoolean("Show Turn Encoders", false);
 
 		SmartDashboard.putNumber("Vision FWD P", Calibration.VISION_FWD_P);
 		SmartDashboard.putNumber("Vision FWD I", Calibration.VISION_FWD_I);
@@ -142,6 +154,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
+		// allow manual gyro reset if you press Start button
+		if (gamepad.getStartButton(0)) {
+			RobotGyro.reset();
+		}
+
 		adjustPIDs();
 
 		SmartDashboard.putNumber("Version", 2.8);
@@ -166,6 +183,8 @@ public class Robot extends TimedRobot {
 
 			Vision.setTargetTrackingMode();
 
+			pidRotationEnabled = true;
+
 			pidDistance.enable();
 			pidStrafe.setSetpoint(0);
 			pidRotation.setSetpoint(0);
@@ -175,26 +194,65 @@ public class Robot extends TimedRobot {
 
 			inAutoMode = false;
 
+			pidRotationEnabled = false;
+
 			Vision.setDriverMode();
 
 			pidDistance.disable();
 			pidStrafe.disable();
 			pidRotation.disable();
 		}
+		
+		// X
+		if (gamepad.getButtonX(0)) {
+			leftInake.set(0.5);
+			rightIntake.set(0.5);
+		}
+		// Y
+		if (gamepad.getButtonY(0)){
+			leftInake.set(0);
+			rightIntake.set(0);
+		}
 
 		if (inAutoMode) {
 
 			double fwd = fwdOutput.getValue();
 			double str = strOutput.getValue();
-			double rot = rotOutput.getValue();
+			double rot;
+
+			if (pidRotationEnabled){
+				rot =  rotOutput.getValue();
+			} else {
+				rot = 0;
+			}
+
+			// check if we're close on rotationm then disable if we are
+			if(Math.abs(RobotGyro.getAngle()-rotVision.pidGet()) < 2 ){
+				pidRotationEnabled = false;
+				pidRotation.disable();
+			}
 
 			if (Vision.targetInfoIsValid()) { // we're in auto mode and have a target in sight
 			
+				// if our strafe PID is close, disable it.
+				if(Math.abs(strVision.pidGet()) < 4 ){
+					pidStrafeEnabled = false;
+					pidStrafe.disable();
+				} else {
+					pidStrafeEnabled = true;
+					pidStrafe.enable();
+				}
+
 				pidDistance.setSetpoint(SB_vision_FWD_DIST.getDouble(48));
 				
 				pidDistance.enable();
-				pidStrafe.enable();
-				pidRotation.enable();
+				if(pidStrafeEnabled){
+					pidStrafe.enable();
+				}
+				if(pidRotationEnabled){
+					pidRotation.enable();
+				}
+
 			} else { // we're in auto, but have no target, so disable movement.
 				pidDistance.disable();
 				pidStrafe.disable();
@@ -207,10 +265,10 @@ public class Robot extends TimedRobot {
 			if (!SmartDashboard.getBoolean("FWD seeking enabled", true)) {
 				fwd=0;
 			}
-			if (!SmartDashboard.getBoolean("STR seeking enabled", true)) {
+			if (! (SmartDashboard.getBoolean("STR seeking enabled", true) && pidStrafeEnabled)) {
 				str=0;
 			}
-			if (!SmartDashboard.getBoolean("ROT seeking enabled", true)) {
+			if (! (SmartDashboard.getBoolean("ROT seeking enabled", true) && pidRotationEnabled)) {
 				rot=0;
 			}
 
@@ -247,13 +305,15 @@ public class Robot extends TimedRobot {
 		//visionTab.add("Has Target", Vision.targetInfoIsValid());
 
 		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
-		SmartDashboard.putNumber("Vision Area", Vision.targetArea());
+		SmartDashboard.putNumber("Vision Dist", Vision.getDistanceFromTarget());
 		SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
+
+		SmartDashboard.putNumber("dist pidget", fwdVision.pidGet());
 
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
@@ -319,6 +379,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		DriveAuto.stop();
+
+		SmartDashboard.putBoolean("FWD seeking enabled", true);
+		SmartDashboard.putBoolean("STR seeking enabled", true);
+		SmartDashboard.putBoolean("ROT seeking enabled", true);
+
 	}
 
 	@Override

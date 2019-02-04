@@ -163,4 +163,7 @@ public class KeyMap {
     public boolean getButtonY(int gamePadNumber) {
         return getHID(gamePadNumber).button(LogitechF310.Y);
     }
+    public boolean getStartButton(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.START);
+    }
 }
