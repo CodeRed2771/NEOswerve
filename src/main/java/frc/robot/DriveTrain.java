@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveTrain implements PIDOutput {
 
 	private static DriveTrain instance;
-	private static Module moduleA, moduleB, moduleC, moduleD;
+	public static Module moduleA, moduleB, moduleC, moduleD;
 	private static PIDController pidControllerRot;
 	private static boolean inPIDRotationMode = true;
 
