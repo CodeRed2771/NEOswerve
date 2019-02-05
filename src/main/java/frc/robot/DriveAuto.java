@@ -216,24 +216,22 @@ public class DriveAuto {
 
 		// Sets the PID values based on input from the SmartDashboard
 		// This is only needed during tuning
-		// rotDrivePID.setPID(SmartDashboard.getNumber("ROT P",
-		// Calibration.AUTO_ROT_P),
-		// SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
-		// SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D));
+		rotDrivePID.setPID(SmartDashboard.getNumber("ROT P",
+		Calibration.AUTO_ROT_P),
+		SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
+		SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D));
+		
+		 DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
+		 SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
+		 SmartDashboard.getNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D));
 		//
-//		 DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
-//		 SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
-//		 SmartDashboard.getNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D));
-		//
-		// DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P",
-		// Calibration.TURN_P),
-		// SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
-		// SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
+		DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P",
+		Calibration.TURN_P),
+		SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
+		SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
 
-		// DriveTrain.setDriveMMAccel((int) SmartDashboard.getNumber("DRIVE MM
-		// ACCEL", Calibration.DT_MM_ACCEL));
-		// DriveTrain.setDriveMMVelocity((int) SmartDashboard.getNumber("DRIVE
-		// MM VELOCITY", Calibration.DT_MM_VELOCITY));
+		DriveTrain.setDriveMMAccel((int) SmartDashboard.getNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL));
+		DriveTrain.setDriveMMVelocity((int) SmartDashboard.getNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY));
 
 	}
 

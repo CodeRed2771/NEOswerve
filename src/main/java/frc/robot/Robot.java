@@ -33,18 +33,7 @@ public class Robot extends TimedRobot {
 	final String cargoTracking = "Cargo Tracking";
 
 	private boolean inAutoMode = false;
-
-	private PIDController pidDistance;
-	private PIDController pidStrafe;
-	private PIDController pidRotation;
-	
-	private FWDOutput fwdOutput;
-	private STROutput strOutput;
-	private ROTOutput rotOutput;
-
-	private STRVision strVision;
-	private FWDVision fwdVision;
-	private ROTVision rotVision;
+	private boolean isAutoDriving = false;
 
 	private boolean pidRotationEnabled = false;
 	private boolean pidStrafeEnabled = false;
@@ -85,29 +74,7 @@ public class Robot extends TimedRobot {
 		RobotGyro.getInstance();
 		DriveTrain.getInstance();
 		DriveAuto.getInstance();
-
-		fwdOutput = new FWDOutput();
-		strOutput = new STROutput();
-		rotOutput = new ROTOutput();
-
-		fwdVision = new FWDVision();
-		strVision = new STRVision();
-		rotVision = new ROTVision();
-
-		pidDistance = new PIDController(Calibration.VISION_FWD_P, Calibration.VISION_FWD_I, Calibration.VISION_FWD_D,
-				fwdVision, fwdOutput);
-		pidDistance.setPercentTolerance(15);
-		pidDistance.setOutputRange(-.4, .4); // First one is forward
-
-		pidStrafe = new PIDController(Calibration.VISION_STR_P, Calibration.VISION_STR_I, Calibration.VISION_STR_D,
-				strVision, strOutput);
-		pidStrafe.setPercentTolerance(17);
-		pidStrafe.setOutputRange(-.35, .35);
-
-		pidRotation = new PIDController(Calibration.VISION_ROT_P, Calibration.VISION_ROT_I, Calibration.VISION_ROT_D,
-				RobotGyro.getInstance(), rotOutput);
-		pidRotation.setOutputRange(-.2, .2);
-		pidRotation.setPercentTolerance(7);
+		TargetInfo.getInstance();
 
 		Calibration.loadSwerveCalibration();
 
@@ -123,21 +90,21 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Show Turn Encoders", false);
 
-		SmartDashboard.putNumber("Vision FWD P", Calibration.VISION_FWD_P);
-		SmartDashboard.putNumber("Vision FWD I", Calibration.VISION_FWD_I);
-		SmartDashboard.putNumber("Vision FWD D", Calibration.VISION_FWD_D);
+		// SmartDashboard.putNumber("Vision FWD P", Calibration.VISION_FWD_P);
+		// SmartDashboard.putNumber("Vision FWD I", Calibration.VISION_FWD_I);
+		// SmartDashboard.putNumber("Vision FWD D", Calibration.VISION_FWD_D);
 
-		//SmartDashboard.putNumber("Vision STR P", Calibration.VISION_STR_P);
-		SmartDashboard.putNumber("Vision STR I", Calibration.VISION_STR_I);
-		SmartDashboard.putNumber("Vision STR D", Calibration.VISION_STR_D);
+		// // SmartDashboard.putNumber("Vision STR P", Calibration.VISION_STR_P);
+		// SmartDashboard.putNumber("Vision STR I", Calibration.VISION_STR_I);
+		// SmartDashboard.putNumber("Vision STR D", Calibration.VISION_STR_D);
 
-		SmartDashboard.putNumber("Vision ROT P", Calibration.VISION_ROT_P);
-		SmartDashboard.putNumber("Vision ROT I", Calibration.VISION_ROT_I);
-		SmartDashboard.putNumber("Vision ROT D", Calibration.VISION_ROT_D);
+		// SmartDashboard.putNumber("Vision ROT P", Calibration.VISION_ROT_P);
+		// SmartDashboard.putNumber("Vision ROT I", Calibration.VISION_ROT_I);
+		// SmartDashboard.putNumber("Vision ROT D", Calibration.VISION_ROT_D);
 
-		SmartDashboard.putBoolean("FWD seeking enabled", true);
-		SmartDashboard.putBoolean("STR seeking enabled", true);
-		SmartDashboard.putBoolean("ROT seeking enabled", true);
+		// SmartDashboard.putBoolean("FWD seeking enabled", true);
+		// SmartDashboard.putBoolean("STR seeking enabled", true);
+		// SmartDashboard.putBoolean("ROT seeking enabled", true);
 
 		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
@@ -175,115 +142,57 @@ public class Robot extends TimedRobot {
 			else
 				driveRotAxisAmount = .70;
 		}
-
-		// A
-		if (gamepad.getButtonA(0)) {
-
-			inAutoMode = true;
-
-			Vision.setTargetTrackingMode();
-
-			pidRotationEnabled = true;
-
-			pidDistance.enable();
-			pidStrafe.setSetpoint(0);
-			pidRotation.setSetpoint(0);
-		}
-		// B
-		if (gamepad.getButtonB(0)) {
-
-			inAutoMode = false;
-
-			pidRotationEnabled = false;
-
-			Vision.setDriverMode();
-
-			pidDistance.disable();
-			pidStrafe.disable();
-			pidRotation.disable();
-		}
-		
 		// X
 		if (gamepad.getButtonX(0)) {
 			leftInake.set(0.5);
 			rightIntake.set(0.5);
 		}
 		// Y
-		if (gamepad.getButtonY(0)){
+		if (gamepad.getButtonY(0)) {
 			leftInake.set(0);
 			rightIntake.set(0);
 		}
 
+		// A
+		if (gamepad.getButtonA(0)) {
+			inAutoMode = true;
+			Vision.setTargetTrackingMode();
+			DriveAuto.setPIDstate(true);
+		}
+		// B
+		if (gamepad.getButtonB(0)) {
+			inAutoMode = false;
+			isAutoDriving = false;
+			DriveAuto.stop();
+
+			Vision.setDriverMode();
+		}
+
+		SmartDashboard.putBoolean("Is Auto Driving", isAutoDriving);
+
 		if (inAutoMode) {
-
-			double fwd = fwdOutput.getValue();
-			double str = strOutput.getValue();
-			double rot;
-
-			if (pidRotationEnabled){
-				rot =  rotOutput.getValue();
-			} else {
-				rot = 0;
-			}
-
-			// check if we're close on rotationm then disable if we are
-			if(Math.abs(RobotGyro.getAngle()-rotVision.pidGet()) < 2 ){
-				pidRotationEnabled = false;
-				pidRotation.disable();
-			}
-
-			if (Vision.targetInfoIsValid()) { // we're in auto mode and have a target in sight
+			double dist = Vision.getDistanceFromTarget();
 			
-				// if our strafe PID is close, disable it.
-				if(Math.abs(strVision.pidGet()) < 4 ){
-					pidStrafeEnabled = false;
-					pidStrafe.disable();
-				} else {
-					pidStrafeEnabled = true;
-					pidStrafe.enable();
-				}
+			if (!isAutoDriving && dist > 0) { // have valid target
+				double distToStayBack = 24;
+				// TO DO - use Vision rotation to center on target
+				double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
+				double opposite = Math.sin(angleDiff) * dist; 
+				double adjacent = Math.cos(angleDiff) * dist;
 
-				pidDistance.setSetpoint(SB_vision_FWD_DIST.getDouble(48));
+				double newDist = Math.sqrt(Math.pow(opposite,2) + Math.pow((adjacent - distToStayBack),2));
+				double newAngle = Math.atan(opposite/(adjacent - distToStayBack));
+
+				isAutoDriving = true;
 				
-				pidDistance.enable();
-				if(pidStrafeEnabled){
-					pidStrafe.enable();
-				}
-				if(pidRotationEnabled){
-					pidRotation.enable();
-				}
+				SmartDashboard.putNumber("Drive dist", newDist);
+				SmartDashboard.putNumber("Drive angle", newAngle);
+				SmartDashboard.putNumber("Angle Diff", angleDiff);
 
-			} else { // we're in auto, but have no target, so disable movement.
-				pidDistance.disable();
-				pidStrafe.disable();
-				pidRotation.disable();
-				fwd = 0;
-				str = 0;
-				rot = 0;
+				DriveAuto.reset();
+				DriveAuto.driveInches(newDist, 20, .8);
+
 			}
-
-			if (!SmartDashboard.getBoolean("FWD seeking enabled", true)) {
-				fwd=0;
-			}
-			if (! (SmartDashboard.getBoolean("STR seeking enabled", true) && pidStrafeEnabled)) {
-				str=0;
-			}
-			if (! (SmartDashboard.getBoolean("ROT seeking enabled", true) && pidRotationEnabled)) {
-				rot=0;
-			}
-
-			// limit output
-			// if (str > .4) { str = .4;}
-			// if (str < -.4) { str = -.4;}
-			// if (fwd > .5) { fwd = .5;}
-			// if (fwd < -.5) { fwd = -.5;}
-
-			DriveTrain.swerveDrive(fwd, str, rot);
-
-			SmartDashboard.putNumber("fwd", fwd);
-			SmartDashboard.putNumber("str", str);
-			SmartDashboard.putNumber("rot", rot);
-
 		} else {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
@@ -295,25 +204,23 @@ public class Robot extends TimedRobot {
 		showDashboardInfo();
 
 		Vision.tick();
+		DriveAuto.tick();
 
 	}
 
 	private void showDashboardInfo() {
 		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
-		SmartDashboard.putNumber("US Distance", fwdVision.getUSDistance());
 
-		//visionTab.add("Has Target", Vision.targetInfoIsValid());
+		// visionTab.add("Has Target", Vision.targetInfoIsValid());
 
-		SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
-		SmartDashboard.putNumber("Vision Dist", Vision.getDistanceFromTarget());
+		// SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
+		// SmartDashboard.putNumber("Vision Dist", Vision.getDistanceFromTarget());
 		SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
-
-		SmartDashboard.putNumber("dist pidget", fwdVision.pidGet());
 
 		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
@@ -324,17 +231,19 @@ public class Robot extends TimedRobot {
 
 	private void adjustPIDs() {
 
-		pidDistance.setPID(SmartDashboard.getNumber("Vision FWD P", Calibration.VISION_FWD_P),
-				SmartDashboard.getNumber("Vision FWD I", Calibration.VISION_FWD_I),
-				SmartDashboard.getNumber("Vision FWD D", Calibration.VISION_FWD_D));
+		// pidDistance.setPID(SmartDashboard.getNumber("Vision FWD P",
+		// Calibration.VISION_FWD_P),
+		// SmartDashboard.getNumber("Vision FWD I", Calibration.VISION_FWD_I),
+		// SmartDashboard.getNumber("Vision FWD D", Calibration.VISION_FWD_D));
 
-		pidStrafe.setPID(SB_vision_STR_P.getDouble(Calibration.VISION_STR_P),
-				SmartDashboard.getNumber("Vision STR I", Calibration.VISION_STR_I),
-				SmartDashboard.getNumber("Vision STR D", Calibration.VISION_STR_D));
+		// pidStrafe.setPID(SB_vision_STR_P.getDouble(Calibration.VISION_STR_P),
+		// SmartDashboard.getNumber("Vision STR I", Calibration.VISION_STR_I),
+		// SmartDashboard.getNumber("Vision STR D", Calibration.VISION_STR_D));
 
-		pidRotation.setPID(SmartDashboard.getNumber("Vision ROT P", Calibration.VISION_ROT_P),
-				SmartDashboard.getNumber("Vision ROT I", Calibration.VISION_ROT_I),
-				SmartDashboard.getNumber("Vision ROT D", Calibration.VISION_ROT_D));
+		// pidRotation.setPID(SmartDashboard.getNumber("Vision ROT P",
+		// Calibration.VISION_ROT_P),
+		// SmartDashboard.getNumber("Vision ROT I", Calibration.VISION_ROT_I),
+		// SmartDashboard.getNumber("Vision ROT D", Calibration.VISION_ROT_D));
 
 		// in case we're tweaking the drive turn PID via Dashboard, update the values
 		DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P", Calibration.TURN_P),
@@ -378,11 +287,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		DriveAuto.stop();
-
-		SmartDashboard.putBoolean("FWD seeking enabled", true);
-		SmartDashboard.putBoolean("STR seeking enabled", true);
-		SmartDashboard.putBoolean("ROT seeking enabled", true);
 
 	}
 
