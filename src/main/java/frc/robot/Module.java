@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Module {
-	private WPI_TalonSRX drive, turn;
+	public WPI_TalonSRX drive, turn;
 	private final double FULL_ROTATION = 4096d, TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
 	private final int TURN_IZONE, DRIVE_IZONE;
 	private double turnZeroPos = 0;
