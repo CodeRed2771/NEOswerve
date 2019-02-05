@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
 				SmartDashboard.putNumber("Angle Diff", angleDiff);
 
 				DriveAuto.reset();
-				DriveAuto.driveInches(newDist, 20, .8);
+				DriveAuto.driveInches(newDist, 20, .8); // 20 is temp hardcoded
 
 			}
 		} else {
@@ -202,6 +202,18 @@ public class Robot extends TimedRobot {
 		}
 
 		showDashboardInfo();
+
+		try {
+			visionTab.add("Drive Control Mode", DriveTrain.moduleA.drive.getControlMode().name());
+			visionTab.add("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
+			visionTab.add("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
+			visionTab.add("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
+		} catch (Exception ex) {
+			System.out.println("Error sending to shuffleboard");
+			System.out.println(ex.getMessage());
+			System.out.println(ex.getStackTrace());
+		}
+		
 
 		Vision.tick();
 		DriveAuto.tick();
