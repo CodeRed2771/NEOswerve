@@ -203,16 +203,17 @@ public class Robot extends TimedRobot {
 
 		showDashboardInfo();
 
-		try {
-			visionTab.add("Drive Control Mode", DriveTrain.moduleA.drive.getControlMode().name());
-			visionTab.add("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
-			visionTab.add("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
-			visionTab.add("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
-		} catch (Exception ex) {
-			System.out.println("Error sending to shuffleboard");
-			System.out.println(ex.getMessage());
-			System.out.println(ex.getStackTrace());
-		}
+		// try {
+		// 	SmartDashboard.putString("Drive Control Mode", DriveTrain.moduleA.drive.getControlMode().name());
+		// 	SmartDashboard.putNumber("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
+		// 	SmartDashboard.putNumber("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
+		// 	SmartDashboard.putNumber("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
+		// 	SmartDashboard.putNumber("Current time millis", System.currentTimeMillis());
+		// } catch (Exception ex) {
+		// 	System.out.println("Error sending to shuffleboard");
+		// 	System.out.println(ex.getMessage());
+		// 	System.out.println(ex.getStackTrace());
+		// }
 		
 
 		Vision.tick();
