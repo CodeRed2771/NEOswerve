@@ -123,7 +123,8 @@ public class Vision {
 		// Target area at 8ft - .1
 		// Max distance = 13ft 4in
 
-		dis = (-8.1435 * targetArea() + 9.657)*12;
+		// dis = (-8.1435 * targetArea() + 9.657)*12;
+		dis = (7.0754 * targetArea() + 9.4501)*12;
 
 		return dis;
 	}

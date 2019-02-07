@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
 
 	private boolean inAutoMode = false;
 	private boolean isAutoDriving = false;
+	private boolean isAligned = false;
+	private boolean isTurning = false;
 
 	private boolean pidRotationEnabled = false;
 	private boolean pidStrafeEnabled = false;
@@ -149,13 +151,12 @@ public class Robot extends TimedRobot {
 		}
 		// Y
 		if (gamepad.getButtonY(0)) {
-			leftInake.set(0);
-			rightIntake.set(0);
+			Vision.setTargetTrackingMode();	
 		}
 
 		// A
 		if (gamepad.getButtonA(0)) {
-			inAutoMode = true;
+			inAutoMode = true;	
 			Vision.setTargetTrackingMode();
 			DriveAuto.setPIDstate(true);
 		}
@@ -163,6 +164,8 @@ public class Robot extends TimedRobot {
 		if (gamepad.getButtonB(0)) {
 			inAutoMode = false;
 			isAutoDriving = false;
+			isAligned = false;
+			isTurning = false;
 			DriveAuto.stop();
 
 			Vision.setDriverMode();
@@ -172,9 +175,17 @@ public class Robot extends TimedRobot {
 
 		if (inAutoMode) {
 			double dist = Vision.getDistanceFromTarget();
-			
-			if (!isAutoDriving && dist > 0) { // have valid target
-				double distToStayBack = 24;
+			if(!isAligned && dist > 0 && !isTurning){
+				DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
+				isTurning = true;
+			}
+			if(Math.abs(Vision.offsetFromTarget()) < 2 && !isAutoDriving){
+				isAligned = true;
+				isTurning = false;
+				DriveAuto.stop();
+			}
+			if (!isAutoDriving && isAligned) { // have valid target
+				double distToStayBack = 36;
 				// TO DO - use Vision rotation to center on target
 				double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
 				double opposite = Math.sin(angleDiff) * dist; 
@@ -185,12 +196,15 @@ public class Robot extends TimedRobot {
 
 				isAutoDriving = true;
 				
+				SmartDashboard.putNumber("orig dist", dist);			
+				SmartDashboard.putNumber("Angle Diff", angleDiff);
+				SmartDashboard.putNumber("opposite", opposite);
+				SmartDashboard.putNumber("adjacent", adjacent);
 				SmartDashboard.putNumber("Drive dist", newDist);
 				SmartDashboard.putNumber("Drive angle", newAngle);
-				SmartDashboard.putNumber("Angle Diff", angleDiff);
-
-				DriveAuto.reset();
-				DriveAuto.driveInches(newDist, 20, .8); // 20 is temp hardcoded
+	
+				//DriveAuto.reset();
+				DriveAuto.driveInches(newDist, newAngle, .8); // 20 is temp hardcoded
 
 			}
 		} else {
@@ -203,17 +217,16 @@ public class Robot extends TimedRobot {
 
 		showDashboardInfo();
 
-		// try {
-		// 	SmartDashboard.putString("Drive Control Mode", DriveTrain.moduleA.drive.getControlMode().name());
-		// 	SmartDashboard.putNumber("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
-		// 	SmartDashboard.putNumber("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
-		// 	SmartDashboard.putNumber("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
-		// 	SmartDashboard.putNumber("Current time millis", System.currentTimeMillis());
-		// } catch (Exception ex) {
-		// 	System.out.println("Error sending to shuffleboard");
-		// 	System.out.println(ex.getMessage());
-		// 	System.out.println(ex.getStackTrace());
-		// }
+		try {
+			SmartDashboard.putNumber("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
+			SmartDashboard.putNumber("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
+			SmartDashboard.putNumber("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
+			SmartDashboard.putBoolean("Is turning", isTurning);
+		} catch (Exception ex) {
+			System.out.println("Error sending to shuffleboard");
+			System.out.println(ex.getMessage());
+			System.out.println(ex.getStackTrace());
+		}
 		
 
 		Vision.tick();

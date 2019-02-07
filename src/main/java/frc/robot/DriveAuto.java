@@ -163,43 +163,43 @@ public class DriveAuto {
 
 		// if (strafeAngle == 0) { // currently this routine only works when
 
-		if (Math.abs(strafeAngle) < 60) { // not effective for high strafe
-											// angles
-			if (isDriveInchesRunning) {
-				// this gets a -180 to 180 value i believe
-				double rawGyroPidGet = RobotGyro.getGyro().pidGet();
+		// if (Math.abs(strafeAngle) < 60) { // not effective for high strafe
+		// 									// angles
+		// 	if (isDriveInchesRunning) {
+		// 		// this gets a -180 to 180 value i believe
+		// 		double rawGyroPidGet = RobotGyro.getGyro().pidGet();
 
-				double adjust = (rawGyroPidGet - heading) * .5;
+		// 		double adjust = (rawGyroPidGet - heading) * .5;
 
-				// THIS IS THE GYRO CORRECTION I WANT TO TRY
-				if (DriveTrain.getDriveVelocity() > 0) // driving forward or
-														// backward
-					DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle + adjust),
-							DriveTrain.angleToLoc(-strafeAngle - adjust), DriveTrain.angleToLoc(-strafeAngle - adjust),
-							DriveTrain.angleToLoc(-strafeAngle + adjust));
-				else
-					DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle - adjust),
-							DriveTrain.angleToLoc((-strafeAngle + adjust)),
-							DriveTrain.angleToLoc((-strafeAngle + adjust)),
-							DriveTrain.angleToLoc(-strafeAngle - adjust));
+		// 		// THIS IS THE GYRO CORRECTION I WANT TO TRY
+		// 		if (DriveTrain.getDriveVelocity() > 0) // driving forward or
+		// 												// backward
+		// 			DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle + adjust),
+		// 					DriveTrain.angleToLoc(-strafeAngle - adjust), DriveTrain.angleToLoc(-strafeAngle - adjust),
+		// 					DriveTrain.angleToLoc(-strafeAngle + adjust));
+		// 		else
+		// 			DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle - adjust),
+		// 					DriveTrain.angleToLoc((-strafeAngle + adjust)),
+		// 					DriveTrain.angleToLoc((-strafeAngle + adjust)),
+		// 					DriveTrain.angleToLoc(-strafeAngle - adjust));
 
-				SmartDashboard.putNumber("Angle Adjustment", adjust);
-				SmartDashboard.putNumber("Adjusted Angle", strafeAngle - adjust);
-				// ORIGINAL
-				// Also include the strafeAngle == 0
+		// 		SmartDashboard.putNumber("Angle Adjustment", adjust);
+		// 		SmartDashboard.putNumber("Adjusted Angle", strafeAngle - adjust);
+		// 		// ORIGINAL
+		// 		// Also include the strafeAngle == 0
 
-				// if (DriveTrain.getDriveError() > 0) // directional difference
-				// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(adjust),
-				// DriveTrain.angleToLoc(-adjust),
-				// DriveTrain.angleToLoc(-adjust),
-				// DriveTrain.angleToLoc(adjust));
-				// else
-				// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-adjust),
-				// DriveTrain.angleToLoc(adjust),
-				// DriveTrain.angleToLoc(adjust),
-				// DriveTrain.angleToLoc(-adjust));
-			}
-		}
+		// 		// if (DriveTrain.getDriveError() > 0) // directional difference
+		// 		// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(adjust),
+		// 		// DriveTrain.angleToLoc(-adjust),
+		// 		// DriveTrain.angleToLoc(-adjust),
+		// 		// DriveTrain.angleToLoc(adjust));
+		// 		// else
+		// 		// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-adjust),
+		// 		// DriveTrain.angleToLoc(adjust),
+		// 		// DriveTrain.angleToLoc(adjust),
+		// 		// DriveTrain.angleToLoc(-adjust));
+		// 	}
+		// }
 
 		SmartDashboard.putNumber("ROT PID ERROR", rotDrivePID.getError());
 		SmartDashboard.putNumber("Drive Train Velocity", DriveTrain.getDriveVelocity());

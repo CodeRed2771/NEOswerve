@@ -22,7 +22,7 @@ public class ModuleNEW {
 	 * @param tD I probably need to know the D constant for the turning PID
 	 * @param tIZone I might not need to know the I Zone value for the turning PID
 	 */
-	public ModuleNEW(int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos) {
+	public ModuleNEW (int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos) {
 		drive = new WPI_TalonSRX(driveTalonID);
 		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
 		DRIVE_P = dP;
@@ -202,7 +202,8 @@ public class ModuleNEW {
 		double disntanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
 		double closestTurnPosition = disntanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition : position;
 		isReversed = closestTurnPosition != position;
-		this.drive.set((isReversed ? -1 : 1) * this.drive.get());
+		// DESTROYS STUFF
+		// this.drive.set((isReversed ? -1 : 1) * this.drive.get());
 
 		if (getTurnRelativePosition() >= 0) {
 			if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION/2) {
