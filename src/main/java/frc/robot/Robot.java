@@ -122,6 +122,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putNumber("TURN A RAW", DriveTrain.round(DriveTrain.moduleA.getTurnAbsolutePosition(), 3));
 
 		// allow manual gyro reset if you press Start button
 		if (gamepad.getStartButton(0)) {
@@ -187,6 +188,7 @@ public class Robot extends TimedRobot {
 			if (!isAutoDriving && isAligned) { // have valid target
 				double distToStayBack = 36;
 				// TO DO - use Vision rotation to center on target
+				double offSet = Vision.offsetFromTarget();
 				double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
 				double opposite = Math.sin(angleDiff) * dist; 
 				double adjacent = Math.cos(angleDiff) * dist;
@@ -204,7 +206,7 @@ public class Robot extends TimedRobot {
 				SmartDashboard.putNumber("Drive angle", newAngle);
 	
 				//DriveAuto.reset();
-				DriveAuto.driveInches(newDist, newAngle, .8); // 20 is temp hardcoded
+				DriveAuto.driveInches(newDist/2, 0, .8); // 20 is temp hardcoded
 
 			}
 		} else {

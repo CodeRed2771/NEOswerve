@@ -541,7 +541,7 @@ public class DriveTrain implements PIDOutput {
 
 	private static volatile double pidFWD = 0, pidSTR = 0;
 	
-	private static Double round(Double val, int scale) {
+	public static Double round(Double val, int scale) {
 		return new BigDecimal(val.toString()).setScale(scale, RoundingMode.HALF_UP).doubleValue();
 	}
 

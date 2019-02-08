@@ -123,8 +123,12 @@ public class Vision {
 		// Target area at 8ft - .1
 		// Max distance = 13ft 4in
 
+		// Limelight 1
 		// dis = (-8.1435 * targetArea() + 9.657)*12;
-		dis = (7.0754 * targetArea() + 9.4501)*12;
+		// Test - to be removed
+		// dis = (7.0754 * targetArea() + 9.4501)*12;
+		// Limelight 2
+		dis = (-7.5541 * targetArea() + 10.367)*12;
 
 		return dis;
 	}
