@@ -128,11 +128,16 @@ public class Vision {
 
 		// Test - to be removed
 		// dis = (7.0754 * targetArea() + 9.4501)*12;
-		
+
 		// Limelight 2
 		dis = (-7.5541 * targetArea() + 10.367)*12;
 
-		return dis;
+		if(targetArea() == 0){
+			return 0;
+		} else {
+			return dis;
+		}
+		
 	}
 
 	public static double getTargetSkew() {

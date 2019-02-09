@@ -37,6 +37,9 @@ public class TargetInfo {
         if (currentGyroAngle > 95 && currentGyroAngle < 170) {
             return 150;
         }
+        if (currentGyroAngle < -10 && currentGyroAngle > -85) {
+            return -30;
+        }
 
         // NEED MORE IF STATEMENTS FOR OTHER POSITIONS
         
