@@ -88,7 +88,7 @@ public class Calibration {
 	public static final double AUTO_ROT_D = 0.1;  // was 067
 
 	public static final double AUTO_DRIVE_P = 20;  // was .5
-	public static final double AUTO_DRIVE_I = 0.0;
+	public static final double AUTO_DRIVE_I = 0.1;
 	public static final double AUTO_DRIVE_D = 200.0;  // was 0
 	public static final int AUTO_DRIVE_IZONE = 50;
 	

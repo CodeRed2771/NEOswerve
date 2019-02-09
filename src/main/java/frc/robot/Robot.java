@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(targetTracking, targetTracking);
 		autoChooser.addObject(autoRotateTest, autoRotateTest);
 		autoChooser.addObject(autoCalibrateDrive, autoCalibrateDrive);
+		autoChooser.addObject(autoDrivePIDTune, autoDrivePIDTune);
 
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
@@ -197,23 +198,29 @@ public class Robot extends TimedRobot {
 				// TO DO - use Vision rotation to center on target
 				double offSet = Vision.offsetFromTarget();
 				double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
-				double opposite = Math.sin(angleDiff) * dist; 
-				double adjacent = Math.cos(angleDiff) * dist;
+				double opposite = Math.sin(Math.toRadians(angleDiff)) * dist; 
+				double adjacent = Math.cos(Math.toRadians(angleDiff)) * dist;
 
 				double newDist = Math.sqrt(Math.pow(opposite,2) + Math.pow((adjacent - distToStayBack),2));
 				double newAngle = Math.atan(opposite/(adjacent - distToStayBack));
-
+			
+				newAngle = (newAngle * 180) / Math.PI;
+				
 				isAutoDriving = true;
 				
-				SmartDashboard.putNumber("orig dist", dist);			
+				SmartDashboard.putNumber("orig dist", dist);
+				SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());		
+				SmartDashboard.putNumber("New Angle", newAngle);	
 				SmartDashboard.putNumber("Angle Diff", angleDiff);
 				SmartDashboard.putNumber("opposite", opposite);
 				SmartDashboard.putNumber("adjacent", adjacent);
 				SmartDashboard.putNumber("Drive dist", newDist);
 				SmartDashboard.putNumber("Drive angle", newAngle);
+				SmartDashboard.putNumber("Robot Angle", RobotGyro.getAngle());
+				SmartDashboard.putNumber("Angle Sin", Math.sin(Math.toRadians(angleDiff)));
 	
 				//DriveAuto.reset();
-				DriveAuto.driveInches(newDist/2, 0, .8); // 20 is temp hardcoded
+				DriveAuto.driveInches(0, newAngle, .8);
 
 			}
 		} else {
