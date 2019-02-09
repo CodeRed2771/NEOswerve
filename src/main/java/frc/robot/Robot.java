@@ -44,6 +44,10 @@ public class Robot extends TimedRobot {
 	String autoSelected;
 	AutoBaseClass mAutoProgram;
 	// Auto options
+	final String autoRotateTest = "Rotate Test";
+	final String autoCalibrateDrive = "Auto Calibrate Drive";
+	final String autoDrivePIDTune = "Drive PID Tune";
+
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
 
@@ -68,6 +72,9 @@ public class Robot extends TimedRobot {
 		/* Auto Chooser */
 		autoChooser = new SendableChooser<>();
 		autoChooser.addOption(targetTracking, targetTracking);
+		autoChooser.addObject(autoRotateTest, autoRotateTest);
+		autoChooser.addObject(autoCalibrateDrive, autoCalibrateDrive);
+
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
 
@@ -282,35 +289,49 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 
-		// String selectedPos = positionChooser.getSelected();
-		// SmartDashboard.putString("Position Chooser Selected", selectedPos);
-		// char robotPosition = selectedPos.toCharArray()[0];
-		// System.out.println("Robot position: " + robotPosition);
+		String selectedPos = positionChooser.getSelected();
+		SmartDashboard.putString("Position Chooser Selected", selectedPos);
+		char robotPosition = selectedPos.toCharArray()[0];
 
-		// mAutoProgram = null;
+		System.out.println("Robot position: " + robotPosition);
 
-		// switch (autoSelected) {
-		// case targetTracking:
-		// mAutoProgram = new TargetTracking('C');
-		// break;
-		// }
+		autoSelected = (String) autoChooser.getSelected();
+		SmartDashboard.putString("Auto Selected: ", autoSelected);
 
-		// DriveTrain.setAllTurnOrientiation(0);
-		// DriveAuto.reset();
+		mAutoProgram = null;
 
-		// if (mAutoProgram != null) {
-		// mAutoProgram.start();
-		// } else {
-		// System.out.println("No auto program started in switch statement");
-		// }
+		switch (autoSelected) {
+			case autoDrivePIDTune:
+				SmartDashboard.putNumber("Drive To Setpoint", 0);
+				mAutoProgram = new AutoDrivePIDTune(robotPosition);
+				break;
+			case autoRotateTest:
+				mAutoProgram = new AutoRotateTest(robotPosition);
+				break;
+		}
+
+		DriveTrain.setAllTurnOrientiation(0);
+		DriveAuto.reset();
+
+		if (mAutoProgram != null) {
+			mAutoProgram.start();
+		} else
+			System.out.println("No auto program started in switch statement");
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 
-		// DriveAuto.tick();
-		// mAutoProgram = new TargetTracking('C');
-		// mAutoProgram.start();
+		if (mAutoProgram != null) {
+			mAutoProgram.tick();
+		}
+
+		DriveAuto.tick();
+
+		DriveAuto.showEncoderValues();
+
+		SmartDashboard.putNumber("Gyro PID Get", round0(RobotGyro.getInstance().pidGet()));
+
 	}
 
 	@Override
