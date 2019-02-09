@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
 	private boolean pidRotationEnabled = false;
 	private boolean pidStrafeEnabled = false;
 
+	double dist = 0;
+
 	// /* Auto Stuff */
 	String autoSelected;
 	AutoBaseClass mAutoProgram;
@@ -130,7 +132,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		double dist = 0;
 		SmartDashboard.putNumber("TURN A RAW", DriveTrain.round(DriveTrain.moduleA.getTurnAbsolutePosition(), 3));
 
 		// allow manual gyro reset if you press Start button
@@ -186,6 +187,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("TA", Vision.targetArea());
 		SmartDashboard.putBoolean("Is Aligned", isAligned);
 		SmartDashboard.putNumber("myDist", dist);
+		SmartDashboard.putNumber("Target Offset", Vision.offsetFromTarget());
 
 		if (inAutoMode) {
 			if (dist == 0) { // keep scanning for a distance reading
@@ -195,7 +197,7 @@ public class Robot extends TimedRobot {
 				if (!isAutoDriving) {
 					if (!isAligned && !isTurning) {
 						SmartDashboard.putNumber("TA Used", Vision.targetArea());
-						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
+						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .3);
 						isTurning = true;
 					}
 
@@ -228,9 +230,9 @@ public class Robot extends TimedRobot {
 						SmartDashboard.putNumber("Drive angle", newAngle);
 						SmartDashboard.putNumber("Robot Angle", RobotGyro.getAngle());
 						SmartDashboard.putNumber("Angle Sin", Math.sin(Math.toRadians(angleDiff)));
-
+						
 						// DriveAuto.reset();
-						DriveAuto.driveInches(newDist, newAngle, .4);
+						DriveAuto.driveInches(newDist, newAngle, .3);
 
 					}
 				}

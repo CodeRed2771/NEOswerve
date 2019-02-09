@@ -17,7 +17,7 @@ public class Calibration {
 	
 	// PRACTICE
 	
-	private final static double DT_A_ABS_ZERO_INITIAL = .791; //Practice Robot Calibration
+	private final static double DT_A_ABS_ZERO_INITIAL = .672; //Practice Robot Calibration
 	private final static double DT_B_ABS_ZERO_INITIAL = .904; //Practice Robot Calibration
 	private final static double DT_C_ABS_ZERO_INITIAL = .793; //Practice Robot Calibration
 	private final static double DT_D_ABS_ZERO_INITIAL = .256; //Practice Robot Calibration`
@@ -83,7 +83,7 @@ public class Calibration {
 	
 	public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 32.900; //2624 ticks in 80 inches, goes 2,427.2
 	
-	public static final double AUTO_ROT_P = 0.03; // increased from .022 on 3/20/17 dvv
+	public static final double AUTO_ROT_P = 0.04; // increased from .03 on 2/9/2019 by CS
 	public static final double AUTO_ROT_I = 0;
 	public static final double AUTO_ROT_D = 0.1;  // was 067
 
