@@ -161,12 +161,12 @@ public class Robot extends TimedRobot {
 		}
 		// Y
 		if (gamepad.getButtonY(0)) {
-			Vision.setTargetTrackingMode();	
+			Vision.setTargetTrackingMode();
 		}
 
 		// A
 		if (gamepad.getButtonA(0)) {
-			inAutoMode = true;	
+			inAutoMode = true;
 			Vision.setTargetTrackingMode();
 			DriveAuto.setPIDstate(true);
 			dist = 0;
@@ -186,50 +186,54 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("TA", Vision.targetArea());
 		SmartDashboard.putBoolean("Is Aligned", isAligned);
 		SmartDashboard.putNumber("myDist", dist);
-		
-		if (inAutoMode) {
-			if(dist == 0) {
-				dist = Vision.getDistanceFromTarget();
-			}
-			if(!isAligned && dist > 0 && !isTurning && !isAutoDriving){
-				SmartDashboard.putNumber("TA Used", Vision.targetArea());
-				DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
-				isTurning = true;
-			}
-			if(Math.abs(Vision.offsetFromTarget()) < 2 && !isAutoDriving){
-				isAligned = true;
-				isTurning = false;
-				DriveAuto.stop();
-			}
-			if (!isAutoDriving && isAligned) { // have valid target
-				double distToStayBack = 48;
-				// TO DO - use Vision rotation to center on target
-				double offSet = Vision.offsetFromTarget(); // Un-Used?
-				double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
-				double opposite = Math.sin(Math.toRadians(angleDiff)) * dist; 
-				double adjacent = Math.cos(Math.toRadians(angleDiff)) * dist;
 
-				double newDist = Math.sqrt(Math.pow(opposite,2) + Math.pow((adjacent - distToStayBack),2)); 
-				double newAngle = -Math.atan(opposite/(adjacent - distToStayBack));
-			
-				newAngle = (newAngle * 180) / Math.PI;
-				
-				isAutoDriving = true;
-				
-				SmartDashboard.putNumber("orig dist", dist);
-				SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());		
-				SmartDashboard.putNumber("New Angle", newAngle);	
-				SmartDashboard.putNumber("Angle Diff", angleDiff);
-				SmartDashboard.putNumber("opposite", opposite);
-				SmartDashboard.putNumber("adjacent", adjacent);
-				SmartDashboard.putNumber("Drive dist", newDist);
-				SmartDashboard.putNumber("Drive angle", newAngle);
-				SmartDashboard.putNumber("Robot Angle", RobotGyro.getAngle());
-				SmartDashboard.putNumber("Angle Sin", Math.sin(Math.toRadians(angleDiff)));
-				
-	
-				//DriveAuto.reset();
-				DriveAuto.driveInches(newDist, newAngle, .4);
+		if (inAutoMode) {
+			if (dist == 0) { // keep scanning for a distance reading
+				dist = Vision.getDistanceFromTarget();
+				SmartDashboard.putNumber("Dist 1st read", dist);
+			} else {
+				if (!isAutoDriving) {
+					if (!isAligned && !isTurning) {
+						SmartDashboard.putNumber("TA Used", Vision.targetArea());
+						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
+						isTurning = true;
+					}
+
+					if (Math.abs(Vision.offsetFromTarget()) < 2 ) {
+						isAligned = true;
+						isTurning = false;
+						DriveAuto.stop();
+					}
+
+					if (isAligned) { // have valid target
+						double distToStayBack = 48;
+						double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
+						double opposite = Math.sin(Math.toRadians(angleDiff)) * dist;
+						double adjacent = Math.cos(Math.toRadians(angleDiff)) * dist;
+
+						double newDist = Math.sqrt(Math.pow(opposite, 2) + Math.pow((adjacent - distToStayBack), 2));
+						double newAngle = -Math.atan(opposite / (adjacent - distToStayBack));
+
+						newAngle = (newAngle * 180) / Math.PI;
+
+						isAutoDriving = true;
+
+						SmartDashboard.putNumber("orig dist", dist);
+						SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
+						SmartDashboard.putNumber("New Angle", newAngle);
+						SmartDashboard.putNumber("Angle Diff", angleDiff);
+						SmartDashboard.putNumber("opposite", opposite);
+						SmartDashboard.putNumber("adjacent", adjacent);
+						SmartDashboard.putNumber("Drive dist", newDist);
+						SmartDashboard.putNumber("Drive angle", newAngle);
+						SmartDashboard.putNumber("Robot Angle", RobotGyro.getAngle());
+						SmartDashboard.putNumber("Angle Sin", Math.sin(Math.toRadians(angleDiff)));
+
+						// DriveAuto.reset();
+						DriveAuto.driveInches(newDist, newAngle, .4);
+
+					}
+				}
 
 			}
 		} else {
@@ -252,7 +256,6 @@ public class Robot extends TimedRobot {
 			System.out.println(ex.getMessage());
 			System.out.println(ex.getStackTrace());
 		}
-		
 
 		Vision.tick();
 		DriveAuto.tick();
@@ -317,13 +320,13 @@ public class Robot extends TimedRobot {
 		mAutoProgram = null;
 
 		switch (autoSelected) {
-			case autoDrivePIDTune:
-				SmartDashboard.putNumber("Drive To Setpoint", 0);
-				mAutoProgram = new AutoDrivePIDTune(robotPosition);
-				break;
-			case autoRotateTest:
-				mAutoProgram = new AutoRotateTest(robotPosition);
-				break;
+		case autoDrivePIDTune:
+			SmartDashboard.putNumber("Drive To Setpoint", 0);
+			mAutoProgram = new AutoDrivePIDTune(robotPosition);
+			break;
+		case autoRotateTest:
+			mAutoProgram = new AutoRotateTest(robotPosition);
+			break;
 		}
 
 		DriveTrain.setAllTurnOrientiation(0);
