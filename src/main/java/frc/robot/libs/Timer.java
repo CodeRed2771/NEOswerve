@@ -7,15 +7,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Michael
  * 3/9/16 - revised by D. Van Voorst
  * This class can be used to simplify timing autonomous steps
- * Use getStage() to manage your state machine
- * Use setTimerAndAdvanceStage() to start a timer for a particular stage
- * Use advanceWhenReady() to automatically advance to the next auto stage when the timer is reached
- * Use stopTimeAndAdvanceStage() when your drive command has reached its target to prevent the advanceWhenReady from firing also
+ * Use getStep() to manage your state machine
+ * Use setTimerAndAdvanceStep() to start a timer for a particular step
+ * Use advanceWhenReady() to automatically advance to the next auto step when the timer is reached
+ * Use stopTimeAndAdvanceStep() when your drive command has reached its target to prevent the advanceWhenReady from firing also
  * 
  */
 public class Timer {
 
-    private int stage;
+    private int step;
     private long endTime;
     private boolean timerRunning = false;
     
@@ -28,19 +28,19 @@ public class Timer {
     	timerRunning = true;
     }
     
-    public void setTimerAndAdvanceStage(long time) {
+    public void setTimerAndAdvanceStep(long time) {
     	setTimer(time);
-    	nextStage();
+    	nextStep();
     }
     
-    public void stopTimerAndAdvanceStage() {
+    public void stopTimerAndAdvanceStep() {
     	setTimer(1000000); // push the target time way into the future so it never reaches the target time
-    	nextStage();
+    	nextStep();
     }
     
     public void advanceWhenTimerExpired() {
         if (timeExpired() && timerRunning) {
-            stage++;
+            step++;
             timerRunning = false;
         }
     }
@@ -49,16 +49,16 @@ public class Timer {
         return endTime < System.currentTimeMillis();
     }
 
-    public int getStage() {
-        return stage;
+    public int getStep() {
+        return step;
     }
 
-    public void setStage(int stage) {
-        this.stage = stage;
+    public void setStep(int step) {
+        this.step = step;
     }
     
-    public void nextStage() {
-        this.stage++;
+    public void nextStep() {
+        this.step++;
     }
     
     public double getTimeRemainingMilliseconds() {
@@ -73,7 +73,7 @@ public class Timer {
     	
     	advanceWhenTimerExpired();
     	
-    	SmartDashboard.putNumber("Timer Stage", stage);
+    	SmartDashboard.putNumber("Timer Step", step);
     	SmartDashboard.putBoolean("Timer Is Running", timerRunning);
     	SmartDashboard.putNumber("Timer Remaining MS",  getTimeRemainingSeconds());
     }
