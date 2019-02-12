@@ -40,6 +40,7 @@ public class Vision {
 	private static double storedTargetArea = 0;
 	private static double storedTargetSkew = 0;
 	private static double dis = 0;
+	private static int validCount = 0;
 
 	public static Vision getInstance() {
 		if (instance == null) {
@@ -65,13 +66,17 @@ public class Vision {
 	}
 
 	public static void readTargetInfo() {
-		if (inVisionTrackingMode() && targetCount() > 0) {
+		validCount++;
+		if (inVisionTrackingMode() && targetCount() > 0 && validCount > 5) {
 			
 			lastValidReadTime = System.currentTimeMillis();
 
 			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
 			storedTargetArea = table.getEntry("ta").getDouble(0);
 			storedTargetSkew = table.getEntry("ts").getDouble(0);
+		} else {
+			if(targetCount() == 0)
+				validCount = 0;
 		}
 	}
 
@@ -94,7 +99,7 @@ public class Vision {
 
 	public static boolean targetInfoIsValid() {
 		readTargetInfo();
-		return (System.currentTimeMillis() - lastValidReadTime) < 500; // less than 300 ms old
+		return (System.currentTimeMillis() - lastValidReadTime) < 500; // less than 500 ms old
 	}
 
 	public static double offsetFromTarget() {
@@ -132,7 +137,7 @@ public class Vision {
 		// Limelight 2
 		dis = (-7.5541 * targetArea() + 10.367)*12;
 
-		if(targetArea() == 0){
+		if(targetArea() == 0 || dis < 0){
 			return 0;
 		} else {
 			return dis;
@@ -150,6 +155,14 @@ public class Vision {
 
 	public static int targetCount() {
 		return (int) table.getEntry("tv").getDouble(0);
+	}
+
+	public static double tx() {
+		if(targetCount() > 0){
+			return (double) table.getEntry("tx").getDouble(0);
+		} else {
+			return 0;
+		}
 	}
 
 	public static void setTargetTrackingMode() {

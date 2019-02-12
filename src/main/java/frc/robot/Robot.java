@@ -140,7 +140,7 @@ public class Robot extends TimedRobot {
 			RobotGyro.reset();
 		}
 
-		// adjustPIDs();
+		adjustPIDs();
 
 		SmartDashboard.putNumber("Version", 3.0);
 
@@ -189,6 +189,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Is Aligned", isAligned);
 		SmartDashboard.putBoolean("Is turning", isTurning);
 		SmartDashboard.putNumber("orig dist", dist);
+		SmartDashboard.putNumber("tx", Vision.tx());
 
 		if (inAutoMode) {
 			if (dist == 0) { // keep scanning for a distance reading
@@ -198,7 +199,7 @@ public class Robot extends TimedRobot {
 					if (!isAligned && !isTurning) {
 						SmartDashboard.putNumber("Offset from Target", Vision.offsetFromTarget());
 						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
-						DriveAuto.setPIDstate(true);
+						// DriveAuto.setPIDstate(true);
 						isTurning = true;
 					}
 
@@ -229,7 +230,7 @@ public class Robot extends TimedRobot {
 						// SmartDashboard.putNumber("adjacent", adjacent);
 					
 						// DriveAuto.reset();
-						// DriveAuto.driveInches(newDist, newAngle, .4);
+						DriveAuto.driveInches(newDist, newAngle, .4);
 					}
 				}
 			}
@@ -254,7 +255,7 @@ public class Robot extends TimedRobot {
 			System.out.println(ex.getStackTrace());
 		}
 
-		Vision.tick();
+		// Vision.tick();
 		DriveAuto.tick();
 
 	}
