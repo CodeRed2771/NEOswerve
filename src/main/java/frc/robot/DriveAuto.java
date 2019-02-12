@@ -53,6 +53,8 @@ public class DriveAuto {
 		SmartDashboard.putNumber("ROT I", Calibration.AUTO_ROT_I);
 		SmartDashboard.putNumber("ROT D", Calibration.AUTO_ROT_D);
 
+		SmartDashboard.putBoolean("Tune Drive/Turn PIDs", false);
+
 	}
 
 	public static void driveInches(double inches, double angle, double speedFactor) {
@@ -103,6 +105,11 @@ public class DriveAuto {
 		rotDrivePID.disable();
 	}
 
+	public static void setTurnDegreesToCurrentAngle() {
+		// this is necessary so that subsequent turns are relative to the current 
+		// position.  Otherwise they'd always be relative to 0
+		rotDrivePID.setSetpoint(RobotGyro.getAngle());
+	}
 	public static void turnDegrees(double degrees, double turnSpeedFactor) {
 		// Turns using the Gyro, relative to the current position
 		// Use "turnCompleted" method to determine when the turn is done
@@ -116,7 +123,7 @@ public class DriveAuto {
 		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
 		SmartDashboard.putNumber("ROT SETPOINT", rotDrivePID.getSetpoint() + degrees);
 
-		rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees); // 4/20 I think this should be heading
+		rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees); 
 		rotDrivePID.enable();
 		setRotationalPowerOutput(turnSpeedFactor);
 
@@ -164,75 +171,69 @@ public class DriveAuto {
 		// if (strafeAngle == 0) { // currently this routine only works when
 
 		// if (Math.abs(strafeAngle) < 60) { // not effective for high strafe
-		// 									// angles
-		// 	if (isDriveInchesRunning) {
-		// 		// this gets a -180 to 180 value i believe
-		// 		double rawGyroPidGet = RobotGyro.getGyro().pidGet();
+		// // angles
+		// if (isDriveInchesRunning) {
+		// // this gets a -180 to 180 value i believe
+		// double rawGyroPidGet = RobotGyro.getGyro().pidGet();
 
-		// 		double adjust = (rawGyroPidGet - heading) * .5;
+		// double adjust = (rawGyroPidGet - heading) * .5;
 
-		// 		// THIS IS THE GYRO CORRECTION I WANT TO TRY
-		// 		if (DriveTrain.getDriveVelocity() > 0) // driving forward or
-		// 												// backward
-		// 			DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle + adjust),
-		// 					DriveTrain.angleToLoc(-strafeAngle - adjust), DriveTrain.angleToLoc(-strafeAngle - adjust),
-		// 					DriveTrain.angleToLoc(-strafeAngle + adjust));
-		// 		else
-		// 			DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle - adjust),
-		// 					DriveTrain.angleToLoc((-strafeAngle + adjust)),
-		// 					DriveTrain.angleToLoc((-strafeAngle + adjust)),
-		// 					DriveTrain.angleToLoc(-strafeAngle - adjust));
+		// // THIS IS THE GYRO CORRECTION I WANT TO TRY
+		// if (DriveTrain.getDriveVelocity() > 0) // driving forward or
+		// // backward
+		// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle + adjust),
+		// DriveTrain.angleToLoc(-strafeAngle - adjust),
+		// DriveTrain.angleToLoc(-strafeAngle - adjust),
+		// DriveTrain.angleToLoc(-strafeAngle + adjust));
+		// else
+		// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-strafeAngle - adjust),
+		// DriveTrain.angleToLoc((-strafeAngle + adjust)),
+		// DriveTrain.angleToLoc((-strafeAngle + adjust)),
+		// DriveTrain.angleToLoc(-strafeAngle - adjust));
 
-		// 		SmartDashboard.putNumber("Angle Adjustment", adjust);
-		// 		SmartDashboard.putNumber("Adjusted Angle", strafeAngle - adjust);
-		// 		// ORIGINAL
-		// 		// Also include the strafeAngle == 0
+		// SmartDashboard.putNumber("Angle Adjustment", adjust);
+		// SmartDashboard.putNumber("Adjusted Angle", strafeAngle - adjust);
+		// // ORIGINAL
+		// // Also include the strafeAngle == 0
 
-		// 		// if (DriveTrain.getDriveError() > 0) // directional difference
-		// 		// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(adjust),
-		// 		// DriveTrain.angleToLoc(-adjust),
-		// 		// DriveTrain.angleToLoc(-adjust),
-		// 		// DriveTrain.angleToLoc(adjust));
-		// 		// else
-		// 		// DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-adjust),
-		// 		// DriveTrain.angleToLoc(adjust),
-		// 		// DriveTrain.angleToLoc(adjust),
-		// 		// DriveTrain.angleToLoc(-adjust));
-		// 	}
+		// // if (DriveTrain.getDriveError() > 0) // directional difference
+		// // DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(adjust),
+		// // DriveTrain.angleToLoc(-adjust),
+		// // DriveTrain.angleToLoc(-adjust),
+		// // DriveTrain.angleToLoc(adjust));
+		// // else
+		// // DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-adjust),
+		// // DriveTrain.angleToLoc(adjust),
+		// // DriveTrain.angleToLoc(adjust),
+		// // DriveTrain.angleToLoc(-adjust));
+		// }
 		// }
 
 		SmartDashboard.putNumber("ROT PID ERROR", rotDrivePID.getError());
 		SmartDashboard.putNumber("Drive Train Velocity", DriveTrain.getDriveVelocity());
 		SmartDashboard.putBoolean("HasArrived", hasArrived());
 		SmartDashboard.putBoolean("TurnCompleted", turnCompleted());
-		
-
 		SmartDashboard.putNumber("Drive PID Error", DriveTrain.getDriveError());
-
-		DriveTrain.showDriveEncodersOnDash();
-		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
-			DriveTrain.showTurnEncodersOnDash();
-		}
 
 		// Sets the PID values based on input from the SmartDashboard
 		// This is only needed during tuning
-		rotDrivePID.setPID(SmartDashboard.getNumber("ROT P",
-		Calibration.AUTO_ROT_P),
-		SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
-		SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D));
-		
-		 DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
-		 SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
-		 SmartDashboard.getNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D));
-		//
-		DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P",
-		Calibration.TURN_P),
-		SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
-		SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
+		if (SmartDashboard.getBoolean("Tune Drive/Turn PIDs", false)) {
+			rotDrivePID.setPID(SmartDashboard.getNumber("ROT P", Calibration.AUTO_ROT_P),
+					SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
+					SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D));
 
-		DriveTrain.setDriveMMAccel((int) SmartDashboard.getNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL));
-		DriveTrain.setDriveMMVelocity((int) SmartDashboard.getNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY));
+			DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
+					SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
+					SmartDashboard.getNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D));
+			//
+			DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P", Calibration.TURN_P),
+					SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
+					SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
 
+			DriveTrain.setDriveMMAccel((int) SmartDashboard.getNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL));
+			DriveTrain.setDriveMMVelocity(
+					(int) SmartDashboard.getNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY));
+		}
 	}
 
 	private static void setRotationalPowerOutput(double powerLevel) {
@@ -244,27 +245,27 @@ public class DriveAuto {
 	}
 
 	public static boolean hasArrived() {
-		
+
 		return DriveTrain.hasDriveCompleted(10);
-		
-//		boolean driveTrainStopped = false;
-//		if (hasStartedMoving) {
-//			if (Math.abs(DriveTrain.getDriveVelocity()) <= 3) 
-//				zeroVelocityCount++;
-//			driveTrainStopped = zeroVelocityCount > 5;
-//		} else { // see if we've started moving now
-//			if (Math.abs(DriveTrain.getDriveVelocity()) > 20) {
-//				hasStartedMoving = true;
-//				zeroVelocityCount = 0;
-//			}
-//		}
-//		return (driveTrainStopped);
+
+		// boolean driveTrainStopped = false;
+		// if (hasStartedMoving) {
+		// if (Math.abs(DriveTrain.getDriveVelocity()) <= 3)
+		// zeroVelocityCount++;
+		// driveTrainStopped = zeroVelocityCount > 5;
+		// } else { // see if we've started moving now
+		// if (Math.abs(DriveTrain.getDriveVelocity()) > 20) {
+		// hasStartedMoving = true;
+		// zeroVelocityCount = 0;
+		// }
+		// }
+		// return (driveTrainStopped);
 	}
-	
+
 	public static boolean turnCompleted(double allowedError) {
 		return Math.abs(RobotGyro.getAngle() - heading) <= allowedError;
 	}
-	
+
 	public static boolean turnCompleted() {
 		return turnCompleted(2); // allow 2 degree of error by default
 	}
