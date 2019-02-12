@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.libs.PIDSourceFilter.PIDGetFilter;
 
 public class Robot extends TimedRobot {
-
+	WPI_VictorSPX jnk;
 	WPI_TalonSRX leftInake = new WPI_TalonSRX(10);
 	WPI_TalonSRX rightIntake = new WPI_TalonSRX(11);
 	// private WPI_TalonSRX leftIntake
@@ -30,7 +31,8 @@ public class Robot extends TimedRobot {
 	SendableChooser<String> autoChooser;
 	SendableChooser<String> positionChooser;
 	AnalogInput line;
-	final String cargoTracking = "Cargo Tracking";
+
+	double dist = 0;
 
 	private boolean inAutoMode = false;
 	private boolean isAutoDriving = false;
@@ -40,12 +42,11 @@ public class Robot extends TimedRobot {
 	private boolean pidRotationEnabled = false;
 	private boolean pidStrafeEnabled = false;
 
-	double dist = 0;
-
 	// /* Auto Stuff */
 	String autoSelected;
 	AutoBaseClass mAutoProgram;
 	// Auto options
+	final String cargoTracking = "Cargo Tracking";
 	final String autoRotateTest = "Rotate Test";
 	final String autoCalibrateDrive = "Auto Calibrate Drive";
 	final String autoDrivePIDTune = "Drive PID Tune";
@@ -139,9 +140,9 @@ public class Robot extends TimedRobot {
 			RobotGyro.reset();
 		}
 
-		adjustPIDs();
+		// adjustPIDs();
 
-		SmartDashboard.putNumber("Version", 2.8);
+		SmartDashboard.putNumber("Version", 3.0);
 
 		double driveYAxisAmount = gamepad.getSwerveYAxis();
 		double driveXAxisAmount = -gamepad.getSwerveXAxis();
@@ -166,10 +167,10 @@ public class Robot extends TimedRobot {
 		}
 
 		// A
-		if (gamepad.getButtonA(0)) {
+		if (!inAutoMode && gamepad.getButtonA(0)) {
 			inAutoMode = true;
 			Vision.setTargetTrackingMode();
-			DriveAuto.setPIDstate(true);
+
 			dist = 0;
 		}
 		// B
@@ -184,20 +185,20 @@ public class Robot extends TimedRobot {
 		}
 
 		SmartDashboard.putBoolean("Is Auto Driving", isAutoDriving);
-		SmartDashboard.putNumber("TA", Vision.targetArea());
+		SmartDashboard.putBoolean("AutoMode", inAutoMode);
 		SmartDashboard.putBoolean("Is Aligned", isAligned);
-		SmartDashboard.putNumber("myDist", dist);
-		SmartDashboard.putNumber("Target Offset", Vision.offsetFromTarget());
+		SmartDashboard.putBoolean("Is turning", isTurning);
+		SmartDashboard.putNumber("orig dist", dist);
 
 		if (inAutoMode) {
 			if (dist == 0) { // keep scanning for a distance reading
 				dist = Vision.getDistanceFromTarget();
-				SmartDashboard.putNumber("Dist 1st read", dist);
 			} else {
 				if (!isAutoDriving) {
 					if (!isAligned && !isTurning) {
-						SmartDashboard.putNumber("TA Used", Vision.targetArea());
-						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .3);
+						SmartDashboard.putNumber("Offset from Target", Vision.offsetFromTarget());
+						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
+						DriveAuto.setPIDstate(true);
 						isTurning = true;
 					}
 
@@ -220,23 +221,17 @@ public class Robot extends TimedRobot {
 
 						isAutoDriving = true;
 
-						SmartDashboard.putNumber("orig dist", dist);
+						SmartDashboard.putNumber("Drive dist", newDist);
 						SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
 						SmartDashboard.putNumber("New Angle", newAngle);
 						SmartDashboard.putNumber("Angle Diff", angleDiff);
-						SmartDashboard.putNumber("opposite", opposite);
-						SmartDashboard.putNumber("adjacent", adjacent);
-						SmartDashboard.putNumber("Drive dist", newDist);
-						SmartDashboard.putNumber("Drive angle", newAngle);
-						SmartDashboard.putNumber("Robot Angle", RobotGyro.getAngle());
-						SmartDashboard.putNumber("Angle Sin", Math.sin(Math.toRadians(angleDiff)));
-						
+						// SmartDashboard.putNumber("opposite", opposite);
+						// SmartDashboard.putNumber("adjacent", adjacent);
+					
 						// DriveAuto.reset();
-						DriveAuto.driveInches(newDist, newAngle, .3);
-
+						// DriveAuto.driveInches(newDist, newAngle, .4);
 					}
 				}
-
 			}
 		} else {
 			// DRIVER CONTROL MODE
@@ -249,10 +244,10 @@ public class Robot extends TimedRobot {
 		showDashboardInfo();
 
 		try {
-			SmartDashboard.putNumber("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
-			SmartDashboard.putNumber("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
-			SmartDashboard.putNumber("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
-			SmartDashboard.putBoolean("Is turning", isTurning);
+			// SmartDashboard.putNumber("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
+			// SmartDashboard.putNumber("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
+			// SmartDashboard.putNumber("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
+
 		} catch (Exception ex) {
 			System.out.println("Error sending to shuffleboard");
 			System.out.println(ex.getMessage());
@@ -265,14 +260,14 @@ public class Robot extends TimedRobot {
 	}
 
 	private void showDashboardInfo() {
-		SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
+		// SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
 
 		// visionTab.add("Has Target", Vision.targetInfoIsValid());
 
 		// SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		// SmartDashboard.putNumber("Vision Dist", Vision.getDistanceFromTarget());
-		SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
-		SmartDashboard.putNumber("line sensor", line.getAverageValue());
+		// SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
+		// SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
