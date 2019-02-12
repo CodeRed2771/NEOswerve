@@ -32,16 +32,6 @@ public class Robot extends TimedRobot {
 	SendableChooser<String> positionChooser;
 	AnalogInput line;
 
-	double dist = 0;
-
-	private boolean inAutoMode = false;
-	private boolean isAutoDriving = false;
-	private boolean isAligned = false;
-	private boolean isTurning = false;
-
-	private boolean pidRotationEnabled = false;
-	private boolean pidStrafeEnabled = false;
-
 	// /* Auto Stuff */
 	String autoSelected;
 	AutoBaseClass mAutoProgram;
@@ -57,6 +47,8 @@ public class Robot extends TimedRobot {
 	private ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
 	private NetworkTableEntry SB_vision_STR_P = visionTab.add("Vision STR P", Calibration.VISION_STR_P).getEntry();
 	private NetworkTableEntry SB_vision_FWD_DIST = visionTab.add("Vision FWD DIST", 48).getEntry();
+
+	private FindHatch hatchFinder = new FindHatch();
 
 	// End setup stuff
 
@@ -150,11 +142,11 @@ public class Robot extends TimedRobot {
 
 		// put some rotational power restrictions in place to make it
 		// more controlled
-		if (Math.abs(driveRotAxisAmount) > .70) {
+		if (Math.abs(driveRotAxisAmount) > .50) {
 			if (driveRotAxisAmount < 0)
-				driveRotAxisAmount = -.70;
+				driveRotAxisAmount = -.50;
 			else
-				driveRotAxisAmount = .70;
+				driveRotAxisAmount = .50;
 		}
 		// X
 		if (gamepad.getButtonX(0)) {
@@ -167,73 +159,16 @@ public class Robot extends TimedRobot {
 		}
 
 		// A
-		if (!inAutoMode && gamepad.getButtonA(0)) {
-			inAutoMode = true;
-			Vision.setTargetTrackingMode();
-
-			dist = 0;
+		if (gamepad.getButtonA(0) && !hatchFinder.isRunning()) {
+			hatchFinder.start();
 		}
 		// B
 		if (gamepad.getButtonB(0)) {
-			inAutoMode = false;
-			isAutoDriving = false;
-			isAligned = false;
-			isTurning = false;
-			DriveAuto.stop();
-
-			Vision.setDriverMode();
+			hatchFinder.stop();
 		}
 
-		SmartDashboard.putBoolean("Is Auto Driving", isAutoDriving);
-		SmartDashboard.putBoolean("AutoMode", inAutoMode);
-		SmartDashboard.putBoolean("Is Aligned", isAligned);
-		SmartDashboard.putBoolean("Is turning", isTurning);
-		SmartDashboard.putNumber("orig dist", dist);
-		SmartDashboard.putNumber("tx", Vision.tx());
-
-		if (inAutoMode) {
-			if (dist == 0) { // keep scanning for a distance reading
-				dist = Vision.getDistanceFromTarget();
-			} else {
-				if (!isAutoDriving) {
-					if (!isAligned && !isTurning) {
-						SmartDashboard.putNumber("Offset from Target", Vision.offsetFromTarget());
-						DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
-						// DriveAuto.setPIDstate(true);
-						isTurning = true;
-					}
-
-					if (Math.abs(Vision.offsetFromTarget()) < 2 ) {
-						isAligned = true;
-						isTurning = false;
-						DriveAuto.stop();
-					}
-
-					if (isAligned) { // have valid target
-						double distToStayBack = 48;
-						double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
-						double opposite = Math.sin(Math.toRadians(angleDiff)) * dist;
-						double adjacent = Math.cos(Math.toRadians(angleDiff)) * dist;
-
-						double newDist = Math.sqrt(Math.pow(opposite, 2) + Math.pow((adjacent - distToStayBack), 2));
-						double newAngle = -Math.atan(opposite / (adjacent - distToStayBack));
-
-						newAngle = (newAngle * 180) / Math.PI;
-
-						isAutoDriving = true;
-
-						SmartDashboard.putNumber("Drive dist", newDist);
-						SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
-						SmartDashboard.putNumber("New Angle", newAngle);
-						SmartDashboard.putNumber("Angle Diff", angleDiff);
-						// SmartDashboard.putNumber("opposite", opposite);
-						// SmartDashboard.putNumber("adjacent", adjacent);
-					
-						// DriveAuto.reset();
-						DriveAuto.driveInches(newDist, newAngle, .4);
-					}
-				}
-			}
+		if (hatchFinder.isRunning()) {
+			hatchFinder.tick();
 		} else {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
@@ -244,20 +179,8 @@ public class Robot extends TimedRobot {
 
 		showDashboardInfo();
 
-		try {
-			// SmartDashboard.putNumber("Drive setpoint", DriveTrain.moduleA.drive.getClosedLoopTarget(0));
-			// SmartDashboard.putNumber("Drive encoder", DriveTrain.moduleA.drive.getSelectedSensorPosition());
-			// SmartDashboard.putNumber("Drive PID error", DriveTrain.moduleA.drive.getClosedLoopError());
-
-		} catch (Exception ex) {
-			System.out.println("Error sending to shuffleboard");
-			System.out.println(ex.getMessage());
-			System.out.println(ex.getStackTrace());
-		}
-
 		// Vision.tick();
-		DriveAuto.tick();
-
+		
 	}
 
 	private void showDashboardInfo() {
