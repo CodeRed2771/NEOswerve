@@ -13,50 +13,42 @@ import frc.robot.libs.Timer;
 /**
  * Add your docs here.
  */
-public class FindHatch {
-    private boolean isActive = false;
+public class FindHatch extends AutoBaseClass {
+
     private double distanceToTarget = 0;
-    private Timer autoTimer = new Timer();
 
     public void start() {
-        isActive = true;
+        super.start();
         Vision.setTargetTrackingMode();
-        autoTimer.setStage(0);
     }
 
     public void stop() {
-        DriveAuto.stop();
-        isActive = false;
+        super.stop();
         Vision.setDriverMode();
     }
 
-    public boolean isRunning() {
-        return isActive;
-    }
-
     public void tick() {
-        autoTimer.tick();
         
-        if (isActive) {
+        if (isRunning()) {
             
             DriveAuto.tick();
-            SmartDashboard.putNumber("Hatch Step", autoTimer.getStage());
+            SmartDashboard.putNumber("Hatch Step", getCurrentStep());
 
-			switch(autoTimer.getStage()) {
+			switch(getCurrentStep()) {
                 case 0:
                     // keep scanning for a distance reading
                     distanceToTarget = Vision.getDistanceFromTarget();
                     if (distanceToTarget > 0) {
-                        autoTimer.nextStage();
+                        advanceStep();
                     }
                     break;
                 case 1:
                     DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
-                    autoTimer.setTimerAndAdvanceStage(1000);
+                    setTimerAndAdvanceStep(1000);
                     break;
                 case 2:
                     if (DriveAuto.turnCompleted()) {
-                        autoTimer.nextStage();
+                        advanceStep();
                     }
                     break;
                 case 3:
@@ -80,21 +72,21 @@ public class FindHatch {
                     // DriveAuto.reset();
                     DriveAuto.driveInches(newDist, newAngle, .4);
 
-                    autoTimer.setTimerAndAdvanceStage(3000);
+                    setTimerAndAdvanceStep(3000);
 
                     break;
                 case 4:
                     if (DriveAuto.hasArrived()) {
-                        autoTimer.nextStage();
+                        advanceStep();
                     }
                     break;
                 case 5:
-                    isActive = false;
+                    stop();
                     break;
                 }
             }
         	
-        SmartDashboard.putBoolean("Hatch running", isActive);
+        SmartDashboard.putBoolean("Hatch running", isRunning());
 		SmartDashboard.putNumber("tx", Vision.tx());
     }
 }
