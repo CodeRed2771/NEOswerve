@@ -20,17 +20,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.libs.PIDSourceFilter.PIDGetFilter;
 
 public class Robot extends TimedRobot {
-	WPI_VictorSPX jnk;
-	WPI_TalonSRX leftInake = new WPI_TalonSRX(10);
-	WPI_TalonSRX rightIntake = new WPI_TalonSRX(11);
-	// private WPI_TalonSRX leftIntake
-
-	// Setup stuff
 	KeyMap gamepad;
 	Compressor compressor;
 	SendableChooser<String> autoChooser;
 	SendableChooser<String> positionChooser;
-	AnalogInput line;
 
 	// /* Auto Stuff */
 	String autoSelected;
@@ -54,25 +47,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		leftInake = new WPI_TalonSRX(10);
-		rightIntake = new WPI_TalonSRX(11);
-
-		// Position Chooser
-		positionChooser = new SendableChooser<String>();
-		positionChooser.addObject("Left", "L");
-		positionChooser.addDefault("Center", "C");
-		positionChooser.addObject("Right", "R");
-		SmartDashboard.putData("Position", positionChooser);
-
-		/* Auto Chooser */
-		autoChooser = new SendableChooser<>();
-		autoChooser.addOption(targetTracking, targetTracking);
-		autoChooser.addObject(autoRotateTest, autoRotateTest);
-		autoChooser.addObject(autoCalibrateDrive, autoCalibrateDrive);
-		autoChooser.addObject(autoDrivePIDTune, autoDrivePIDTune);
-
-		// Put options to smart dashboard
-		SmartDashboard.putData("Auto choices", autoChooser);
 
 		gamepad = new KeyMap();
 
@@ -83,38 +57,19 @@ public class Robot extends TimedRobot {
 
 		Calibration.loadSwerveCalibration();
 
-		line = new AnalogInput(0);
+		setupAutoChoices();
 
 		// compressor = new Compressor(0);
 		// compressor.setClosedLoopControl(true);
 
-		DriveTrain.setDrivePIDValues(Calibration.AUTO_DRIVE_P, Calibration.AUTO_DRIVE_I, Calibration.AUTO_DRIVE_D);
+		// Not needed here - done during DriveTrain intialization
+		// DriveTrain.setDrivePIDValues(Calibration.AUTO_DRIVE_P,
+		// Calibration.AUTO_DRIVE_I, Calibration.AUTO_DRIVE_D);
 
 		RobotGyro.reset(); // this is also done in auto init in case it wasn't
 							// settled here yet
 
-		SmartDashboard.putBoolean("Show Turn Encoders", false);
-
-		// SmartDashboard.putNumber("Vision FWD P", Calibration.VISION_FWD_P);
-		// SmartDashboard.putNumber("Vision FWD I", Calibration.VISION_FWD_I);
-		// SmartDashboard.putNumber("Vision FWD D", Calibration.VISION_FWD_D);
-
-		// // SmartDashboard.putNumber("Vision STR P", Calibration.VISION_STR_P);
-		// SmartDashboard.putNumber("Vision STR I", Calibration.VISION_STR_I);
-		// SmartDashboard.putNumber("Vision STR D", Calibration.VISION_STR_D);
-
-		// SmartDashboard.putNumber("Vision ROT P", Calibration.VISION_ROT_P);
-		// SmartDashboard.putNumber("Vision ROT I", Calibration.VISION_ROT_I);
-		// SmartDashboard.putNumber("Vision ROT D", Calibration.VISION_ROT_D);
-
-		// SmartDashboard.putBoolean("FWD seeking enabled", true);
-		// SmartDashboard.putBoolean("STR seeking enabled", true);
-		// SmartDashboard.putBoolean("ROT seeking enabled", true);
-
-		// SmartDashboard.putNumber("Auto P:", Calibration.AUTO_DRIVE_P);
-		// SmartDashboard.putNumber("Auto I:", Calibration.AUTO_DRIVE_I);
-		// SmartDashboard.putNumber("Auto D:", Calibration.AUTO_DRIVE_D);
-
+		SmartDashboard.putBoolean("Show Encoders", false);
 	}
 
 	/*
@@ -125,34 +80,13 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putNumber("TURN A RAW", DriveTrain.round(DriveTrain.moduleA.getTurnAbsolutePosition(), 3));
+		SmartDashboard.putNumber("Version", 3.0);
 
 		// allow manual gyro reset if you press Start button
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
 
-		adjustPIDs();
-
-		SmartDashboard.putNumber("Version", 3.0);
-
-		double driveYAxisAmount = gamepad.getSwerveYAxis();
-		double driveXAxisAmount = -gamepad.getSwerveXAxis();
-		double driveRotAxisAmount = powerOf3PreserveSign(gamepad.getSwerveRotAxis());
-
-		// put some rotational power restrictions in place to make it
-		// more controlled
-		if (Math.abs(driveRotAxisAmount) > .50) {
-			if (driveRotAxisAmount < 0)
-				driveRotAxisAmount = -.50;
-			else
-				driveRotAxisAmount = .50;
-		}
-		// X
-		if (gamepad.getButtonX(0)) {
-			leftInake.set(0.5);
-			rightIntake.set(0.5);
-		}
 		// Y
 		if (gamepad.getButtonY(0)) {
 			Vision.setTargetTrackingMode();
@@ -173,6 +107,18 @@ public class Robot extends TimedRobot {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
+			double driveYAxisAmount = gamepad.getSwerveYAxis();
+			double driveXAxisAmount = -gamepad.getSwerveXAxis();
+			double driveRotAxisAmount = powerOf3PreserveSign(gamepad.getSwerveRotAxis());
+
+			// put some rotational power restrictions in place to make it
+			// more controlled
+			if (Math.abs(driveRotAxisAmount) > .50) {
+				if (driveRotAxisAmount < 0)
+					driveRotAxisAmount = -.50;
+				else
+					driveRotAxisAmount = .50;
+			}
 
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
@@ -180,7 +126,7 @@ public class Robot extends TimedRobot {
 		showDashboardInfo();
 
 		// Vision.tick();
-		
+
 	}
 
 	private void showDashboardInfo() {
@@ -197,33 +143,12 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
 
-		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
+		if (SmartDashboard.getBoolean("Show Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
 			DriveTrain.showDriveEncodersOnDash();
 		}
 
-	}
 
-	private void adjustPIDs() {
-
-		// pidDistance.setPID(SmartDashboard.getNumber("Vision FWD P",
-		// Calibration.VISION_FWD_P),
-		// SmartDashboard.getNumber("Vision FWD I", Calibration.VISION_FWD_I),
-		// SmartDashboard.getNumber("Vision FWD D", Calibration.VISION_FWD_D));
-
-		// pidStrafe.setPID(SB_vision_STR_P.getDouble(Calibration.VISION_STR_P),
-		// SmartDashboard.getNumber("Vision STR I", Calibration.VISION_STR_I),
-		// SmartDashboard.getNumber("Vision STR D", Calibration.VISION_STR_D));
-
-		// pidRotation.setPID(SmartDashboard.getNumber("Vision ROT P",
-		// Calibration.VISION_ROT_P),
-		// SmartDashboard.getNumber("Vision ROT I", Calibration.VISION_ROT_I),
-		// SmartDashboard.getNumber("Vision ROT D", Calibration.VISION_ROT_D));
-
-		// in case we're tweaking the drive turn PID via Dashboard, update the values
-		DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P", Calibration.TURN_P),
-				SmartDashboard.getNumber("TURN I", Calibration.TURN_I),
-				SmartDashboard.getNumber("TURN D", Calibration.TURN_D));
 	}
 
 	@Override
@@ -308,6 +233,25 @@ public class Robot extends TimedRobot {
 
 	}
 
+	private void setupAutoChoices() {
+		// Position Chooser
+		positionChooser = new SendableChooser<String>();
+		positionChooser.addObject("Left", "L");
+		positionChooser.addDefault("Center", "C");
+		positionChooser.addObject("Right", "R");
+		SmartDashboard.putData("Position", positionChooser);
+
+		/* Auto Chooser */
+		autoChooser = new SendableChooser<>();
+		autoChooser.addOption(targetTracking, targetTracking);
+		autoChooser.addObject(autoRotateTest, autoRotateTest);
+		autoChooser.addObject(autoCalibrateDrive, autoCalibrateDrive);
+		autoChooser.addObject(autoDrivePIDTune, autoDrivePIDTune);
+
+		// Put options to smart dashboard
+		SmartDashboard.putData("Auto choices", autoChooser);
+	}
+
 	// Is this used?
 	private double powerOf2PreserveSign(double v) {
 		return (v > 0) ? Math.pow(v, 2) : -Math.pow(v, 2);
@@ -332,11 +276,11 @@ public class Robot extends TimedRobot {
 
 	/// Auto Crap
 	// This is sorta used.
-	public void driveInches(double distance, double angle, double maxPower) {
-		DriveAuto.driveInches(distance, angle, maxPower);
-	}
+	// public void driveInches(double distance, double angle, double maxPower) {
+	// DriveAuto.driveInches(distance, angle, maxPower);
+	// }
 
-	public void turnDegrees(double degrees, double maxPower) {
-		DriveAuto.turnDegrees(degrees, maxPower);
-	}
+	// public void turnDegrees(double degrees, double maxPower) {
+	// DriveAuto.turnDegrees(degrees, maxPower);
+	// }
 }

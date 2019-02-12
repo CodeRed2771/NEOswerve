@@ -55,7 +55,6 @@ public class DriveTrain implements PIDOutput {
 		pidControllerRot.setInputRange(-180.0f, 180.0f);
 		pidControllerRot.setOutputRange(-1.0, 1.0);
 		pidControllerRot.setContinuous(true);
-
 	}
 
 	public static void setFollowerFix(boolean enable) {
