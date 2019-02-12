@@ -15,11 +15,19 @@ public abstract class AutoBaseClass {
 		mAutoTimer = new Timer();
 	}
 
+	public AutoBaseClass() {
+		this('X');
+	}
+
 	public abstract void tick();
 
 	public void start() {
-		mAutoTimer.setStage(0);
+		mAutoTimer.setStep(0);
 		mIsRunning = true;
+
+        // set current position equal to Gyro
+        // otherwise turns will be relative to 0
+        DriveAuto.setTurnDegreesToCurrentAngle(); 
 	}
 
 	public void stop() {
@@ -38,11 +46,11 @@ public abstract class AutoBaseClass {
 	}
 
 	public int getCurrentStep() {
-		return mAutoTimer.getStage();
+		return mAutoTimer.getStep();
 	}
 
 	public void setStep(int step) {
-		mAutoTimer.setStage(step);
+		mAutoTimer.setStep(step);
 	}
 
 	public double getStepTimeRemainingInSeconds() {
@@ -85,7 +93,7 @@ public abstract class AutoBaseClass {
 	}
 
 	public void advanceStep() {
-		mAutoTimer.stopTimerAndAdvanceStage();
+		mAutoTimer.stopTimerAndAdvanceStep();
 	}
 
 	// starts a timer for the time indicated and then immediately advances the
@@ -94,7 +102,7 @@ public abstract class AutoBaseClass {
 	// stage would
 	// be watching to see when the maneuver was completed.
 	public void setTimerAndAdvanceStep(long milliseconds) {
-		mAutoTimer.setTimerAndAdvanceStage(milliseconds);
+		mAutoTimer.setTimerAndAdvanceStep(milliseconds);
 	}
 	
 	public void setTimer(long milliseconds) {
