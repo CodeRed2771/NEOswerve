@@ -172,6 +172,7 @@ public class ModuleNEW {
 		
 	}
 	
+	//These are used for driving and turning in auto.
 	public void setDrivePIDToSetPoint(double setpoint) {
 		currentDriveSetpoint = setpoint;
 		drive.set(ControlMode.MotionMagic, setpoint);
