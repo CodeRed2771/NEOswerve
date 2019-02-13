@@ -16,8 +16,6 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -68,14 +66,14 @@ public class Vision {
 	public static void readTargetInfo() {
 		validCount++;
 		if (inVisionTrackingMode() && targetCount() > 0 && validCount > 5) {
-			
+
 			lastValidReadTime = System.currentTimeMillis();
 
 			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
 			storedTargetArea = table.getEntry("ta").getDouble(0);
 			storedTargetSkew = table.getEntry("ts").getDouble(0);
 		} else {
-			if(targetCount() == 0)
+			if (targetCount() == 0)
 				validCount = 0;
 		}
 	}
@@ -132,24 +130,76 @@ public class Vision {
 		// dis = (-8.1435 * targetArea() + 9.657)*12;
 
 		// Test - to be removed
-		// dis = (7.0754 * targetArea() + 9.4501)*12;
+		// dis = (7.0754 * targetArea() + 9.4501)*1;
 
 		// Limelight 2
-		dis = (-7.5541 * targetArea() + 10.367)*12;
+		// dis = (-7.5541 * targetArea() + 10.367)*12;
 
-		if(targetArea() == 0 || dis < 0){
+		// Limelight 2 update 2/12/19
+		// dis = (-0.6944 * targetArea() + 8.6644)*12;
+
+		double ta = targetArea();
+
+		if (ta == 0)
 			return 0;
-		} else {
-			return dis;
-		}
-		
+
+		if (ta > 12.3)
+			return 24;
+		else if (ta > 8.5)
+			return 30;
+		else if (ta > 5.2)
+			return 36;
+		else if (ta > 3.95)
+			return 42;
+		else if (ta > 2.7)
+			return 48;
+		else if (ta > 1.95)
+			return 54;
+		else if (ta > 1.8)
+			return 60;
+		else if (ta > 1.5)
+			return 66;
+		else if (ta > 1.2)
+			return 72;
+		else if (ta > 1.0)
+			return 78;
+		else if (ta > .9)
+			return 84;
+		else if (ta > .75)
+			return 90;
+		else if (ta > .60)
+			return 96;
+		else if (ta > .55)
+			return 102;
+		else if (ta > .5)
+			return 108;
+		else if (ta > .45)
+			return 114;
+		else if (ta > .40)
+			return 120;
+		else if (ta > .35)
+			return 126;
+		else if (ta > .30)
+			return 132;
+		else if (ta > .285)
+			return 138;
+		else if (ta > .27)
+			return 144;
+		else if (ta > .249)
+			return 150;
+		else if (ta > .228)
+			return 156;
+		else if (ta > .173)
+			return 162;
+		else 
+			return 168;
 	}
 
 	public static double getTargetSkew() {
 		readTargetInfo();
-		if (targetInfoIsValid()) {
+		if (targetInfoIsValid()) 
 			return storedTargetSkew;
-		} else
+		else
 			return 0;
 	}
 
@@ -158,7 +208,7 @@ public class Vision {
 	}
 
 	public static double tx() {
-		if(targetCount() > 0){
+		if (targetCount() > 0) {
 			return (double) table.getEntry("tx").getDouble(0);
 		} else {
 			return 0;

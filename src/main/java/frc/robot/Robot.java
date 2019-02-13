@@ -110,7 +110,6 @@ public class Robot extends TimedRobot {
 			double driveYAxisAmount = gamepad.getSwerveYAxis();
 			double driveXAxisAmount = -gamepad.getSwerveXAxis();
 			double driveRotAxisAmount = powerOf3PreserveSign(gamepad.getSwerveRotAxis());
-
 			// put some rotational power restrictions in place to make it
 			// more controlled
 			if (Math.abs(driveRotAxisAmount) > .50) {
@@ -274,13 +273,4 @@ public class Robot extends TimedRobot {
 		return new BigDecimal(val.toString()).setScale(0, RoundingMode.HALF_UP).doubleValue();
 	}
 
-	/// Auto Crap
-	// This is sorta used.
-	// public void driveInches(double distance, double angle, double maxPower) {
-	// DriveAuto.driveInches(distance, angle, maxPower);
-	// }
-
-	// public void turnDegrees(double degrees, double maxPower) {
-	// DriveAuto.turnDegrees(degrees, maxPower);
-	// }
 }

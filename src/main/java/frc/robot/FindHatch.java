@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.libs.Timer;
 
 /**
  * Add your docs here.
@@ -16,6 +15,8 @@ import frc.robot.libs.Timer;
 public class FindHatch extends AutoBaseClass {
 
     private double distanceToTarget = 0;
+    private double angleDiff;
+    double distToStayBack = 30;
 
     public void start() {
         super.start();
@@ -43,7 +44,7 @@ public class FindHatch extends AutoBaseClass {
                     }
                     break;
                 case 1:
-                    DriveAuto.turnDegrees(Vision.offsetFromTarget(), .2);
+                    DriveAuto.turnDegrees(Vision.offsetFromTarget(), .5);
                     setTimerAndAdvanceStep(1000);
                     break;
                 case 2:
@@ -52,15 +53,25 @@ public class FindHatch extends AutoBaseClass {
                     }
                     break;
                 case 3:
-                    double distToStayBack = 48;
-                    double angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
+                    angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
+                    DriveAuto.turnDegrees(angleDiff, .5); // Square up?
+                    setTimerAndAdvanceStep(5000);
+                    break;
+                case 4:
+                    if (DriveAuto.turnCompleted()) {
+                        advanceStep();
+                    }
+                    break;
+                case 5:
                     double opposite = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget;
                     double adjacent = Math.cos(Math.toRadians(angleDiff)) * distanceToTarget;
 
                     double newDist = Math.sqrt(Math.pow(opposite, 2) + Math.pow((adjacent - distToStayBack), 2));
-                    double newAngle = -Math.atan(opposite / (adjacent - distToStayBack));
+                    double newAngle = -Math.atan(opposite / (adjacent - distToStayBack)); // calculates strafe angle
 
-                    newAngle = (newAngle * 180) / Math.PI;
+                    newAngle = (newAngle * 180) / Math.PI; // Converts angle to degrees from radians.
+
+                    newAngle = newAngle - angleDiff;
 
                     SmartDashboard.putNumber("Drive dist", newDist);
                     SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
@@ -75,12 +86,12 @@ public class FindHatch extends AutoBaseClass {
                     setTimerAndAdvanceStep(3000);
 
                     break;
-                case 4:
+                case 6:
                     if (DriveAuto.hasArrived()) {
                         advanceStep();
                     }
                     break;
-                case 5:
+                case 7:
                     stop();
                     break;
                 }
