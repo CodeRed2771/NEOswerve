@@ -25,6 +25,8 @@ public abstract class AutoBaseClass {
 		mAutoTimer.setStep(0);
 		mIsRunning = true;
 
+		DriveAuto.reset();
+		
         // set current position equal to Gyro
         // otherwise turns will be relative to 0
         DriveAuto.setTurnDegreesToCurrentAngle(); 
