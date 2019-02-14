@@ -10,7 +10,7 @@ public class DriveAuto {
 	private static DriveAuto instance;
 	private static PIDController rotDrivePID;
 	private static boolean isDriveInchesRunning = false;
-	private static int heading = 0;
+	private static double heading = RobotGyro.getAngle();
 	// private static double motionStartTime = 0;
 	private static boolean hasStartedMoving = false;
 	private static double strafeAngle = 0;

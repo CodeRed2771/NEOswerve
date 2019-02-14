@@ -118,13 +118,6 @@ public class Vision {
 	}
 
 	public static double getDistanceFromTarget() {
-		// Min distance = 3ft 5in
-		// Target area at 4ft - .82
-		// Target area at 5ft - .7
-		// Target area at 6ft - .48
-		// Target area at 7ft - .3
-		// Target area at 8ft - .1
-		// Max distance = 13ft 4in
 
 		// Limelight 1
 		// dis = (-8.1435 * targetArea() + 9.657)*12;
@@ -142,57 +135,58 @@ public class Vision {
 
 		if (ta == 0)
 			return 0;
-
 		if (ta > 12.3)
 			return 24;
 		else if (ta > 8.5)
 			return 30;
-		else if (ta > 5.2)
-			return 36;
-		else if (ta > 3.95)
+		else if (ta > 5.8)
+			return 36; 
+		else if (ta > 4.425)
 			return 42;
-		else if (ta > 2.7)
+		else if (ta > 3.05)
 			return 48;
-		else if (ta > 1.95)
+		else if (ta > 2.4785)
 			return 54;
-		else if (ta > 1.8)
+		else if (ta > 1.907)
 			return 60;
-		else if (ta > 1.5)
+		else if (ta > 1.616)
 			return 66;
-		else if (ta > 1.2)
+		else if (ta > 1.325)
 			return 72;
-		else if (ta > 1.0)
+		else if (ta > 1.1545 )
 			return 78;
-		else if (ta > .9)
+		else if (ta > .984)
 			return 84;
-		else if (ta > .75)
+		else if (ta > 0.8585) 
 			return 90;
-		else if (ta > .60)
+		else if (ta > .733) 
 			return 96;
-		else if (ta > .55)
+		else if (ta > 0.6325)
 			return 102;
-		else if (ta > .5)
+		else if (ta > .532) 
 			return 108;
-		else if (ta > .45)
+		else if (ta > 0.4835)
 			return 114;
-		else if (ta > .40)
+		else if (ta > .435) 
 			return 120;
-		else if (ta > .35)
+		else if (ta > 0.393)
 			return 126;
-		else if (ta > .30)
+		else if (ta > .351) 
 			return 132;
-		else if (ta > .285)
-			return 138;
-		else if (ta > .27)
+		else
 			return 144;
-		else if (ta > .249)
-			return 150;
-		else if (ta > .228)
-			return 156;
-		else if (ta > .173)
-			return 162;
-		else 
-			return 168;
+		// else if (ta > .285)
+		// 	return 138;
+		// else if (ta > .27)
+		// 	return 144;
+		// else if (ta > .249)
+		// 	return 150;
+		// else if (ta > .228)
+		// 	return 156;
+		// else if (ta > .173)
+		// 	return 162;
+		// else 
+		// 	return 168;
 	}
 
 	public static double getTargetSkew() {

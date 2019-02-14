@@ -37,6 +37,7 @@ public abstract class AutoBaseClass {
 
 	public boolean isRunning() {
 		mAutoTimer.tick();  // we need to tick the timer and this is a good place to do it.
+		DriveAuto.tick();
 		return mIsRunning;
 	}
 	

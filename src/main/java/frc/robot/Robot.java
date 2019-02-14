@@ -118,26 +118,20 @@ public class Robot extends TimedRobot {
 				else
 					driveRotAxisAmount = .50;
 			}
-
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
-
 		showDashboardInfo();
-
 		// Vision.tick();
-
 	}
 
 	private void showDashboardInfo() {
 		// SmartDashboard.putNumber("Distance", Vision.getDistanceFromTarget());
-
 		// visionTab.add("Has Target", Vision.targetInfoIsValid());
-
 		// SmartDashboard.putNumber("Vision offset", Vision.offsetFromTarget());
 		// SmartDashboard.putNumber("Vision Dist", Vision.getDistanceFromTarget());
 		// SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		// SmartDashboard.putNumber("line sensor", line.getAverageValue());
-
+		
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
 		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));

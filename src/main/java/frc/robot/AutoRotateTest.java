@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AutoRotateTest extends AutoBaseClass {
 	public AutoRotateTest(char robotPosition) {
 		super(robotPosition);
+		SmartDashboard.putNumber("Turn Speed", 0.4);
 	}
 
 	public void tick() {
@@ -20,24 +21,32 @@ public class AutoRotateTest extends AutoBaseClass {
 			switch (getCurrentStep()) {
 			case 0:
 				setTimerAndAdvanceStep(4000);
-				turnDegrees(165, .45);
+				turnDegrees(165, SmartDashboard.getNumber("Turn Speed", 0.4));
 				break;
 			case 1:
 				if (turnCompleted())
 					advanceStep();
 				break;
 			case 2:
-				setTimerAndAdvanceStep(1000);
+				setTimerAndAdvanceStep(5000);
 				break;
 			case 3:
 				break;
 			case 4:
 				setTimerAndAdvanceStep(4000);
-				turnDegrees(-165, .45);
+				turnDegrees(-165, SmartDashboard.getNumber("Turn Speed", 0.4));
 				break;
 			case 5:
 				if (turnCompleted())
 					advanceStep();
+				break;
+			case 6:
+				setTimerAndAdvanceStep(5000);
+				break;
+			case 7:
+				break;
+			case 8: 
+				setStep(0);
 				break;
 			// case 6:
 			// setTimerAndAdvanceStep(1000);
