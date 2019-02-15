@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveAuto {
 	private static DriveAuto instance;
 	private static PIDController rotDrivePID;
-	private static boolean isDriveInchesRunning = false;
-	private static double heading = 0;
-	// private static double motionStartTime = 0;
-	private static boolean hasStartedMoving = false;
+
+	private static boolean isDriving = false;
+	private static boolean isTurning = false;
+
+	private static double heading = 0;  // keeps track of intended heading - used for driving "straight"
 	private static double strafeAngle = 0;
-	private static int zeroVelocityCount = 0;
 
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
@@ -63,7 +63,7 @@ public class DriveAuto {
 
 		strafeAngle = angle;
 
-		isDriveInchesRunning = true;
+		isDriving = true;
 
 		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * speedFactor));
 
@@ -85,10 +85,6 @@ public class DriveAuto {
 
 		// set the new drive distance setpoint
 		DriveTrain.addToAllDrivePositions(convertToTicks(inches));
-
-		// motionStartTime = System.currentTimeMillis();
-		hasStartedMoving = false;
-
 	}
 
 	public static void reset() {
@@ -100,7 +96,7 @@ public class DriveAuto {
 
 	public static void stop() {
 		rotDrivePID.setSetpoint(rotDrivePID.get());
-		isDriveInchesRunning = false;
+		isDriving = false;
 		DriveTrain.stopDriveAndTurnMotors();
 		rotDrivePID.disable();
 	}
@@ -116,7 +112,7 @@ public class DriveAuto {
 		// The PID controller for this sends a rotational value to the
 		// standard swerve drive method to make the bot rotate
 
-		isDriveInchesRunning = false;
+		isDriving = false;
 		heading += degrees; // this is used later to help us drive straight
 							// after rotating
 
@@ -133,10 +129,6 @@ public class DriveAuto {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// motionStartTime = System.currentTimeMillis();
-		hasStartedMoving = false;
-
 	}
 
 	// public static void continuousTurn(double degrees, double maxPower) {
@@ -148,8 +140,6 @@ public class DriveAuto {
 	// }
 	//
 	public static void continuousDrive(double inches, double maxPower) {
-		// motionStartTime = System.currentTimeMillis();
-		hasStartedMoving = false;
 
 		setRotationalPowerOutput(maxPower);
 
@@ -172,7 +162,7 @@ public class DriveAuto {
 
 		// if (Math.abs(strafeAngle) < 60) { // not effective for high strafe
 		// // angles
-		// if (isDriveInchesRunning) {
+		// if (isDriving) {
 		// // this gets a -180 to 180 value i believe
 		// double rawGyroPidGet = RobotGyro.getGyro().pidGet();
 
@@ -245,29 +235,19 @@ public class DriveAuto {
 	}
 
 	public static boolean hasArrived() {
-
 		return DriveTrain.hasDriveCompleted(10);
-
-		// boolean driveTrainStopped = false;
-		// if (hasStartedMoving) {
-		// if (Math.abs(DriveTrain.getDriveVelocity()) <= 3)
-		// zeroVelocityCount++;
-		// driveTrainStopped = zeroVelocityCount > 5;
-		// } else { // see if we've started moving now
-		// if (Math.abs(DriveTrain.getDriveVelocity()) > 20) {
-		// hasStartedMoving = true;
-		// zeroVelocityCount = 0;
-		// }
-		// }
-		// return (driveTrainStopped);
 	}
 
 	public static boolean turnCompleted(double allowedError) {
+		
+		// TO DO - DVV - we should try changing to this:
+		//return rotDrivePID.onTarget();
+
 		return Math.abs(RobotGyro.getAngle() - heading) <= allowedError;
 	}
 
 	public static boolean turnCompleted() {
-		return turnCompleted(2); // allow 2 degree of error by default
+		return turnCompleted(1); // allow 1 degree of error by default
 	}
 
 	public static void setPIDstate(boolean isEnabled) {
