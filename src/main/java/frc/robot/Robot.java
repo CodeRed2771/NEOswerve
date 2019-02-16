@@ -80,7 +80,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putNumber("Version", 3.0);
 
 		// allow manual gyro reset if you press Start button
 		if (gamepad.getStartButton(0)) {
@@ -134,7 +133,7 @@ public class Robot extends TimedRobot {
 		
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
-		SmartDashboard.putNumber("Gyro Heading", round0(RobotGyro.getAngle()));
+		SmartDashboard.putNumber("Gyro", round2(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
@@ -188,8 +187,6 @@ public class Robot extends TimedRobot {
 
 		DriveAuto.showEncoderValues();
 
-		SmartDashboard.putNumber("Gyro PID Get", round0(RobotGyro.getInstance().pidGet()));
-
 	}
 
 	@Override
@@ -218,12 +215,7 @@ public class Robot extends TimedRobot {
 										// prevents multiple calls
 		DriveTrain.disablePID();
 
-		SmartDashboard.putNumber("Gyro PID Get", round0(RobotGyro.getInstance().pidGet()));
-
-		if (SmartDashboard.getBoolean("Show Turn Encoders", false)) {
-			DriveTrain.showTurnEncodersOnDash();
-		}
-
+		showDashboardInfo();
 	}
 
 	private void setupAutoChoices() {

@@ -371,18 +371,18 @@ public class DriveTrain implements PIDOutput {
 			ws4 /= max;
 		}
 
-		SmartDashboard.putNumber("swerve rot", rot);
-		SmartDashboard.putNumber("swerve fwd", fwd);
-
+	
 		// SmartDashboard.putNumber("swerve a", a);
 		// SmartDashboard.putNumber("swerve b", b);
 		// SmartDashboard.putNumber("swerve c", c);
 		// SmartDashboard.putNumber("swerve d", d);
-		SmartDashboard.putNumber("swerve wa1", wa1);
 		// SmartDashboard.putNumber("swerve wa2", wa2);
 		// SmartDashboard.putNumber("swerve wa3", wa3);
 		// SmartDashboard.putNumber("swerve wa4", wa4);
-		SmartDashboard.putNumber("ws1", ws1);
+		// SmartDashboard.putNumber("swerve rot", rot);
+		// SmartDashboard.putNumber("swerve fwd", fwd);
+		// SmartDashboard.putNumber("swerve wa1", wa1);
+		// SmartDashboard.putNumber("ws1", ws1);
 
 		DriveTrain.setTurnOrientation(angleToLoc(wa4), angleToLoc(wa2), angleToLoc(wa1), angleToLoc(wa3));
 		DriveTrain.setDrivePower(ws4, ws2, ws1, ws3);

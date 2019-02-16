@@ -44,7 +44,7 @@ public class FindHatch extends AutoBaseClass {
                     }
                     break;
                 case 1:
-                    DriveAuto.turnDegrees(Vision.offsetFromTarget(), .4);
+                    DriveAuto.turnDegrees(Vision.offsetFromTarget(), .25);
                     setTimerAndAdvanceStep(1000);
                     break;
                 case 2:
@@ -54,7 +54,7 @@ public class FindHatch extends AutoBaseClass {
                     break;
                 case 3:
                     angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
-                    DriveAuto.turnDegrees(angleDiff, .4); // Square up?
+                    DriveAuto.turnDegrees(angleDiff, .25); // Square up?
                     setTimerAndAdvanceStep(5000);
                     break;
                 case 4:
@@ -82,7 +82,7 @@ public class FindHatch extends AutoBaseClass {
                     // SmartDashboard.putNumber("adjacent", adjacent);
                 
                     // DriveAuto.reset();
-                    DriveAuto.driveInches(newDist, newAngle, .4);
+                    DriveAuto.driveInches(newDist, newAngle, .3);
 
                     setTimerAndAdvanceStep(3000);
 

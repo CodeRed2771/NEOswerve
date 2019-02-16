@@ -83,10 +83,6 @@ public abstract class AutoBaseClass {
 		DriveAuto.turnDegrees(degrees, maxPower);
 	}
 
-	public void turnDegreesV2(double degrees, double maxPower) {
-		DriveAuto.turnDegreesV2(degrees, maxPower);
-	}
-
 //	public void continuousTurn(double degrees, double maxPower) {
 //		DriveAuto.continuousTurn(degrees, maxPower);
 //	}

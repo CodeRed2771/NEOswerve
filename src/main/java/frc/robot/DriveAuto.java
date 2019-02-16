@@ -20,8 +20,8 @@ public class DriveAuto {
 	private static double interimTurnSetpoint = 0;
 	private static double finalTurnSetpoint = 0;
 	private static double currentTurnSpeed = 0;
-	private static double maxTurnSpeed = 1.5; // max degrees per cycle (per 20ms)
-	private static double maxTurnAccel = .25; // max increase in degrees per cycle
+	private static double maxTurnSpeed = 4; // max degrees per cycle (per 20ms)
+	private static double maxTurnAccel = .04; // max increase in degrees per cycle
 
 	
 	public static enum DriveSpeed {
@@ -37,10 +37,10 @@ public class DriveAuto {
 	public DriveAuto() {
 		DriveTrain.getInstance();
 
-		rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D,
+		rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D, Calibration.AUTO_ROT_F, 
 				RobotGyro.getInstance(), rot -> DriveTrain.autoSetRot(rot));
 
-		rotDrivePID.setAbsoluteTolerance(1.5); // degrees off
+		rotDrivePID.setAbsoluteTolerance(2); // degrees off
 		// rotDrivePID.setToleranceBuffer(3);
 
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
@@ -60,6 +60,7 @@ public class DriveAuto {
 		SmartDashboard.putNumber("ROT P", Calibration.AUTO_ROT_P);
 		SmartDashboard.putNumber("ROT I", Calibration.AUTO_ROT_I);
 		SmartDashboard.putNumber("ROT D", Calibration.AUTO_ROT_D);
+		SmartDashboard.putNumber("ROT F", Calibration.AUTO_ROT_F);
 
 		SmartDashboard.putBoolean("Tune Drive/Turn PIDs", true);
 
@@ -79,8 +80,6 @@ public class DriveAuto {
 		isDriving = true;
 
 		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * speedFactor));
-
-		rotDrivePID.disable();
 
 		// angle at which the wheel modules should be turned
 		DriveTrain.setAllTurnOrientiation(-DriveTrain.angleToLoc(strafeAngle));
@@ -133,32 +132,32 @@ public class DriveAuto {
 		rotDrivePID.setSetpoint(RobotGyro.getAngle());
 	}
 
+	// public static void turnDegreesOLD(double degrees, double turnSpeedFactor) {
+	// 	// Turns using the Gyro, relative to the current position
+	// 	// Use "turnCompleted" method to determine when the turn is done
+	// 	// The PID controller for this sends a rotational value to the
+	// 	// standard swerve drive method to make the bot rotate
+
+	// 	isDriving = false;
+	// 	heading += degrees; // this is used later to help us drive straight
+	// 						// after rotating
+
+	// 	SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
+	// 	SmartDashboard.putNumber("ROT SETPOINT", rotDrivePID.getSetpoint() + degrees);
+
+	// 	rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees);
+	// 	rotDrivePID.enable();
+	// 	setRotationalPowerOutput(turnSpeedFactor);
+
+	// 	try {
+	// 		Thread.sleep(100);
+	// 	} catch (InterruptedException e) {
+	// 		// TODO Auto-generated catch block
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
 	public static void turnDegrees(double degrees, double turnSpeedFactor) {
-		// Turns using the Gyro, relative to the current position
-		// Use "turnCompleted" method to determine when the turn is done
-		// The PID controller for this sends a rotational value to the
-		// standard swerve drive method to make the bot rotate
-
-		isDriving = false;
-		heading += degrees; // this is used later to help us drive straight
-							// after rotating
-
-		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
-		SmartDashboard.putNumber("ROT SETPOINT", rotDrivePID.getSetpoint() + degrees);
-
-		rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees);
-		rotDrivePID.enable();
-		setRotationalPowerOutput(turnSpeedFactor);
-
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public static void turnDegreesV2(double degrees, double turnSpeedFactor) {
 		// Turns using the Gyro, relative to the current position
 		// Use "turnCompleted" method to determine when the turn is done
 		// The PID controller for this sends a rotational value to the
@@ -203,26 +202,27 @@ public class DriveAuto {
 	public static void tick() {
 		// this is called roughly 50 times per second
 
+		double cyclesToDecelerate = maxTurnSpeed / maxTurnAccel;
+		double cyclesLeft = Math.abs(finalTurnSetpoint - interimTurnSetpoint) / maxTurnSpeed;
+
 		maxTurnSpeed = SmartDashboard.getNumber("ROT Max Deg/Cycle", maxTurnSpeed);
 		maxTurnAccel = SmartDashboard.getNumber("ROT Max Acc/Cycle", maxTurnAccel);
 
 		if (isTurning) {
-			double cyclesToDecelerate = maxTurnSpeed / maxTurnAccel;
-			double cyclesLeft = Math.abs(finalTurnSetpoint - interimTurnSetpoint) / maxTurnSpeed;
 			if (cyclesLeft > cyclesToDecelerate) {
 				// accelerate
 				if (currentTurnSpeed < maxTurnSpeed) {
 					currentTurnSpeed += maxTurnAccel;
 					if (currentTurnSpeed > maxTurnSpeed)
 						currentTurnSpeed = maxTurnSpeed;
-				}
+				} 
 			} else {
 				// decelerate, but no slower than the acceleration factor
 				if (currentTurnSpeed > maxTurnAccel) {
 					currentTurnSpeed -= maxTurnAccel;
 					if (currentTurnSpeed < maxTurnAccel)
 						currentTurnSpeed = maxTurnAccel;
-				}
+				} 
 			}
 			
 			if (interimTurnSetpoint < finalTurnSetpoint) {
@@ -245,6 +245,10 @@ public class DriveAuto {
 			rotDrivePID.setSetpoint(interimTurnSetpoint);
 		}
 
+		SmartDashboard.putNumber("Cur Turn Speed", currentTurnSpeed);
+		SmartDashboard.putNumber("Decel cycles", cyclesToDecelerate);
+		SmartDashboard.putNumber("Cycles left", cyclesLeft);
+		SmartDashboard.putNumber("Int Setpoint", interimTurnSetpoint);
 		SmartDashboard.putNumber("ROT PID ERROR", rotDrivePID.getError());
 		SmartDashboard.putNumber("Drive Train Velocity", DriveTrain.getDriveVelocity());
 		SmartDashboard.putBoolean("HasArrived", hasArrived());
@@ -256,7 +260,8 @@ public class DriveAuto {
 		if (SmartDashboard.getBoolean("Tune Drive/Turn PIDs", false)) {
 			rotDrivePID.setPID(SmartDashboard.getNumber("ROT P", Calibration.AUTO_ROT_P),
 					SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
-					SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D));
+					SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D),
+					SmartDashboard.getNumber("ROT F", Calibration.AUTO_ROT_F));
 
 			DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
 					SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
@@ -333,10 +338,6 @@ public class DriveAuto {
 	}
 
 	public static boolean turnCompleted(double allowedError) {
-
-		// TO DO - DVV - we should try changing to this:
-		// return rotDrivePID.onTarget();
-
 		return Math.abs(RobotGyro.getAngle() - heading) <= allowedError;
 	}
 
@@ -370,7 +371,6 @@ public class DriveAuto {
 		SmartDashboard.putNumber("Drive PID Error", DriveTrain.getDriveError());
 		SmartDashboard.putNumber("Drive Avg Error", DriveTrain.getAverageDriveError());
 
-		SmartDashboard.putNumber("Gyro", round2(RobotGyro.getAngle()));
 		// SmartDashboard.putNumber("Gyro PID Setpoint",
 		// rotDrivePID.getSetpoint());
 		// SmartDashboard.putNumber("Gyro PID error",

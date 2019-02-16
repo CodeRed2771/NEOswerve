@@ -83,9 +83,10 @@ public class Calibration {
 	
 	public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 32.900; //2624 ticks in 80 inches, goes 2,427.2
 	
-	public static final double AUTO_ROT_P = 0.03; // increased from .03 on 2/9/2019 by CS
-	public static final double AUTO_ROT_I = 0.003;
-	public static final double AUTO_ROT_D = 0.04;  // was 067
+	public static final double AUTO_ROT_P = 0.08; // increased from .03 on 2/9/2019 by CS
+	public static final double AUTO_ROT_I = 0.001;
+	public static final double AUTO_ROT_D = 0.1;  // was 067
+	public static final double AUTO_ROT_F = 0.0;
 
 	public static final double AUTO_DRIVE_P = 20;  // was .5
 	public static final double AUTO_DRIVE_I = 0.1;
