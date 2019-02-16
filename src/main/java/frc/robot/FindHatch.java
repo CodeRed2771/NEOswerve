@@ -16,7 +16,7 @@ public class FindHatch extends AutoBaseClass {
 
     private double distanceToTarget = 0;
     private double angleDiff;
-    double distToStayBack = 18;
+    double distToStayBack = 30;
 
     public void start() {
         super.start();
@@ -29,76 +29,106 @@ public class FindHatch extends AutoBaseClass {
     }
 
     public void tick() {
-        
+
         if (isRunning()) {
-            
+
             DriveAuto.tick();
             SmartDashboard.putNumber("Hatch Step", getCurrentStep());
 
-			switch(getCurrentStep()) {
-                case 0:
-                    // keep scanning for a distance reading
-                    distanceToTarget = Vision.getDistanceFromTarget();
-                    if (distanceToTarget > 0) {
-                        advanceStep();
-                    }
-                    break;
-                case 1:
-                    DriveAuto.turnDegrees(Vision.offsetFromTarget(), .25);
-                    setTimerAndAdvanceStep(1000);
-                    break;
-                case 2:
-                    if (DriveAuto.turnCompleted()) {
-                        advanceStep();
-                    }
-                    break;
-                case 3:
-                    angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
-                    DriveAuto.turnDegrees(angleDiff, .25); // Square up?
-                    setTimerAndAdvanceStep(5000);
-                    break;
-                case 4:
-                    if (DriveAuto.turnCompleted()) {
-                        advanceStep();
-                    }
-                    break;
-                case 5:
-                    double opposite = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget;
-                    double adjacent = Math.cos(Math.toRadians(angleDiff)) * distanceToTarget;
-
-                    double newDist = Math.sqrt(Math.pow(opposite, 2) + Math.pow((adjacent - distToStayBack), 2));
-                    double newAngle = -Math.atan(opposite / (adjacent - distToStayBack)); // calculates strafe angle
-
-                    newAngle = (newAngle * 180) / Math.PI; // Converts angle to degrees from radians.
-
-                    // newAngle = newAngle - angleDiff;
-
-                    SmartDashboard.putNumber("Dist to target", distanceToTarget);
-                    SmartDashboard.putNumber("Drive dist", newDist);
-                    SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
-                    SmartDashboard.putNumber("New Angle", newAngle);
-                    SmartDashboard.putNumber("Angle Diff", angleDiff);
-                    // SmartDashboard.putNumber("opposite", opposite);
-                    // SmartDashboard.putNumber("adjacent", adjacent);
-                
-                    // DriveAuto.reset();
-                    DriveAuto.driveInches(newDist, newAngle, .3);
-
-                    setTimerAndAdvanceStep(3000);
-
-                    break;
-                case 6:
-                    if (DriveAuto.hasArrived()) {
-                        advanceStep();
-                    }
-                    break;
-                case 7:
-                    stop();
-                    break;
+            switch (getCurrentStep()) {
+            case 0:
+                // keep scanning for a distance reading
+                distanceToTarget = Vision.getDistanceFromTarget();
+                if (distanceToTarget > 0) {
+                    advanceStep();
                 }
+                break;
+            case 1:
+                DriveAuto.turnDegrees(Vision.offsetFromTarget(), .25);
+                setTimerAndAdvanceStep(1000);
+                break;
+            case 2:
+                if (DriveAuto.turnCompleted()) {
+                    advanceStep();
+                }
+                break;
+            case 3:
+                angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
+                DriveAuto.turnDegrees(angleDiff, .25); // Square up?
+                setTimerAndAdvanceStep(1000);
+                break;
+            case 4:
+                if (DriveAuto.turnCompleted()) {
+                    advanceStep();
+                }
+                break;
+            case 5:
+                double opposite = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget;
+                double adjacent = Math.cos(Math.toRadians(angleDiff)) * distanceToTarget;
+
+                double newDist = Math.sqrt(Math.pow(opposite, 2) + Math.pow((adjacent - distToStayBack), 2));
+                double newAngle = -Math.atan(opposite / (adjacent - distToStayBack)); // calculates strafe angle
+
+                newAngle = (newAngle * 180) / Math.PI; // Converts angle to degrees from radians.
+
+                // newAngle = newAngle - angleDiff;
+
+                SmartDashboard.putNumber("Dist to target", distanceToTarget);
+                SmartDashboard.putNumber("Drive dist", newDist);
+                SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
+                SmartDashboard.putNumber("New Angle", newAngle);
+                SmartDashboard.putNumber("Angle Diff", angleDiff);
+                // SmartDashboard.putNumber("opposite", opposite);
+                // SmartDashboard.putNumber("adjacent", adjacent);
+
+                // DriveAuto.reset();
+                DriveAuto.driveInches(newDist, newAngle, .3);
+
+                setTimerAndAdvanceStep(3000);
+
+                break;
+            case 6:
+                if (DriveAuto.hasArrived()) {
+                    advanceStep();
+                }
+                break;
+            case 7:
+                // keep scanning for a distance reading
+                distanceToTarget = Vision.getDistanceFromTarget();
+                angleDiff = Vision.offsetFromTarget();
+                SmartDashboard.putNumber("Dist To Targ", distanceToTarget);
+                SmartDashboard.putNumber("Angle Diff", angleDiff);
+                if (distanceToTarget > 0) {
+                    advanceStep();
+                }
+                break;
+            case 8:
+                double slideDistance = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget;
+                SmartDashboard.putNumber("Slide Dist", slideDistance);
+                driveInches(slideDistance, 90, .3);
+                setTimerAndAdvanceStep(3000);
+                break;
+            case 9:
+                if (DriveAuto.hasArrived()) {
+                    advanceStep();
+                }
+                break;
+            case 10:
+                driveInches(distanceToTarget - 4, 0, .09);
+                setTimerAndAdvanceStep(1000);
+                break;
+            case 11:
+                if (DriveAuto.hasArrived()) {
+                    advanceStep();
+                }
+                break;
+            case 12:
+                stop();
+                break;
             }
-        	
+        }
+
         SmartDashboard.putBoolean("Hatch running", isRunning());
-		SmartDashboard.putNumber("tx", Vision.tx());
+        SmartDashboard.putNumber("tx", Vision.tx());
     }
 }
