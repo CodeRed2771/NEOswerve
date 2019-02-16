@@ -82,7 +82,7 @@ public class FindHatch extends AutoBaseClass {
                 // SmartDashboard.putNumber("adjacent", adjacent);
 
                 // DriveAuto.reset();
-                DriveAuto.driveInches(newDist, newAngle, .3);
+                DriveAuto.driveInches(newDist, newAngle, .4);
 
                 setTimerAndAdvanceStep(3000);
 
@@ -114,7 +114,7 @@ public class FindHatch extends AutoBaseClass {
                 }
                 break;
             case 10:
-                driveInches(distanceToTarget - 8, 0, .025);
+                driveInches(distanceToTarget - 8, 0, .25);
                 setTimerAndAdvanceStep(1000);
                 break;
             case 11:
