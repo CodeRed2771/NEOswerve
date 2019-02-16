@@ -39,8 +39,8 @@ public class RobotGyro implements PIDSource  {
 	
 	public static double getAngle() {
 		if (getInstance() == null) return 0.0;
-
-		return mGyro.getAngle();
+		
+		return mGyro.getAngle();	
 	}
 	
 	public static void reset() {

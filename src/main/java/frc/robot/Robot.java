@@ -186,6 +186,7 @@ public class Robot extends TimedRobot {
 		DriveAuto.tick();
 
 		DriveAuto.showEncoderValues();
+		showDashboardInfo();
 
 	}
 

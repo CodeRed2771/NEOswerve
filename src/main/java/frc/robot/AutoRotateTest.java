@@ -34,7 +34,7 @@ public class AutoRotateTest extends AutoBaseClass {
 				break;
 			case 4:
 				setTimerAndAdvanceStep(4000);
-				turnDegrees(-90, SmartDashboard.getNumber("Turn Speed", 0.25));
+				turnDegrees(-90, SmartDashboard.getNumber("Turn Speed", 0.4));
 				break;
 			case 5:
 				if (turnCompleted())

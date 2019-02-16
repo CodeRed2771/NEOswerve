@@ -31,14 +31,14 @@ public class TargetInfo {
     public static double targetAngle() {
         double currentGyroAngle = RobotGyro.getAngle();
 
-        if (currentGyroAngle > 10 && currentGyroAngle < 85) {
+        if (currentGyroAngle > 0 && currentGyroAngle < 75) {
             return 30;
         }
-        if (currentGyroAngle > 95 && currentGyroAngle < 170) {
-            return 150;
+        if (currentGyroAngle > 76 && currentGyroAngle < 170) {
+            return 90;
         }
-        if (currentGyroAngle < -10 && currentGyroAngle > -85) {
-            return -30;
+        if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+            return 150;
         }
 
         // NEED MORE IF STATEMENTS FOR OTHER POSITIONS

@@ -23,7 +23,6 @@ public class DriveAuto {
 	private static double maxTurnSpeed = 4; // max degrees per cycle (per 20ms)
 	private static double maxTurnAccel = .04; // max increase in degrees per cycle
 
-	
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
 	};
@@ -37,8 +36,8 @@ public class DriveAuto {
 	public DriveAuto() {
 		DriveTrain.getInstance();
 
-		rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D, Calibration.AUTO_ROT_F, 
-				RobotGyro.getInstance(), rot -> DriveTrain.autoSetRot(rot));
+		rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D,
+				Calibration.AUTO_ROT_F, RobotGyro.getInstance(), rot -> DriveTrain.autoSetRot(rot));
 
 		rotDrivePID.setAbsoluteTolerance(2); // degrees off
 		// rotDrivePID.setToleranceBuffer(3);
@@ -66,7 +65,7 @@ public class DriveAuto {
 
 		SmartDashboard.putNumber("ROT Max Deg/Cycle", maxTurnSpeed);
 		SmartDashboard.putNumber("ROT Max Acc/Cycle", maxTurnAccel);
-	
+
 	}
 
 	public static void driveInches(double inches, double angle, double speedFactor) {
@@ -133,29 +132,61 @@ public class DriveAuto {
 	}
 
 	// public static void turnDegreesOLD(double degrees, double turnSpeedFactor) {
-	// 	// Turns using the Gyro, relative to the current position
-	// 	// Use "turnCompleted" method to determine when the turn is done
-	// 	// The PID controller for this sends a rotational value to the
-	// 	// standard swerve drive method to make the bot rotate
+	// // Turns using the Gyro, relative to the current position
+	// // Use "turnCompleted" method to determine when the turn is done
+	// // The PID controller for this sends a rotational value to the
+	// // standard swerve drive method to make the bot rotate
 
-	// 	isDriving = false;
-	// 	heading += degrees; // this is used later to help us drive straight
-	// 						// after rotating
+	// isDriving = false;
+	// heading += degrees; // this is used later to help us drive straight
+	// // after rotating
 
-	// 	SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
-	// 	SmartDashboard.putNumber("ROT SETPOINT", rotDrivePID.getSetpoint() + degrees);
+	// SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
+	// SmartDashboard.putNumber("ROT SETPOINT", rotDrivePID.getSetpoint() +
+	// degrees);
 
-	// 	rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees);
-	// 	rotDrivePID.enable();
-	// 	setRotationalPowerOutput(turnSpeedFactor);
+	// rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees);
+	// rotDrivePID.enable();
+	// setRotationalPowerOutput(turnSpeedFactor);
 
-	// 	try {
-	// 		Thread.sleep(100);
-	// 	} catch (InterruptedException e) {
-	// 		// TODO Auto-generated catch block
-	// 		e.printStackTrace();
-	// 	}
+	// try {
+	// Thread.sleep(100);
+	// } catch (InterruptedException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
 	// }
+	// }
+
+	// OLD(Changed 2/16/2019 by CS and DVV)
+	// public static void turnDegrees(double degrees, double turnSpeedFactor) {
+	// // Turns using the Gyro, relative to the current position
+	// // Use "turnCompleted" method to determine when the turn is done
+	// // The PID controller for this sends a rotational value to the
+	// // standard swerve drive method to make the bot rotate
+
+	// stopDriving();
+
+	// isTurning = true;
+
+	// interimTurnSetpoint = heading; // should be our current position
+	// heading += degrees; // this is used later to help us drive straight
+	// // after rotating
+	// finalTurnSetpoint = heading;
+	// currentTurnSpeed = 0;
+
+	// SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
+	// SmartDashboard.putNumber("ROT SETPOINT", finalTurnSetpoint);
+
+	// setRotationalPowerOutput(turnSpeedFactor);
+	// rotDrivePID.setSetpoint(interimTurnSetpoint);
+
+	// rotDrivePID.enable(); // the setpoint will be updated in the tick() method
+	// }
+
+	public static double degreesToInches(double degrees) {
+		double inches = degrees / 3.47; 
+		return inches;
+	}
 
 	public static void turnDegrees(double degrees, double turnSpeedFactor) {
 		// Turns using the Gyro, relative to the current position
@@ -168,24 +199,29 @@ public class DriveAuto {
 		isTurning = true;
 
 		interimTurnSetpoint = heading; // should be our current position
-		heading += degrees; // this is used later to help us drive straight
-							// after rotating
-		finalTurnSetpoint = heading;
-		currentTurnSpeed = 0;
+		heading += degrees; // this is used later to help us drive straight after rotating
 
 		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
-		SmartDashboard.putNumber("ROT SETPOINT", finalTurnSetpoint);
 
-		setRotationalPowerOutput(turnSpeedFactor);
-		rotDrivePID.setSetpoint(interimTurnSetpoint);
+		DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-133.6677), DriveTrain.angleToLoc(46.3322), DriveTrain.angleToLoc(133.6677),
+				DriveTrain.angleToLoc(-46.3322));
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
-		rotDrivePID.enable(); // the setpoint will be updated in the tick() method
+		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * turnSpeedFactor));
+
+		DriveTrain.addToAllDrivePositions(convertToTicks(degreesToInches(degrees)));
 	}
 
 	// public static void continuousTurn(double degrees, double maxPower) {
 	// motionStartTime = System.currentTimeMillis();
 	//
-	// rotDrivePID.setSetpoint(RobotGyro.getAngle() + degrees);
+	// rotDrivePID.FSetpoint(RobotGyro.getAngle() + degrees);
 	// rotDrivePID.enable();
 	// setRotationalPowerOutput(maxPower);
 	// }
@@ -215,16 +251,16 @@ public class DriveAuto {
 					currentTurnSpeed += maxTurnAccel;
 					if (currentTurnSpeed > maxTurnSpeed)
 						currentTurnSpeed = maxTurnSpeed;
-				} 
+				}
 			} else {
 				// decelerate, but no slower than the acceleration factor
 				if (currentTurnSpeed > maxTurnAccel) {
 					currentTurnSpeed -= maxTurnAccel;
 					if (currentTurnSpeed < maxTurnAccel)
 						currentTurnSpeed = maxTurnAccel;
-				} 
+				}
 			}
-			
+
 			if (interimTurnSetpoint < finalTurnSetpoint) {
 				// we're increasing towards the final point
 

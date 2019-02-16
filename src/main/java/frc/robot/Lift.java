@@ -78,14 +78,13 @@ public class Lift {
 	public static  void move(double speed) {
 		liftMotor.set(ControlMode.PercentOutput, speed);	
 	}
-	public static  void goSwitch() {
-		//The switch is the little one.
+	public static  void goHatchLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, -11000); 
-		System.out.println("Going to switch");
 	}
-	public static  void goLowScale() {
-		//The scale is the big one.
-		//The scale has three different positions, up, down, and level. It could be useful for autonomous.
+	public static void goCargoLvl1() {
+		liftMotor.set(ControlMode.MotionMagic, -11000);
+	}
+	public static  void goHatchLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, -43000); 
 	}
 	public static void goHighHatch() {
