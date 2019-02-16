@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.libs.HID.*;
+import frc.robot.libs.HID.HID.Axis;
 
 public class KeyMap {
 
@@ -17,35 +18,27 @@ public class KeyMap {
     private final HID.Axis swerveXAxis = LogitechF310.STICK_LEFT_X;
     private final HID.Axis swerveYAxis = LogitechF310.STICK_LEFT_Y;
     private final HID.Axis swerveRotAxis = LogitechF310.STICK_RIGHT_X;
+    private final HID.Button switchToRobotCentric = LogitechF310.BUMPER_LEFT;
     
-    private final HID.Button lowGearButton = LogitechF310.BACK;
-    private final HID.Button highGearButton = LogitechF310.START;
-    private final HID.Button intakeReverse = LogitechF310.A;
-    private final HID.Button armKillButton = LogitechF310.X;
+    // Manual Element Placement
+    private final HID.Button manualCargoPlace = LogitechF310.BACK;
+    private final HID.Button manualHatchPlace = LogitechF310.START;
+    
+    // Climbing
+    private final HID.Button prepareToClimb = LogitechF310.DPAD_LEFT;
+    private final HID.Button climb = LogitechF310.BUMPER_LEFT;
+    
+    // Hatch Placement
+    private final HID.Button hatchRocketLvl1 = LogitechF310.A;
+    private final HID.Button hatchRocketLvl2 = LogitechF310.B;
+    private final HID.Button manualBringLiftDown = LogitechF310.X;
+    private final HID.Button hatchRocketLvl3 = LogitechF310.Y;
    
-    
-    private final HID.Axis manualLiftAxis = LogitechF310.STICK_LEFT_Y;
-    private final HID.Axis armAxis = LogitechF310.STICK_RIGHT_Y;
-//    private final HID.Button manualLiftButton = LogitechF310.DPAD_LEFT;
-    //private final HID.Axis clawEjectAxis = LogitechF310.TRIGGER_RIGHT_AXIS;
+    //Cargo Placement
+    private final Axis modifier = LogitechF310.TRIGGER_RIGHT_AXIS;
 
-    
-    // CONTROLLER 1
-    //private final HID.Button clawOpenButton = LogitechF310.X;
-    private final HID.Button gotoLiftFloor = LogitechF310.A;
-    private final HID.Button gotoLiftSwitch = LogitechF310.B;
-    private final HID.Button gotoLiftScale = LogitechF310.Y;
-    private final HID.Button activateIntake = LogitechF310.BUMPER_RIGHT;
-    private final HID.Button dropCube = LogitechF310.BUMPER_LEFT;
-    private final HID.Button ejectCube = LogitechF310.BACK;
-    private final HID.Button overTheTop = LogitechF310.X;
-    private final HID.Button goToTravelPosition = LogitechF310.START;
-    private final HID.Button armLiftModifier = LogitechF310.DPAD_LEFT;
-    private final HID.Button liftScaleModifier = LogitechF310.DPAD_RIGHT;
-    private final HID.Axis forceHoldClaw = LogitechF310.TRIGGER_RIGHT_AXIS;
-    		
-    //private final HID.Button clawCloseButton = LogitechF310.X;
-    
+    private final HID.Button manualLiftUp = LogitechF310.DPAD_UP;
+    private final HID.Button manualLiftDown = LogitechF310.DPAD_DOWN;
     
     public KeyMap() {
 
@@ -66,20 +59,12 @@ public class KeyMap {
         }
     }
 
-    
-    public boolean getIntakeReverse() {
-    	return getHID(gamepad1).button(intakeReverse);
-    }
     public double getSwerveXAxis() {
         return getHID(gamepad1).axis(swerveXAxis);
     }
 
-    public double getLiftAxis() {
-    	return getHID(gamepad2).axis(manualLiftAxis);
-    }
-    
-    public double getArmAxis() {
-    	return getHID(gamepad2).axis(armAxis);
+    public boolean getSwitchToRobotCentric() {
+    	return getHID(gamepad1).button(switchToRobotCentric);
     }
     
     public double getSwerveYAxis() {
@@ -90,59 +75,56 @@ public class KeyMap {
         return getHID(gamepad1).axis(swerveRotAxis);
     }
     
-    public boolean gotoLiftFloor(){
-    	return getHID(gamepad2).button(gotoLiftFloor);
+    public boolean getHatchRocketLvl1(){
+    	return getHID(gamepad1).button(hatchRocketLvl1);
     }
     
-    public boolean getArmKillButton() {
-    	return getHID(gamepad1).button(armKillButton);
+    public boolean gethatchRocketLvl2() {
+    	return getHID(gamepad1).button(hatchRocketLvl2);
     }
     
-    public boolean gotoLiftSwitch(){
-    	return getHID(gamepad2).button(gotoLiftSwitch);
+    public boolean getHatchRocketLvl3(){
+    	return getHID(gamepad1).button(hatchRocketLvl3);
     }
     
-    public boolean gotoLiftScale(){
-    	return getHID(gamepad2).button(gotoLiftScale);
+    public boolean getCargoRocketLvl1(){
+        return getHID(gamepad1).button(hatchRocketLvl1) && getHID(gamepad1).axis(modifier) > 0.8;
+    }
+    public boolean getCargoRocketLvl2(){
+    	return getHID(gamepad1).button(hatchRocketLvl2) && getHID(gamepad1).axis(modifier) > 0.8;
     }
     
-    public boolean activateIntake(){
-    	return getHID(gamepad2).button(activateIntake);
+    public boolean getCargoRocketLvl3(){
+    	return getHID(gamepad1).button(hatchRocketLvl3) && getHID(gamepad1).axis(modifier) > 0.8;
     }
     
-    public boolean dropCube() {
-    	return getHID(gamepad2).button(dropCube);
+    public boolean getManualBringLiftDown() {
+    	return getHID(gamepad1).button(manualBringLiftDown);
+    }
+
+    public boolean getcargoShipPlacement() {
+        return getHID(gamepad1).button(manualBringLiftDown) && getHID(gamepad1).axis(modifier) > 0.8;
     }
     
-    public boolean goLowGear() {
-    	return getHID(gamepad1).button(lowGearButton);
+    public boolean getManualLiftUp() {
+        return getHID(gamepad1).button(manualLiftUp);
     }
     
-    public boolean goHighGear() {
-    	return getHID(gamepad1).button(highGearButton);
+    public boolean getManualLiftDown() {
+    	return getHID(gamepad1).button(manualLiftDown);
     }
     
-    public double manualLift(){
-    	return getHID(gamepad2).axis(manualLiftAxis);
+    public boolean getManualHatchPlace(){
+    	return getHID(gamepad1).button(manualHatchPlace);
     }
-    
-    public boolean ejectCube(){
-    	return getHID(gamepad2).button(ejectCube);
+    public boolean getManualCargoPlace(){
+        return getHID(gamepad1).button(manualCargoPlace);
     }
-    public boolean overTheTop(){
-    	return getHID(gamepad2).button(overTheTop);
+    public boolean getPrepareToClimb(){
+    	return getHID(gamepad1).button(prepareToClimb) && getHID(gamepad1).axis(modifier) > 0.8;
     }
-    public boolean goToTravelPosition(){
-    	return getHID(gamepad2).button(goToTravelPosition);
-    }
-    public boolean armLiftModifier() {
-    	return getHID(gamepad2).button(armLiftModifier);
-    }
-    public double forceHoldClaw(){
-    	return getHID(gamepad2).axis(forceHoldClaw);
-    }
-    public boolean liftScaleModifier() {
-    	return getHID(gamepad2).button(liftScaleModifier);
+    public boolean getClimb() {
+    	return getHID(gamepad1).button(climb);
     }
 
 
