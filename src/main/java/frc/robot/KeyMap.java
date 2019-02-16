@@ -79,7 +79,7 @@ public class KeyMap {
     	return getHID(gamepad1).button(hatchRocketLvl1);
     }
     
-    public boolean gethatchRocketLvl2() {
+    public boolean getHatchRocketLvl2() {
     	return getHID(gamepad1).button(hatchRocketLvl2);
     }
     

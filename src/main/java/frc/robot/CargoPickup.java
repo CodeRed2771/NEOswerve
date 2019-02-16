@@ -19,7 +19,6 @@ import frc.robot.libs.CurrentBreaker;
 public class CargoPickup {
     private static CargoPickup instance;
     private static TalonSRX cargoPickup;
-    private static TalonSRX arm;
 
     private static CurrentBreaker currentBreaker1;
     private static CurrentBreaker currentBreaker2;
@@ -49,44 +48,6 @@ public class CargoPickup {
 
             resetIntakeStallDetector();
     
-            arm = new TalonSRX(Wiring.ARM_MOTOR);
-    
-            arm.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-            arm.setSelectedSensorPosition(0, 0, 0);
-    
-            arm.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 0);
-            arm.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
-    
-            arm.configNominalOutputForward(0, 0);
-            arm.configNominalOutputReverse(0, 0);
-            arm.configPeakOutputForward(1, 0);
-            arm.configPeakOutputReverse(-1, 0);
-    
-            arm.configClosedloopRamp(.1, 0);
-    
-            // added this in 3/7/18 to try to protect the arm
-            arm.configPeakCurrentLimit(24, 10);
-            arm.configPeakCurrentDuration(200, 10);
-            arm.configContinuousCurrentLimit(17, 10);
-            arm.enableCurrentLimit(true);
-    
-            arm.selectProfileSlot(0, 0);
-            arm.config_kF(0, 5, 0);
-            arm.config_kP(0, 5, 0);
-            arm.config_kI(0, 0, 0);
-            arm.config_kD(0, 0, 0);
-    
-            SmartDashboard.putNumber("MM Arm F", 5);
-            SmartDashboard.putNumber("MM Arm P", 5);
-    
-            SmartDashboard.putNumber("MM Arm Velocity", 300);
-            SmartDashboard.putNumber("MM Arm Acceleration", 300);
-    
-            arm.configMotionCruiseVelocity(300, 0);
-            arm.configMotionAcceleration(300, 0);
-    
-            arm.setSelectedSensorPosition(0, 0, 0);
-    
             ejectEndTime = aDistantFutureTime();
             startReverseTime = aDistantFutureTime();
     
@@ -96,14 +57,6 @@ public class CargoPickup {
      * TICK -----------------------------------------------
      */
     public static void tick() {
-
-        arm.configMotionCruiseVelocity((int) SmartDashboard.getNumber("MM Arm Velocity", 0), 0);
-        arm.configMotionAcceleration((int) SmartDashboard.getNumber("MM Arm Acceleration", 0), 0);
-        arm.config_kF(0, (int) SmartDashboard.getNumber("MM Arm F", 0), 0);
-        arm.config_kP(0, (int) SmartDashboard.getNumber("MM Arm P", 0), 0);
-        SmartDashboard.putNumber("Arm Abs Encoder: ", getArmAbsolutePosition());
-        SmartDashboard.putNumber("Arm Relative Encoder ", arm.getSensorCollection().getQuadraturePosition());
-
         SmartDashboard.putNumber("Intake Current 1", currentBreaker1.getCurrent());
         SmartDashboard.putNumber("Intake Current 2", currentBreaker2.getCurrent());
 
@@ -114,8 +67,7 @@ public class CargoPickup {
 
         if (intakeStalled() && !holdingCargo) {
             System.out.println("Intake stalled - switching to hold mode");
-            holdCube();
-            setArmTravelPosition(); // pop up the arm so we know we have it.
+            holdCargo();
         }
 
         // this turns off the claw after starting an eject
@@ -131,7 +83,7 @@ public class CargoPickup {
                     reverseIntake();
             }
             if (System.currentTimeMillis() >= (startReverseTime + 200)) {
-                intakeCube();
+                intakeCargo();
             }
         }
 
@@ -139,8 +91,7 @@ public class CargoPickup {
 
     // CONTROL METHODS ------------------------------------------------
 
-    public static void intakeCube() {
-        setArmHorizontalPosition();
+    public static void intakeCargo() {
         holdingCargo = false;
         cargoPickup.set(ControlMode.PercentOutput, -.8);
         resetIntakeStallDetector();
@@ -157,19 +108,18 @@ public class CargoPickup {
         return intakeRunning;
     }
 
-    public static void holdCube() {
+    public static void holdCargo() {
         stopIntake();
         cargoPickup.set(ControlMode.PercentOutput, -.15);
         holdingCargo = true;
     }
 
-    public static void dropCube() {
+    public static void dropCargo() {
         holdingCargo = false;
         resetIntakeStallDetector();
-        ejectCubeReallySlow();
     }
 
-    public static void ejectCube() {
+    public static void ejectCargo() {
         holdingCargo = false;
         resetIntakeStallDetector();
         cargoPickup.set(ControlMode.PercentOutput, .5);
@@ -177,51 +127,10 @@ public class CargoPickup {
         ejectEndTime = System.currentTimeMillis() + 750;
     }
 
-    public static void ejectCubeSlow() {
-        holdingCargo = false;
-        resetIntakeStallDetector();
-        cargoPickup.set(ControlMode.PercentOutput, .25);
-        ejectEndTime = System.currentTimeMillis() + 750;
-    }
-
-    public static void ejectCubeReallySlow() {
-        holdingCargo = false;
-        resetIntakeStallDetector();
-        cargoPickup.set(ControlMode.PercentOutput, .15);
-        ejectEndTime = System.currentTimeMillis() + 1000;
-    }
-
     public static void stopIntake() {
         cargoPickup.set(ControlMode.PercentOutput, 0);
         resetIntakeStallDetector();
         intakeRunning = false;
-    }
-
-    // ARM POSITIONING ------------------------------------------------
-
-    public static void setArmHorizontalPosition() {
-        System.out.println("set arm horizontal");
-        arm.set(ControlMode.MotionMagic, 0);
-    }
-
-    public static void setArmSwitchPosition() {
-        System.out.println("set arm switch");
-        arm.set(ControlMode.MotionMagic, -745);
-    }
-
-    public static void setArmScalePosition() {
-        System.out.println("set arm scale");
-        arm.set(ControlMode.MotionMagic, -900);
-    }
-
-    public static void setArmTravelPosition() {
-        System.out.println("set arm travel");
-        arm.set(ControlMode.MotionMagic, -1819);
-    }
-
-    public static void setArmOverTheTopPosition() {
-        System.out.println("set arm over the top");
-        arm.set(ControlMode.MotionMagic, -3300);
     }
 
     // UTILITY METHODS ---------------------------------------------------------
@@ -235,15 +144,6 @@ public class CargoPickup {
         currentBreaker2.reset();
     }
 
-    public static double getArmAbsolutePosition() {
-        return (arm.getSensorCollection().getPulseWidthPosition() & 0xFFF) / 4095d;
-    }
-
-    // this tells the encoder that it's at a particular position
-    private static void setArmEncPos(int d) {
-        arm.getSensorCollection().setQuadraturePosition(d, 500);
-    }
-
     /*
      * Resets the arm encoder value relative to what we've determined to be the
      * "zero" position. (the calibration values). This is so the rest of the program
@@ -255,33 +155,6 @@ public class CargoPickup {
      * 
      * Bottom line is that this is what applies the turn calibration values.
      */
-    public static void resetArmEncoder() {
-        if (getInstance() == null)
-            return;
-
-        double offSet = 0;
-        int newArmEncoderValue = 0;
-
-        arm.set(ControlMode.PercentOutput, 0); // turn off the motor while we're
-                                               // setting encoder
-
-        // first find the current absolute position of the arm encoder
-        offSet = getArmAbsolutePosition();
-
-        // now use the difference between the current position and the
-        // calibration zero position
-        // to tell the encoder what the current relative position is (relative
-        // to the zero pos)
-        newArmEncoderValue = (int) (calculatePositionDifference(offSet, Calibration.ARM_ABS_ZERO) * 4095d);
-        setArmEncPos(newArmEncoderValue);
-        System.out.println("arm absolute " + offSet);
-        System.out.println("Setting arm encoder to " + newArmEncoderValue);
-
-    }
-
-    private static double calculatePositionDifference(double currentPosition, double calibrationZeroPosition) {
-        return currentPosition - calibrationZeroPosition;
-    }
 
     private static double aDistantFutureTime() {
         return System.currentTimeMillis() + 900000; // 15 minutes in the future
@@ -291,16 +164,11 @@ public class CargoPickup {
      * TEST METHODS
      */
 
-    public static void armMove(double speed) {
-        System.out.println("calling for arm move " + speed);
-        arm.set(ControlMode.PercentOutput, speed);
-    }
-
-    public static void testIntakeCube(double speed) {
+    public static void testIntakeCargo(double speed) {
         cargoPickup.set(ControlMode.PercentOutput, speed);
     }
 
-    public static void testEjectCube(double speed) {
+    public static void testEjectCargo(double speed) {
         cargoPickup.set(ControlMode.PercentOutput, -speed);
     }
 

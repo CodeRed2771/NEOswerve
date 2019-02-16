@@ -78,6 +78,9 @@ public class Lift {
 	public static  void move(double speed) {
 		liftMotor.set(ControlMode.PercentOutput, speed);	
 	}
+	public static void goDown(){
+		liftMotor.set(ControlMode.MotionMagic, 0);
+	}
 	public static  void goHatchLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, -11000); 
 	}
@@ -87,24 +90,15 @@ public class Lift {
 	public static  void goHatchLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, -43000); 
 	}
-	public static void goHighHatch() {
+	public static void goCargoLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, -43000); // This value needs to be calibrated.
     }
-    public static void goHighCargo(){
+    public static void goHatchLvl3(){
         liftMotor.set(ControlMode.MotionMagic, -43000); // These values will need to be calibrated.
     }
-	public static void goMidHatch(){
+	public static void goCargoLvl3(){
 		liftMotor.set(ControlMode.MotionMagic, 5); // Needs to be calibrated
 	}
-	public static void goMidCargo() {
-		liftMotor.set(ControlMode.MotionMagic, -5000); // Needs to be calibrated
-	}
-	public static void GoLowHatch() { // Should this work for low rocket and cargo ship?
-		liftMotor.set(ControlMode.MotionMagic, -8000); // Needs to be calibrated
-    }
-    public static void goLowCargo(){
-        liftMotor.set(ControlMode.MotionMagic, 5); // Needs to be calibrated
-    }
     public static void goCargoShipCargo(){
         liftMotor.set(ControlMode.MotionMagic, 5); // Needs to be calibrated
     }

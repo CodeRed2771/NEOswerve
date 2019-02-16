@@ -3,10 +3,7 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain implements PIDOutput {
@@ -376,10 +373,10 @@ public class DriveTrain implements PIDOutput {
 		// SmartDashboard.putNumber("swerve b", b);
 		// SmartDashboard.putNumber("swerve c", c);
 		// SmartDashboard.putNumber("swerve d", d);
-		 SmartDashboard.putNumber("swerve wa1", wa1);
-		 SmartDashboard.putNumber("swerve wa2", wa2);
-		 SmartDashboard.putNumber("swerve wa3", wa3);
-		 SmartDashboard.putNumber("swerve wa4", wa4);
+		// SmartDashboard.putNumber("swerve wa1", wa1);
+		// SmartDashboard.putNumber("swerve wa2", wa2);
+		// SmartDashboard.putNumber("swerve wa3", wa3);
+		// SmartDashboard.putNumber("swerve wa4", wa4);
 		// SmartDashboard.putNumber("swerve rot", rot);
 		// SmartDashboard.putNumber("swerve fwd", fwd);
 		// SmartDashboard.putNumber("ws1", ws1);

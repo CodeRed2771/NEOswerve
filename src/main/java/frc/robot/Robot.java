@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
 		DriveTrain.getInstance();
 		DriveAuto.getInstance();
 		TargetInfo.getInstance();
+		Lift.getInstance();
 
 		Calibration.loadSwerveCalibration();
 
@@ -84,6 +85,30 @@ public class Robot extends TimedRobot {
 		// allow manual gyro reset if you press Start button
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
+		}
+		if(gamepad.getManualBringLiftDown()){
+			Lift.goDown();
+		}
+		if (gamepad.getHatchRocketLvl1()){
+			Lift.goHatchLvl1();
+		}
+		if (gamepad.getHatchRocketLvl2()){
+			Lift.goCargoLvl2();
+		}
+		if (gamepad.getHatchRocketLvl3()){
+			Lift.goCargoLvl3();
+		}
+		if (gamepad.getCargoRocketLvl1()) {
+			Lift.goCargoLvl1();
+		}
+		if (gamepad.getCargoRocketLvl2()){
+			Lift.goCargoLvl2();
+		}
+		if (gamepad.getCargoRocketLvl3()){
+			Lift.goCargoLvl3();
+		}
+		if (gamepad.getcargoShipPlacement()){
+			Lift.goCargoShipCargo();
 		}
 
 		// Y
