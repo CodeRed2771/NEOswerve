@@ -7,13 +7,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class AutoSlideOver extends AutoBaseClass {
+	Direction direction;
 
 	public static enum Direction {
 		LEFT, RIGHT
 	};
 
-	public AutoSlideOver(Direction direction) {
+	public AutoSlideOver() {
 		super();
+		
+	}
+
+	public void start (Direction direction) {
+		this.direction = direction;
+		super.start();
 	}
 
 	public void tick() {
@@ -23,50 +30,33 @@ public class AutoSlideOver extends AutoBaseClass {
 
 			switch (getCurrentStep()) {
 			case 0:
-				setTimerAndAdvanceStep(4000);
-				turnDegrees(90, SmartDashboard.getNumber("Turn Speed", 0.25));
+				setTimerAndAdvanceStep(2000);
+				if (direction == Direction.LEFT) {
+					driveInches(-13, 70, .2);
+				} else {
+					driveInches(-13, -70, .2);
+				}
 				break;
 			case 1:
-				if (turnCompleted())
+				if (driveCompleted())
 					advanceStep();
 				break;
 			case 2:
-				setTimerAndAdvanceStep(5000);
+				setTimerAndAdvanceStep(2000);
+				if (direction == Direction.LEFT) {
+					driveInches(13, -70, .2);
+				} else {
+					driveInches(13, 70, .2);
+				}
 				break;
 			case 3:
-				break;
-			case 4:
-				setTimerAndAdvanceStep(4000);
-				turnDegrees(-90, SmartDashboard.getNumber("Turn Speed", 0.4));
-				break;
-			case 5:
-				if (turnCompleted())
+				if (driveCompleted())
 					advanceStep();
 				break;
-			case 6:
-				setTimerAndAdvanceStep(5000);
+			case 4:
+				stop();
 				break;
-			case 7:
-				break;
-			case 8: 
-				setStep(0);
-				break;
-			// case 6:
-			// setTimerAndAdvanceStep(1000);
-			// break;
-			// case 7:
-			// break;
-			// case 8:
-			// setTimerAndAdvanceStep(4000);
-			// driveInches(0, 0, .3);
-			// break;
-			// case 9:
-			// if(driveCompleted())
-			// advanceStep();
-			// break;
-			case 10:
-				setStep(100000);
-				// DriveTrain.setTurnOrientation(0, 0, 0, 0);
+
 			}
 		}
 	}

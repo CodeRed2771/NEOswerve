@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.AutoSlideOver.Direction;
 import frc.robot.libs.PIDSourceFilter.PIDGetFilter;
 
 public class Robot extends TimedRobot {
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
 	final String autoRotateTest = "Rotate Test";
 	final String autoCalibrateDrive = "Auto Calibrate Drive";
 	final String autoDrivePIDTune = "Drive PID Tune";
+	
 
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
@@ -42,6 +44,7 @@ public class Robot extends TimedRobot {
 	private NetworkTableEntry SB_vision_FWD_DIST = visionTab.add("Vision FWD DIST", 48).getEntry();
 
 	private FindHatch hatchFinder = new FindHatch();
+	private AutoSlideOver autoSlideOver = new AutoSlideOver();
 
 	// End setup stuff
 
@@ -115,7 +118,14 @@ public class Robot extends TimedRobot {
 		if (gamepad.getButtonY(0)) {
 			Vision.setTargetTrackingMode();
 		}
-
+		//DPAD Left
+		if (gamepad.getDpadLeft(0) && !autoSlideOver.isRunning()) {
+			autoSlideOver.start(Direction.LEFT);
+		}
+		//DPAD Right
+		if (gamepad.getDpadRight(0) && !autoSlideOver.isRunning()) {
+			autoSlideOver.start(Direction.RIGHT);
+		}
 		// A
 		if (gamepad.getButtonA(0) && !hatchFinder.isRunning()) {
 			hatchFinder.start();
@@ -125,8 +135,9 @@ public class Robot extends TimedRobot {
 			hatchFinder.stop();
 		}
 
-		if (hatchFinder.isRunning()) {
+		if (hatchFinder.isRunning() || autoSlideOver.isRunning()) {
 			hatchFinder.tick();
+			autoSlideOver.tick();
 		} else {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from

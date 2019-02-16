@@ -146,6 +146,12 @@ public class KeyMap {
         return getHID(gamePadNumber).button(LogitechF310.Y);
     }
     public boolean getStartButton(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.START);
+        return getHID(gamePadNumber).button(LogitechF310.START); 
+    } 
+    public boolean getDpadLeft(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_LEFT);
+    }
+    public boolean getDpadRight(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_RIGHT);
     }
 }
