@@ -103,7 +103,7 @@ public class FindHatch extends AutoBaseClass {
                 }
                 break;
             case 8:
-                double slideDistance = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget;
+                double slideDistance = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget + 1;
                 SmartDashboard.putNumber("Slide Dist", slideDistance);
                 driveInches(slideDistance, 90, .3);
                 setTimerAndAdvanceStep(3000);
@@ -114,7 +114,7 @@ public class FindHatch extends AutoBaseClass {
                 }
                 break;
             case 10:
-                driveInches(distanceToTarget - 4, 0, .09);
+                driveInches(distanceToTarget - 8, 0, .025);
                 setTimerAndAdvanceStep(1000);
                 break;
             case 11:
