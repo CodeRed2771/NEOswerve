@@ -2,21 +2,22 @@ package frc.robot;
 
 import frc.robot.libs.Timer;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public abstract class AutoBaseClass {
 	private Timer mAutoTimer;		// note that the timer is ticked in isRunning() and hasCompleted()
-	private char mRobotPosition;
+	private Position mRobotPosition;
 	private boolean mIsRunning = false;
-	
-	public AutoBaseClass(char robotPosition) {
-		mRobotPosition = robotPosition;
-		mAutoTimer = new Timer();
-	}
+	private Direction mDirection ;
 
+	public static enum Direction {
+		LEFT, RIGHT
+	};
+	
+	public static enum Position {
+		LEFT, CENTER, RIGHT
+	};
+	
 	public AutoBaseClass() {
-		this('X');
+		mAutoTimer = new Timer();
 	}
 
 	public abstract void tick();
@@ -30,6 +31,26 @@ public abstract class AutoBaseClass {
         // set current position equal to Gyro
         // otherwise turns will be relative to 0
         DriveAuto.setTurnDegreesToCurrentAngle(); 
+	}
+	public void start(Position robotPosition) {
+		mRobotPosition = robotPosition;
+		start();
+	}
+
+	public void start(char robotPosition) {
+		if(robotPosition == 'L') {
+			mRobotPosition = Position.LEFT;
+		} else if(robotPosition == 'R') {
+			mRobotPosition = Position.RIGHT;
+		} else{
+			mRobotPosition = Position.CENTER;
+		}
+		start();
+	}
+
+	public void start(Direction direction) {
+		mDirection = direction;
+		start();
 	}
 
 	public void stop() {
@@ -91,8 +112,16 @@ public abstract class AutoBaseClass {
 		DriveAuto.continuousDrive(inches, maxPower);
 	}
 	
-	public char robotPosition() {
+	public Position robotPosition() {
 		return mRobotPosition;
+	}
+
+	public void setRobotPosition(Position position) {
+		mRobotPosition = position;
+	}
+
+	public Direction slideDirection() {
+		return mDirection;
 	}
 
 	public void advanceStep() {

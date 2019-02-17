@@ -7,31 +7,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class AutoSlideOver extends AutoBaseClass {
-	Direction direction;
-
-	public static enum Direction {
-		LEFT, RIGHT
-	};
-
 	public AutoSlideOver() {
 		super();
-		
-	}
-
-	public void start (Direction direction) {
-		this.direction = direction;
-		super.start();
 	}
 
 	public void tick() {
+		SmartDashboard.putNumber("Auto Step", getCurrentStep());
 		if (isRunning()) {
-
-			SmartDashboard.putNumber("Auto Step", getCurrentStep());
 
 			switch (getCurrentStep()) {
 			case 0:
 				setTimerAndAdvanceStep(2000);
-				if (direction == Direction.LEFT) {
+				if (slideDirection() == Direction.LEFT) {
 					driveInches(-13, 70, .2);
 				} else {
 					driveInches(-13, -70, .2);
@@ -43,7 +30,7 @@ public class AutoSlideOver extends AutoBaseClass {
 				break;
 			case 2:
 				setTimerAndAdvanceStep(2000);
-				if (direction == Direction.LEFT) {
+				if (slideDirection() == Direction.LEFT) {
 					driveInches(13, -70, .2);
 				} else {
 					driveInches(13, 70, .2);

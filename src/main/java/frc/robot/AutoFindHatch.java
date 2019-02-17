@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * Add your docs here.
  */
-public class FindHatch extends AutoBaseClass {
+public class AutoFindHatch extends AutoBaseClass {
 
     private double distanceToTarget = 0;
     private double angleDiff;
-    double distToStayBack = 30;
+    private double distToStayBack = 30;
 
     public void start() {
         super.start();

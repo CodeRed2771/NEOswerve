@@ -8,11 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 
 public class AutoRotateTest extends AutoBaseClass {
-	public AutoRotateTest(char robotPosition) {
-		super(robotPosition);
-		SmartDashboard.putNumber("Turn Speed", 0.25);
-	}
-
+	
 	public void tick() {
 		if (isRunning()) {
 

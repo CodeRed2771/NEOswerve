@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.AutoSlideOver.Direction;
 import frc.robot.libs.PIDSourceFilter.PIDGetFilter;
 
 public class Robot extends TimedRobot {
@@ -43,9 +42,6 @@ public class Robot extends TimedRobot {
 	private NetworkTableEntry SB_vision_STR_P = visionTab.add("Vision STR P", Calibration.VISION_STR_P).getEntry();
 	private NetworkTableEntry SB_vision_FWD_DIST = visionTab.add("Vision FWD DIST", 48).getEntry();
 
-	private FindHatch hatchFinder = new FindHatch();
-	private AutoSlideOver autoSlideOver = new AutoSlideOver();
-
 	// End setup stuff
 
 	@Override
@@ -58,6 +54,7 @@ public class Robot extends TimedRobot {
 		DriveAuto.getInstance();
 		TargetInfo.getInstance();
 		Lift.getInstance();
+		mAutoProgram = new AutoDoNothing();
 
 		Calibration.loadSwerveCalibration();
 
@@ -119,25 +116,33 @@ public class Robot extends TimedRobot {
 			Vision.setTargetTrackingMode();
 		}
 		//DPAD Left
-		if (gamepad.getDpadLeft(0) && !autoSlideOver.isRunning()) {
-			autoSlideOver.start(Direction.LEFT);
+		if (gamepad.getDpadLeft(0) && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoSlideOver();
+			mAutoProgram.start(AutoBaseClass.Direction.LEFT);
 		}
 		//DPAD Right
-		if (gamepad.getDpadRight(0) && !autoSlideOver.isRunning()) {
-			autoSlideOver.start(Direction.RIGHT);
+		if (gamepad.getDpadRight(0) && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoSlideOver();
+			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
 		}
 		// A
-		if (gamepad.getButtonA(0) && !hatchFinder.isRunning()) {
-			hatchFinder.start();
+		if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoFindHatch();
+			mAutoProgram.start();
 		}
 		// B
 		if (gamepad.getButtonB(0)) {
-			hatchFinder.stop();
+			mAutoProgram.stop();
+		}
+		// X
+		if (gamepad.getButtonX(0)) {
+			mAutoProgram = new AutoDriveOffPlatform();
+			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
 		}
 
-		if (hatchFinder.isRunning() || autoSlideOver.isRunning()) {
-			hatchFinder.tick();
-			autoSlideOver.tick();
+		SmartDashboard.putBoolean("Auto Running", mAutoProgram.isRunning());
+		if (mAutoProgram.isRunning()) {
+			mAutoProgram.tick();
 		} else {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
@@ -196,10 +201,10 @@ public class Robot extends TimedRobot {
 		switch (autoSelected) {
 		case autoDrivePIDTune:
 			SmartDashboard.putNumber("Drive To Setpoint", 0);
-			mAutoProgram = new AutoDrivePIDTune(robotPosition);
+			mAutoProgram = new AutoDrivePIDTune();
 			break;
 		case autoRotateTest:
-			mAutoProgram = new AutoRotateTest(robotPosition);
+			mAutoProgram = new AutoRotateTest();
 			break;
 		}
 

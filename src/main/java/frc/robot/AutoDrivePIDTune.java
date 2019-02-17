@@ -6,10 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoDrivePIDTune extends AutoBaseClass {
 	int lastPosition = 0;
-	
-	public AutoDrivePIDTune(char robotPosition) {
-		super(robotPosition);
-	}
 
 	public void tick() {
 		

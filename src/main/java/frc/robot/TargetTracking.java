@@ -3,8 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TargetTracking extends AutoBaseClass {
-    public TargetTracking(char robotPosition) {
-		super(robotPosition);
+    public TargetTracking(Position robotPosition) {
+		setRobotPosition(robotPosition);;
 		System.out.println("TargetTracking started");
 	}
     public void tick() {
