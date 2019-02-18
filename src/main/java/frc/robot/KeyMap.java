@@ -31,7 +31,7 @@ public class KeyMap {
     // Hatch Placement
     private final HID.Button hatchRocketLvl1 = LogitechF310.A;
     private final HID.Button hatchRocketLvl2 = LogitechF310.B;
-    private final HID.Button manualBringLiftDown = LogitechF310.X;
+    private final HID.Button bringLiftToStart = LogitechF310.X;
     private final HID.Button hatchRocketLvl3 = LogitechF310.Y;
    
     //Cargo Placement
@@ -98,12 +98,12 @@ public class KeyMap {
     	return getHID(gamepad1).button(hatchRocketLvl3) && getHID(gamepad1).axis(modifier) > 0.8;
     }
     
-    public boolean getManualBringLiftDown() {
-    	return getHID(gamepad1).button(manualBringLiftDown);
+    public boolean getBringLiftToStart() {
+    	return getHID(gamepad1).button(bringLiftToStart);
     }
 
     public boolean getcargoShipPlacement() {
-        return getHID(gamepad1).button(manualBringLiftDown) && getHID(gamepad1).axis(modifier) > 0.8;
+        return getHID(gamepad1).button(bringLiftToStart) && getHID(gamepad1).axis(modifier) > 0.8;
     }
     
     public boolean getManualLiftUp() {
@@ -153,5 +153,14 @@ public class KeyMap {
     }
     public boolean getDpadRight(int gamePadNumber) {
         return getHID(gamePadNumber).button(LogitechF310.DPAD_RIGHT);
+    }
+    public boolean getDpadUp(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_UP);
+    }
+    public boolean getDpadDown(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_DOWN);
+    }
+    public double getLeftStickY(int gamePadNumber) {
+        return getHID(gamePadNumber).axis(LogitechF310.STICK_LEFT_Y);
     }
 }

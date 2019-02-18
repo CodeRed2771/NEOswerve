@@ -86,17 +86,30 @@ public class Robot extends TimedRobot {
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
-		if(gamepad.getManualBringLiftDown()){
-			Lift.goDown();
+
+		// FOR LIFT CALIBRATION - REMOVE FOR COMPETIION !!!!!
+		if (gamepad.getLeftStickY(1) > .05 || gamepad.getLeftStickY(1) < .05) {
+			// we're using GP 2 left stick to manually drive lift
+			Lift.move(gamepad.getLeftStickY(1));
+		}
+
+
+		if (gamepad.getManualLiftUp())  
+			Lift.moveSetpoint(-1);
+		if (gamepad.getManualLiftDown())
+			Lift.moveSetpoint(1);
+
+		if(gamepad.getBringLiftToStart()){
+			Lift.goToStart();
 		}
 		if (gamepad.getHatchRocketLvl1()){
 			Lift.goHatchLvl1();
 		}
 		if (gamepad.getHatchRocketLvl2()){
-			Lift.goCargoLvl2();
+			Lift.goHatchLvl2();
 		}
 		if (gamepad.getHatchRocketLvl3()){
-			Lift.goCargoLvl3();
+			Lift.goHatchLvl3();
 		}
 		if (gamepad.getCargoRocketLvl1()) {
 			Lift.goCargoLvl1();
@@ -161,6 +174,9 @@ public class Robot extends TimedRobot {
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
 		showDashboardInfo();
+
+		Lift.tick();
+		
 		// Vision.tick();
 	}
 

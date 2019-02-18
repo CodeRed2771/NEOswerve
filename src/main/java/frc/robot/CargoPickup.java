@@ -8,9 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,15 +34,15 @@ public class CargoPickup {
     }
 
     public CargoPickup() {
-            cargoPickup = new TalonSRX(Wiring.CUBE_CLAW_LEFT_MOTOR);
+            cargoPickup = new TalonSRX(Wiring.INTAKE_LEFT_MOTOR);
             cargoPickup.setInverted(true);
     
             cargoPickup.configOpenloopRamp(.2, 0);
     
             cargoPickup.setNeutralMode(NeutralMode.Brake);
     
-            currentBreaker1 = new CurrentBreaker(null, Wiring.CLAW_PDP_PORT1, Calibration.CLAW_MAX_CURRENT, 250, 2000); 
-            currentBreaker2 = new CurrentBreaker(null, Wiring.CLAW_PDP_PORT2, Calibration.CLAW_MAX_CURRENT, 250, 2000);
+            currentBreaker1 = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT1, Calibration.CLAW_MAX_CURRENT, 250, 2000); 
+            currentBreaker2 = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT2, Calibration.CLAW_MAX_CURRENT, 250, 2000);
 
             resetIntakeStallDetector();
     

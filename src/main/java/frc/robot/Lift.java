@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Lift {
 	private static Lift instance;
 	private static TalonSRX liftMotor;
-	private static TalonSRX liftFollower;
+	// private static TalonSRX liftFollower;
 	
 	public static Lift getInstance() {
 		if (instance == null)
@@ -20,9 +20,9 @@ public class Lift {
 
 	public Lift() {
 		liftMotor = new TalonSRX(Wiring.LIFT_MASTER);
-		liftFollower = new TalonSRX(Wiring.LIFT_FOLLLOWER);
-		liftFollower.follow(liftMotor);
-		liftFollower.setInverted(false);
+		// liftFollower = new TalonSRX(Wiring.LIFT_FOLLLOWER);
+		// liftFollower.follow(liftMotor);
+		// liftFollower.setInverted(false);
 		
 		/* first choose the sensor */
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,0, 0);
@@ -76,9 +76,34 @@ public class Lift {
 		SmartDashboard.putNumber("Lift Motor Encoder", liftMotor.getSensorCollection().getQuadraturePosition());
 	}
 	public static  void move(double speed) {
+		// limit speed
+		if (speed < -.3) 
+			speed = -.3;
+		if (speed > .3) 
+			speed = .3;
+
 		liftMotor.set(ControlMode.PercentOutput, speed);	
 	}
-	public static void goDown(){
+
+	public static void moveSetpoint(double direction) {
+		int newSetpoint;
+
+		if (direction > 0) {
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 4000;
+			if (newSetpoint >= 0) {
+				newSetpoint = 0;
+			}
+		} else {
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 4000;
+			if (newSetpoint < -10000) {
+				newSetpoint = -10000;
+			}
+		}
+
+		liftMotor.set(ControlMode.MotionMagic, newSetpoint);
+	}
+
+	public static void goToStart(){
 		liftMotor.set(ControlMode.MotionMagic, 0);
 	}
 	public static  void goHatchLvl1() {
