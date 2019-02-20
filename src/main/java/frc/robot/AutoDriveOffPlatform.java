@@ -18,6 +18,9 @@ public class AutoDriveOffPlatform extends AutoBaseClass {
 
 	public void tick() {
 		if (isRunning()) {
+
+			DriveAuto.tick();
+
 			SmartDashboard.putNumber("Auto Step", getCurrentStep());
 			switch (getCurrentStep()) {
 			case 0:

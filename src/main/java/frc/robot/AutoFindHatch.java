@@ -17,6 +17,7 @@ public class AutoFindHatch extends AutoBaseClass {
     private double distanceToTarget = 0;
     private double angleDiff;
     private double distToStayBack = 30;
+    private double targetAngle = 0;
 
     public void start() {
         super.start();
@@ -44,6 +45,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 }
                 break;
             case 1:
+                targetAngle = TargetInfo.targetAngle();
                 DriveAuto.turnDegrees(Vision.offsetFromTarget(), .25);
                 setTimerAndAdvanceStep(1000);
                 break;
@@ -53,7 +55,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 }
                 break;
             case 3:
-                angleDiff = TargetInfo.targetAngle() - RobotGyro.getAngle();
+                angleDiff = targetAngle - RobotGyro.getAngle();
                 DriveAuto.turnDegrees(angleDiff, .25); // Square up?
                 setTimerAndAdvanceStep(1000);
                 break;
