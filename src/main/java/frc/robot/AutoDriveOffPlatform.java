@@ -70,7 +70,6 @@ public class AutoDriveOffPlatform extends AutoBaseClass {
 					setStep(100);
 				break;
 
-
 				// keep this case as the final case, and keep it 100
 			case 100:
 				stop();

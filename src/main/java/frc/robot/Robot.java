@@ -279,17 +279,17 @@ public class Robot extends TimedRobot {
 	private void setupAutoChoices() {
 		// Position Chooser
 		positionChooser = new SendableChooser<String>();
-		positionChooser.addObject("Left", "L");
-		positionChooser.addDefault("Center", "C");
-		positionChooser.addObject("Right", "R");
+		positionChooser.addOption("Left", "L");
+		positionChooser.setDefaultOption("Center", "C");
+		positionChooser.addOption("Right", "R");
 		SmartDashboard.putData("Position", positionChooser);
 
 		/* Auto Chooser */
 		autoChooser = new SendableChooser<>();
 		autoChooser.addOption(targetTracking, targetTracking);
-		autoChooser.addObject(autoRotateTest, autoRotateTest);
-		autoChooser.addObject(autoCalibrateDrive, autoCalibrateDrive);
-		autoChooser.addObject(autoDrivePIDTune, autoDrivePIDTune);
+		autoChooser.addOption(autoRotateTest, autoRotateTest);
+		autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
+		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
 
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
