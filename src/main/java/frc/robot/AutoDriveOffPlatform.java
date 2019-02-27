@@ -1,11 +1,9 @@
 package frc.robot;
 
-import javax.lang.model.util.ElementScanner6;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
- Slides over one cargo opening on the cargo ship.
+	Program that drives off platform and places a hatch panel
  */
 
 public class AutoDriveOffPlatform extends AutoBaseClass {
