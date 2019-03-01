@@ -6,7 +6,7 @@ public class Wiring {
 	 * 
 	 * 1 thru 8 are the drive train
 	 */
-	public static final int LIFT_MASTER = 11;
+	public static final int LIFT_MASTER = 9;
 	public static final int LIFT_FOLLLOWER = 12;
 	public static final int INTAKE_LEFT_MOTOR = 14;
 	public static final int INTAKE_RIGHT_MOTOR = 13;

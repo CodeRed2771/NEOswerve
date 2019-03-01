@@ -132,61 +132,61 @@ public class Vision {
 		// dis = (-0.6944 * targetArea() + 8.6644)*12;
 
 		double ta = targetArea();
+		double tvert = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert").getDouble(0);
+		SmartDashboard.putNumber("tvert", tvert);
 
-		if (ta == 0)
+		if (tvert == 0) {
 			return 0;
-		if (ta > 12.3)
-			return 24;
-		else if (ta > 8.5)
-			return 30;
-		else if (ta > 5.8)
-			return 36; 
-		else if (ta > 4.425)
-			return 42;
-		else if (ta > 3.05)
-			return 48;
-		else if (ta > 2.4785)
-			return 54;
-		else if (ta > 1.907)
-			return 60;
-		else if (ta > 1.616)
-			return 66;
-		else if (ta > 1.325)
-			return 72;
-		else if (ta > 1.1545 )
-			return 78;
-		else if (ta > .984)
-			return 84;
-		else if (ta > 0.8585) 
-			return 90;
-		else if (ta > .733) 
-			return 96;
-		else if (ta > 0.6325)
-			return 102;
-		else if (ta > .532) 
-			return 108;
-		else if (ta > 0.4835)
-			return 114;
-		else if (ta > .435) 
-			return 120;
-		else if (ta > 0.393)
-			return 126;
-		else if (ta > .351) 
-			return 132;
-		else
-			return 144;
-		// else if (ta > .285)
-		// 	return 138;
-		// else if (ta > .27)
+		} 
+
+		return 0;
+
+		//THIS IS HOW WE CALCULATE DISTANCE THROUGH THE TARGET AREA.
+
+		// if (ta == 0)
+		// 	return 0;
+		// if (ta > 12.3)
+		// 	return 24;
+		// else if (ta > 8.5)
+		// 	return 30;
+		// else if (ta > 5.8)
+		// 	return 36; 
+		// else if (ta > 4.425)
+		// 	return 42;
+		// else if (ta > 3.05)
+		// 	return 48;
+		// else if (ta > 2.4785)
+		// 	return 54;
+		// else if (ta > 1.907)
+		// 	return 60;
+		// else if (ta > 1.616)
+		// 	return 66;
+		// else if (ta > 1.325)
+		// 	return 72;
+		// else if (ta > 1.1545 )
+		// 	return 78;
+		// else if (ta > .984)
+		// 	return 84;
+		// else if (ta > 0.8585) 
+		// 	return 90;
+		// else if (ta > .733) 
+		// 	return 96;
+		// else if (ta > 0.6325)
+		// 	return 102;
+		// else if (ta > .532) 
+		// 	return 108;
+		// else if (ta > 0.4835)
+		// 	return 114;
+		// else if (ta > .435) 
+		// 	return 120;
+		// else if (ta > 0.393)
+		// 	return 126;
+		// else if (ta > .351) 
+		// 	return 132;
+		// else
 		// 	return 144;
-		// else if (ta > .249)
-		// 	return 150;
-		// else if (ta > .228)
-		// 	return 156;
-		// else if (ta > .173)
-		// 	return 162;
-		// else 
-		// 	return 168;
+
+		
 	}
 
 	public static double getTargetSkew() {

@@ -25,7 +25,7 @@ public class Lift {
 		// liftFollower.setInverted(false);
 		
 		/* first choose the sensor */
-		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,0, 0);
+		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0, 0);
 		
 		/* set the relevant frame periods to be at least as fast as periodic rate */
 		liftMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10,0);
@@ -55,8 +55,8 @@ public class Lift {
 		SmartDashboard.putNumber("Lif D", 0);
 		
 		/* set acceleration and vcruise velocity - see documentation*/
-		liftMotor.configMotionCruiseVelocity(3000, 0);
-		liftMotor.configMotionAcceleration(1500, 0);
+		liftMotor.configMotionCruiseVelocity(4000, 0);
+		liftMotor.configMotionAcceleration(2000, 0);
 		
 		/* zero the sensor */
 		liftMotor.setSelectedSensorPosition(0, 0, 0);

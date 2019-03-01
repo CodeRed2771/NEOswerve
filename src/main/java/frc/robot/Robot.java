@@ -165,12 +165,12 @@ public class Robot extends TimedRobot {
 			double driveRotAxisAmount = powerOf3PreserveSign(gamepad.getSwerveRotAxis());
 			// put some rotational power restrictions in place to make it
 			// more controlled
-			if (Math.abs(driveRotAxisAmount) > .50) {
-				if (driveRotAxisAmount < 0)
-					driveRotAxisAmount = -.50;
-				else
-					driveRotAxisAmount = .50;
-			}
+			// if (Math.abs(driveRotAxisAmount) > .50) {
+			// 	if (driveRotAxisAmount < 0)
+			// 		driveRotAxisAmount = -.50;
+			// 	else
+			// 		driveRotAxisAmount = .50;
+			// }
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
 		showDashboardInfo();
