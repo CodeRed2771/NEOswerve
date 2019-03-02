@@ -8,15 +8,15 @@ public class Wiring {
 	 */
 	public static final int LIFT_MASTER = 9;
 	public static final int LIFT_FOLLLOWER = 12;
-	public static final int INTAKE_LEFT_MOTOR = 14;
-	public static final int INTAKE_RIGHT_MOTOR = 13;
+	public static final int INTAKE_MOTOR = 13;
 	public static final int ARM_MOTOR = 15; 
+
+	public static final int CLIMB_MOTOR = 11;
 
 	/*
 	 * PDP PORTS
 	 */
-	public static final int INTAKE_PDP_PORT1 = 6;
-	public static final int INTAKE_PDP_PORT2 = 7;
+	public static final int INTAKE_PDP_PORT = 6;
 	
 	/* 
 	 * PCM PORTS

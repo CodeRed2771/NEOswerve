@@ -87,7 +87,7 @@ public class Calibration {
 	public final static double DT_ROT_PID_IZONE = 18;
 
 	public final static int DT_MM_ACCEL = 300;
-	public final static int DT_MM_VELOCITY = 400;
+	public final static int DT_MM_VELOCITY = 350;
 	
 	public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 32.900; //2624 ticks in 80 inches, goes 2,427.2
 	

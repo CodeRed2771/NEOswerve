@@ -135,11 +135,51 @@ public class Vision {
 		double tvert = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert").getDouble(0);
 		SmartDashboard.putNumber("tvert", tvert);
 
-		if (tvert == 0) {
+		// if (tvert == 0) {
+		// 	return 0;
+		// }
+		
+		if(tvert >= 53)
+			return 24;
+		else if(tvert >= 44)
+			return 30;
+		else if (tvert >=37) 
+			return 36;
+		else if (tvert >= 36) 
+			return 42;
+		else if (tvert >= 32) 
+			return 48;
+		else if (tvert >= 28) 
+			return 54;
+		else if (tvert >= 25) 
+			return 60;
+		else if (tvert >= 23)
+			return 66;
+		else if (tvert >= 22) 
+			return 72;
+		else if (tvert >= 21)
+			return 78;
+		else if (tvert >= 20) 
+			return 84;
+		else if (tvert >= 17)
+			return 90;
+		else if (tvert >= 16)
+			return 94;
+		else if (tvert >= 15)
+			return 102;
+		else if (tvert >= 14) 
+			return 108;
+		else if (tvert >= 13)
+			return 122;
+		else if (tvert >= 12)
+			return 132;
+		else if (tvert >= 11)
+			return 138;
+		else if (tvert >= 10)
+			return 150;
+		else
 			return 0;
-		} 
-
-		return 0;
+		
 
 		//THIS IS HOW WE CALCULATE DISTANCE THROUGH THE TARGET AREA.
 

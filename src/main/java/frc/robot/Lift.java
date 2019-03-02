@@ -62,9 +62,6 @@ public class Lift {
 		liftMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 
-	/*
-	 * TICK ***********************************
-	 */
 	public static void tick() {
 		
 		liftMotor.configMotionCruiseVelocity((int)SmartDashboard.getNumber("MM Lift Velocity", 0), 0);
@@ -73,7 +70,8 @@ public class Lift {
 		liftMotor.config_kP(0, SmartDashboard.getNumber("Lift P", 1.0), 0);
 		liftMotor.config_kI(0, SmartDashboard.getNumber("Lift I", 0), 0);
 		liftMotor.config_kD(0, SmartDashboard.getNumber("Lift D", 0), 0);
-		SmartDashboard.putNumber("Lift Motor Encoder", liftMotor.getSensorCollection().getQuadraturePosition());
+		SmartDashboard.putNumber("Lift Encoder", liftMotor.getSensorCollection().getQuadraturePosition());
+		SmartDashboard.putNumber("Lift Setpoint", liftMotor.getClosedLoopTarget());
 	}
 	public static  void move(double speed) {
 		// limit speed
@@ -95,8 +93,8 @@ public class Lift {
 			}
 		} else {
 			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 4000;
-			if (newSetpoint < -10000) {
-				newSetpoint = -10000;
+			if (newSetpoint < -40000) {
+				newSetpoint = -40000;
 			}
 		}
 
@@ -107,25 +105,25 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, 0);
 	}
 	public static  void goHatchLvl1() {
-		liftMotor.set(ControlMode.MotionMagic, -11000); 
+		liftMotor.set(ControlMode.MotionMagic, -1340); 
 	}
 	public static void goCargoLvl1() {
-		liftMotor.set(ControlMode.MotionMagic, -11000);
+		liftMotor.set(ControlMode.MotionMagic, -4340);
 	}
 	public static  void goHatchLvl2() {
-		liftMotor.set(ControlMode.MotionMagic, -43000); 
+		liftMotor.set(ControlMode.MotionMagic, -11000); 
 	}
 	public static void goCargoLvl2() {
-		liftMotor.set(ControlMode.MotionMagic, -43000); // This value needs to be calibrated.
+		liftMotor.set(ControlMode.MotionMagic, -14000); 
     }
     public static void goHatchLvl3(){
-        liftMotor.set(ControlMode.MotionMagic, -43000); // These values will need to be calibrated.
+        liftMotor.set(ControlMode.MotionMagic, -22000); 
     }
 	public static void goCargoLvl3(){
-		liftMotor.set(ControlMode.MotionMagic, 5); // Needs to be calibrated
+		liftMotor.set(ControlMode.MotionMagic, -25000); 
 	}
     public static void goCargoShipCargo(){
-        liftMotor.set(ControlMode.MotionMagic, 5); // Needs to be calibrated
+        liftMotor.set(ControlMode.MotionMagic, -4300); 
     }
 	public static void stop(){
 		liftMotor.set(ControlMode.PercentOutput, 0);	
@@ -133,6 +131,6 @@ public class Lift {
 	
 	// returns true if the lift is high enough that we should reduce drving speed
 	public static boolean driveCautionNeeded() {
-		return Math.abs(liftMotor.getSensorCollection().getPulseWidthPosition()) > 25000; 
+		return Math.abs(liftMotor.getSensorCollection().getPulseWidthPosition()) > 15000; 
 	}
 }

@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
 		DriveAuto.getInstance();
 		TargetInfo.getInstance();
 		Lift.getInstance();
+		Climber.getInstance();
+		CargoPickup.getInstance();
 		mAutoProgram = new AutoDoNothing();
 
 		Calibration.loadSwerveCalibration();
@@ -82,22 +84,40 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
+		// Climber.climb(gamepad.getManualClimb());
+		
 		// allow manual gyro reset if you press Start button
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
 
 		// FOR LIFT CALIBRATION - REMOVE FOR COMPETIION !!!!!
-		if (gamepad.getLeftStickY(1) > .05 || gamepad.getLeftStickY(1) < .05) {
-			// we're using GP 2 left stick to manually drive lift
-			Lift.move(gamepad.getLeftStickY(1));
+		// if (gamepad.getLeftStickY(1) > .05 || gamepad.getLeftStickY(1) < -.05) {
+		// 	// we're using GP 2 left stick to manually drive lift
+		// 	Lift.move(gamepad.getLeftStickY(1));
+		// }
+
+		if (gamepad.getSingleClimbRevolution()) {
+			Climber.moveSetpoint(1);
+		}
+		if (gamepad.getSingleClimbReverseRevolution()) {
+			Climber.moveSetpoint(-1);
 		}
 
+		if (gamepad.activateIntake()) {
+			CargoPickup.intakeCargo();
+		}
 
-		if (gamepad.getManualLiftUp())  
+		if (gamepad.ejectCargo()) {
+			CargoPickup.ejectCargo();
+		}
+
+		if (gamepad.getManualLiftUp())  {
 			Lift.moveSetpoint(-1);
-		if (gamepad.getManualLiftDown())
+		}
+		if (gamepad.getManualLiftDown()) {
 			Lift.moveSetpoint(1);
+		}
 
 		if(gamepad.getBringLiftToStart()){
 			Lift.goToStart();
@@ -139,10 +159,10 @@ public class Robot extends TimedRobot {
 			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
 		}
 		// A
-		if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoFindHatch();
-			mAutoProgram.start();
-		}
+		// if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
+		// 	mAutoProgram = new AutoFindHatch();
+		// 	mAutoProgram.start();
+		// }
 		// B
 		if (gamepad.getButtonB(0)) {
 			mAutoProgram.stop();
@@ -162,20 +182,15 @@ public class Robot extends TimedRobot {
 			// above that have been tweaked as needed
 			double driveYAxisAmount = gamepad.getSwerveYAxis();
 			double driveXAxisAmount = -gamepad.getSwerveXAxis();
-			double driveRotAxisAmount = powerOf3PreserveSign(gamepad.getSwerveRotAxis());
-			// put some rotational power restrictions in place to make it
-			// more controlled
-			// if (Math.abs(driveRotAxisAmount) > .50) {
-			// 	if (driveRotAxisAmount < 0)
-			// 		driveRotAxisAmount = -.50;
-			// 	else
-			// 		driveRotAxisAmount = .50;
-			// }
+			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+			
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
 		showDashboardInfo();
 
 		Lift.tick();
+		Climber.tick();
+		CargoPickup.tick();
 		
 		// Vision.tick();
 	}
@@ -200,6 +215,37 @@ public class Robot extends TimedRobot {
 
 	}
 
+	private double rotationalAdjust(double rotateAmt) {
+			// put some rotational power restrictions in place to make it
+			// more controlled
+			double adjustedAmt = 0;
+
+			if (Math.abs(rotateAmt) < .2) {
+				adjustedAmt = 0;
+			} else {
+				if (Math.abs(rotateAmt) < .6) {
+					adjustedAmt = .3 * Math.signum(rotateAmt);
+				} else {
+					if (Math.abs(rotateAmt) < .95) {
+						adjustedAmt = .6 * Math.signum(rotateAmt);
+					} else {
+						adjustedAmt = rotateAmt;
+					}
+				}
+			}
+
+			return adjustedAmt;
+			
+			// double driveRotAxisAmount = powerOf3PreserveSign(rotateAmt);
+
+			// if (Math.abs(driveRotAxisAmount) > .50) {
+			// 	if (driveRotAxisAmount < 0)
+			// 		driveRotAxisAmount = -.50;
+			// 	else
+			// 		driveRotAxisAmount = .50;
+			// }
+
+	}
 	@Override
 	public void autonomousInit() {
 
@@ -249,7 +295,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-
+		mAutoProgram.stop();
 	}
 
 	@Override

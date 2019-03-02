@@ -18,8 +18,8 @@ public class CargoPickup {
     private static CargoPickup instance;
     private static TalonSRX cargoPickup;
 
-    private static CurrentBreaker currentBreaker1;
-    private static CurrentBreaker currentBreaker2;
+    private static CurrentBreaker currentBreaker;
+
 
     private static boolean holdingCargo = false;
     private static boolean intakeRunning = false;
@@ -34,16 +34,15 @@ public class CargoPickup {
     }
 
     public CargoPickup() {
-            cargoPickup = new TalonSRX(Wiring.INTAKE_LEFT_MOTOR);
+            cargoPickup = new TalonSRX(Wiring.INTAKE_MOTOR);
             cargoPickup.setInverted(true);
     
             cargoPickup.configOpenloopRamp(.2, 0);
     
             cargoPickup.setNeutralMode(NeutralMode.Brake);
     
-            currentBreaker1 = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT1, Calibration.CLAW_MAX_CURRENT, 250, 2000); 
-            currentBreaker2 = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT2, Calibration.CLAW_MAX_CURRENT, 250, 2000);
-
+            currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.CLAW_MAX_CURRENT, 250, 2000); 
+  
             resetIntakeStallDetector();
     
             ejectEndTime = aDistantFutureTime();
@@ -55,10 +54,9 @@ public class CargoPickup {
      * TICK -----------------------------------------------
      */
     public static void tick() {
-        SmartDashboard.putNumber("Intake Current 1", currentBreaker1.getCurrent());
-        SmartDashboard.putNumber("Intake Current 2", currentBreaker2.getCurrent());
-
-        if ((currentBreaker1.getCurrent() > 15) || (currentBreaker2.getCurrent() > 15)) {
+        SmartDashboard.putNumber("Intake Current 1", currentBreaker.getCurrent());
+  
+        if (currentBreaker.getCurrent() > 15) {
             reverseAllowed = true;
         } else
             reverseAllowed = false;
@@ -134,12 +132,11 @@ public class CargoPickup {
     // UTILITY METHODS ---------------------------------------------------------
 
     public static boolean intakeStalled() {
-        return (currentBreaker1.tripped() || currentBreaker2.tripped());
+        return (currentBreaker.tripped());
     }
 
     public static void resetIntakeStallDetector() {
-        currentBreaker1.reset();
-        currentBreaker2.reset();
+        currentBreaker.reset();
     }
 
     /*
