@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class RobotGyro implements PIDSource  {
@@ -26,9 +27,9 @@ public class RobotGyro implements PIDSource  {
 	}
 	
 	public RobotGyro() {
-		//mGyro = new AHRS(SerialPort.Port.kUSB);
-		mGyro = new AHRS(I2C.Port.kMXP);
-	
+		// mGyro = new AHRS(SerialPort.Port.kUSB);
+		// mGyro = new AHRS(I2C.Port.kMXP); // i2c is 10x slower than SPI
+		mGyro = new AHRS(SPI.Port.kMXP);
 	}
 	
 	public static AHRS getGyro() {
