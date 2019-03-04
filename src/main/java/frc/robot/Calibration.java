@@ -101,8 +101,14 @@ public class Calibration {
 	public static final double AUTO_DRIVE_D = 200.0;  // was 0
 	public static final int AUTO_DRIVE_IZONE = 50;
 	
-	public static final double CLAW_MAX_CURRENT = 17;
+	public static final double INTAKE_MAX_CURRENT = 17;
 	
+	public static final double LIFT_P = 0.6;
+	public static final double LIFT_I = 0.0;
+	public static final double LIFT_D = 0.0;
+	public static final double LIFT_F = 1.0;
+	public static final int LIFT_ACCEL = 2000;
+	public static final int LIFT_VELOCITY = 4000;
 
 	public static void loadSwerveCalibration() {
 		File calibrationFile = new File("/home/lvuser/swerve.calibration");
