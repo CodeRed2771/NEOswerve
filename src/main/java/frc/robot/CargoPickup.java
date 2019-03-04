@@ -17,9 +17,7 @@ import frc.robot.libs.CurrentBreaker;
 public class CargoPickup {
     private static CargoPickup instance;
     private static TalonSRX cargoPickup;
-
     private static CurrentBreaker currentBreaker;
-
 
     private static boolean holdingCargo = false;
     private static boolean intakeRunning = false;
@@ -41,7 +39,7 @@ public class CargoPickup {
     
             cargoPickup.setNeutralMode(NeutralMode.Brake);
     
-            currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.CLAW_MAX_CURRENT, 250, 2000); 
+            currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 250, 2000); 
   
             resetIntakeStallDetector();
     
@@ -54,46 +52,32 @@ public class CargoPickup {
      * TICK -----------------------------------------------
      */
     public static void tick() {
-        SmartDashboard.putNumber("Intake Current 1", currentBreaker.getCurrent());
+        
+        SmartDashboard.putNumber("Intake Current", currentBreaker.getCurrent());
   
-        if (currentBreaker.getCurrent() > 15) {
-            reverseAllowed = true;
-        } else
-            reverseAllowed = false;
-
         if (intakeStalled() && !holdingCargo) {
             System.out.println("Intake stalled - switching to hold mode");
             holdCargo();
         }
 
-        // this turns off the claw after starting an eject
+        // this turns off the intake a little while after starting an eject
         if (System.currentTimeMillis() > ejectEndTime) {
             System.out.println("Stopped ejecting");
             stopIntake();
             ejectEndTime = aDistantFutureTime();
         }
-
-        if (intakeRunning) {
-            if (System.currentTimeMillis() >= startReverseTime) {
-                if (reverseAllowed)
-                    reverseIntake();
-            }
-            if (System.currentTimeMillis() >= (startReverseTime + 200)) {
-                intakeCargo();
-            }
-        }
-
     }
 
     // CONTROL METHODS ------------------------------------------------
 
     public static void intakeCargo() {
-        holdingCargo = false;
+
         cargoPickup.set(ControlMode.PercentOutput, -.8);
+
+        intakeRunning = true;
+        holdingCargo = false;
         resetIntakeStallDetector();
         ejectEndTime = aDistantFutureTime();
-        intakeRunning = true;
-        startReverseTime = System.currentTimeMillis() + 200;
     }
 
     public static void reverseIntake() {
@@ -110,15 +94,12 @@ public class CargoPickup {
         holdingCargo = true;
     }
 
-    public static void dropCargo() {
-        holdingCargo = false;
-        resetIntakeStallDetector();
-    }
-
     public static void ejectCargo() {
+
+        cargoPickup.set(ControlMode.PercentOutput, .5);
+
         holdingCargo = false;
         resetIntakeStallDetector();
-        cargoPickup.set(ControlMode.PercentOutput, .5);
 
         ejectEndTime = System.currentTimeMillis() + 750;
     }
@@ -138,18 +119,6 @@ public class CargoPickup {
     public static void resetIntakeStallDetector() {
         currentBreaker.reset();
     }
-
-    /*
-     * Resets the arm encoder value relative to what we've determined to be the
-     * "zero" position. (the calibration values). This is so the rest of the program
-     * can just treat the turn encoder as if zero is the horizontal position. We
-     * don't have to always calculate based off the calibrated zero position. e.g.
-     * if the calibrated zero position is .25 and our current absolute position is
-     * .40 then we reset the encoder value to be .15 * 4095, so we know were .15
-     * away from the zero position. The 4095 converts the position back to ticks.
-     * 
-     * Bottom line is that this is what applies the turn calibration values.
-     */
 
     private static double aDistantFutureTime() {
         return System.currentTimeMillis() + 900000; // 15 minutes in the future

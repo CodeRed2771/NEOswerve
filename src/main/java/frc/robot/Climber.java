@@ -22,7 +22,7 @@ public class Climber {
     }
 
     public static void tick() {
-      SmartDashboard.putNumber("ClimbEnc", climbMotor.getEncoder().getPosition());
+      SmartDashboard.putNumber("Climb Enc", climbMotor.getEncoder().getPosition());
     }
     
     public static void climb(double speed) {  
