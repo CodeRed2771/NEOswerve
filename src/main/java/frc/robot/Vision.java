@@ -5,14 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-// Min distance = 3ft 5in
-// Target area at 4ft - .82
-// Target area at 5ft - .7
-// Target area at 6ft - .48
-// Target area at 7ft - .3
-// Target area at 8ft - .1
-// Max distance = 13ft 4in
-
 package frc.robot;
 
 import edu.wpi.first.networktables.*;
@@ -37,6 +29,7 @@ public class Vision {
 	private static double storedOffsetFromTarget = 0;
 	private static double storedTargetArea = 0;
 	private static double storedTargetSkew = 0;
+	private static double storedTargetVertical = 0;
 	private static double dis = 0;
 	private static int validCount = 0;
 
@@ -72,6 +65,7 @@ public class Vision {
 			storedOffsetFromTarget = table.getEntry("tx").getDouble(0);
 			storedTargetArea = table.getEntry("ta").getDouble(0);
 			storedTargetSkew = table.getEntry("ts").getDouble(0);
+			storedTargetVertical = table.getEntry("tvert").getDouble(0);
 		} else {
 			if (targetCount() == 0)
 				validCount = 0;
@@ -101,15 +95,20 @@ public class Vision {
 	}
 
 	public static double offsetFromTarget() {
-		readTargetInfo();
 		if (targetInfoIsValid()) {
 			return storedOffsetFromTarget;
 		} else
 			return 0;
 	}
 
+	public static double targetVerticalHeight() {
+		if (targetInfoIsValid()) {
+			return storedTargetVertical;
+		} else
+			return 0;
+	}
+
 	public static double targetArea() {
-		readTargetInfo();
 		if (targetInfoIsValid()) {
 			return storedTargetArea;
 		} else {
@@ -119,25 +118,12 @@ public class Vision {
 
 	public static double getDistanceFromTarget() {
 
-		// Limelight 1
-		// dis = (-8.1435 * targetArea() + 9.657)*12;
-
-		// Test - to be removed
-		// dis = (7.0754 * targetArea() + 9.4501)*1;
-
-		// Limelight 2
-		// dis = (-7.5541 * targetArea() + 10.367)*12;
-
-		// Limelight 2 update 2/12/19
-		// dis = (-0.6944 * targetArea() + 8.6644)*12;
-
-		double ta = targetArea();
-		double tvert = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert").getDouble(0);
+		double tvert = targetVerticalHeight();
 		SmartDashboard.putNumber("tvert", tvert);
 
-		// if (tvert == 0) {
-		// 	return 0;
-		// }
+		if (tvert == 0) {
+			return 0;
+		}
 		
 		if(tvert >= 53)
 			return 24;
@@ -182,7 +168,7 @@ public class Vision {
 		
 
 		//THIS IS HOW WE CALCULATE DISTANCE THROUGH THE TARGET AREA.
-
+		// double ta = targetArea();
 		// if (ta == 0)
 		// 	return 0;
 		// if (ta > 12.3)
@@ -230,7 +216,6 @@ public class Vision {
 	}
 
 	public static double getTargetSkew() {
-		readTargetInfo();
 		if (targetInfoIsValid()) 
 			return storedTargetSkew;
 		else
