@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Lift {
 	private static Lift instance;
 	private static TalonSRX liftMotor;
-	// private static TalonSRX liftFollower;
 
 	public static Lift getInstance() {
 		if (instance == null)

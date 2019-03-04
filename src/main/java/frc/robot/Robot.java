@@ -65,12 +65,7 @@ public class Robot extends TimedRobot {
 		// compressor = new Compressor(0);
 		// compressor.setClosedLoopControl(true);
 
-		// Not needed here - done during DriveTrain intialization
-		// DriveTrain.setDrivePIDValues(Calibration.AUTO_DRIVE_P,
-		// Calibration.AUTO_DRIVE_I, Calibration.AUTO_DRIVE_D);
-
-		RobotGyro.reset(); // this is also done in auto init in case it wasn't
-							// settled here yet
+		RobotGyro.reset(); 							
 
 		SmartDashboard.putBoolean("Show Encoders", false);
 	}
@@ -90,13 +85,6 @@ public class Robot extends TimedRobot {
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
-
-		// FOR LIFT CALIBRATION - REMOVE FOR COMPETIION !!!!!
-		// if (gamepad.getLeftStickY(1) > .05 || gamepad.getLeftStickY(1) < -.05) {
-		// 	// we're using GP 2 left stick to manually drive lift
-		// 	Lift.move(gamepad.getLeftStickY(1));
-		// }
-
 		if (gamepad.getSingleClimbRevolution()) {
 			Climber.moveSetpoint(1);
 		}
@@ -186,6 +174,7 @@ public class Robot extends TimedRobot {
 			
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
+		
 		showDashboardInfo();
 
 		Lift.tick();
@@ -233,18 +222,7 @@ public class Robot extends TimedRobot {
 					}
 				}
 			}
-
 			return adjustedAmt;
-			
-			// double driveRotAxisAmount = powerOf3PreserveSign(rotateAmt);
-
-			// if (Math.abs(driveRotAxisAmount) > .50) {
-			// 	if (driveRotAxisAmount < 0)
-			// 		driveRotAxisAmount = -.50;
-			// 	else
-			// 		driveRotAxisAmount = .50;
-			// }
-
 	}
 	@Override
 	public void autonomousInit() {
