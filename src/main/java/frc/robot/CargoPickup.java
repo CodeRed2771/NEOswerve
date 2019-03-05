@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -14,12 +7,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.libs.CurrentBreaker;
 
-public class CargoPickup {
+public class CargoPickup { // Should be changed to Manipulator.
     private static CargoPickup instance;
-    private static TalonSRX cargoPickup;
+    private static TalonSRX manipulator;
     private static CurrentBreaker currentBreaker;
 
     private static boolean holdingCargo = false;
+    private static boolean holdingHatch = false; // I kept it different in case we want to use this for logic regarding what to score. 
     private static boolean intakeRunning = false;
     private static double ejectEndTime;
     private static double startReverseTime;
@@ -32,12 +26,12 @@ public class CargoPickup {
     }
 
     public CargoPickup() {
-            cargoPickup = new TalonSRX(Wiring.INTAKE_MOTOR);
-            cargoPickup.setInverted(true);
+            manipulator = new TalonSRX(Wiring.INTAKE_MOTOR);
+            manipulator.setInverted(true);
     
-            cargoPickup.configOpenloopRamp(.2, 0);
+            manipulator.configOpenloopRamp(.2, 0);
     
-            cargoPickup.setNeutralMode(NeutralMode.Brake);
+            manipulator.setNeutralMode(NeutralMode.Brake);
     
             currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 250, 2000); 
   
@@ -57,7 +51,7 @@ public class CargoPickup {
   
         if (intakeStalled() && !holdingCargo) {
             System.out.println("Intake stalled - switching to hold mode");
-            holdCargo();
+            holdGamePiece();
         }
 
         // this turns off the intake a little while after starting an eject
@@ -71,8 +65,7 @@ public class CargoPickup {
     // CONTROL METHODS ------------------------------------------------
 
     public static void intakeCargo() {
-
-        cargoPickup.set(ControlMode.PercentOutput, -.8);
+        manipulator.set(ControlMode.PercentOutput, -.8);
 
         intakeRunning = true;
         holdingCargo = false;
@@ -80,32 +73,60 @@ public class CargoPickup {
         ejectEndTime = aDistantFutureTime();
     }
 
-    public static void reverseIntake() {
-        cargoPickup.set(ControlMode.PercentOutput, .4);
+    public static void intakeCargoFromGround() {
+        // this will need to be added
+    }
+
+    public static void intakeHatch() {
+        manipulator.set(ControlMode.PercentOutput, .8);
+
+        intakeRunning = true;
+        holdingHatch = false;
+        holdingCargo = false;
+        resetIntakeStallDetector();
+        ejectEndTime = aDistantFutureTime();
+    }
+
+    public static void intakeHatchFromGround() {
+        // This will need to be added.
+    }
+
+    public static void reverseIntake() { // This isn't right
+        manipulator.set(ControlMode.PercentOutput, .4);
     }
 
     public static boolean isIntakeRunning() {
         return intakeRunning;
     }
 
-    public static void holdCargo() {
+    public static void holdGamePiece() {
         stopIntake();
-        cargoPickup.set(ControlMode.PercentOutput, -.15);
+        manipulator.set(ControlMode.PercentOutput, -.15);
         holdingCargo = true;
     }
 
-    public static void ejectCargo() {
+    public static void ejectGamePiece() {
+        if (holdingCargo){
+            manipulator.set(ControlMode.PercentOutput, .5);
 
-        cargoPickup.set(ControlMode.PercentOutput, .5);
+            holdingCargo = false;
+            resetIntakeStallDetector();
+    
+            ejectEndTime = System.currentTimeMillis() + 750;
+        } else if (holdingHatch) {
+            manipulator.set(ControlMode.PercentOutput, -.5);
 
-        holdingCargo = false;
-        resetIntakeStallDetector();
+            holdingHatch = false;
+            resetIntakeStallDetector();
+    
+            ejectEndTime = System.currentTimeMillis() + 750;
+        }
 
-        ejectEndTime = System.currentTimeMillis() + 750;
+       
     }
 
     public static void stopIntake() {
-        cargoPickup.set(ControlMode.PercentOutput, 0);
+        manipulator.set(ControlMode.PercentOutput, 0);
         resetIntakeStallDetector();
         intakeRunning = false;
     }
@@ -129,11 +150,11 @@ public class CargoPickup {
      */
 
     public static void testIntakeCargo(double speed) {
-        cargoPickup.set(ControlMode.PercentOutput, speed);
+        manipulator.set(ControlMode.PercentOutput, speed);
     }
 
     public static void testEjectCargo(double speed) {
-        cargoPickup.set(ControlMode.PercentOutput, -speed);
+        manipulator.set(ControlMode.PercentOutput, -speed);
     }
 
 }
