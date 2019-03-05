@@ -108,7 +108,7 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, 0);
 	}
 	// BTW if this doesn't work Joel and Colton made this so check here first if anything doesn't work :D
-	// *FUN FACTS FOR TODAY 1. croussants were invented in Austria 2. An Ostrich's eye is bigger than it's actual brain. 2. A goldfish has a memory span of 3 seconds. 4. I skipped fact number three :D  5. The Hawaiin Islands were originally called the Sandwich Islands. 6. Bunnies like licorice. 7. Most dinosaours lived to be more than 100 years old. 8.dalmations are born with completely white fur, and only grow their spots once they grow older. 9. 'dreamt' is the only word in the English dictionary that ends in the two letters 'mt'. 10. This is actually a question for you to think about..."Why is there a fruit called a grapefruit if there is already a thing called a grape which is a fruit?  P.S THEY DID SURGERY ON A GRAPE"
+	// *FUN FACTS FOR TODAY 1. croussants were invented in Austria 2. An Ostrich's eye is bigger than it's actual brain. 2. A goldfish has a memory span of 3 seconds. 4. I skipped fact number three :D  5. The Hawaiin Islands were originally called the Sandwich Islands. 6. Bunnies like licorice. 7. Most dinosaours lived to be more than 100 years old. 8.dalmations are born with completely white fur, and only grow their spots once they grow older. 9. 'dreamt' is the only word in the English dictionary that ends in the two letters 'mt'. 10. This is actually a question for you to think about..."Why is there a fruit called a grapefruit if there is already a thing called a grape which is a fruit?  P.S THEY DID SURGERY ON A GRAPE"* 
 	private static final double HATCH_LEVEL_1 = -1340;
 	private static final double HATCH_LEVEL_2 = -11000;
 	private static final double HATCH_LEVEL_3 = -22000;
@@ -139,7 +139,7 @@ public class Lift {
 	public static void goCargoLvl3() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_3);
 	}
-
+// This here may not be right we assumued that this is just hatch level one so we put the variable in it has 'HATCH_LEVEL_1'
 	public static void goCargoShipCargo() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_3);
 	}
