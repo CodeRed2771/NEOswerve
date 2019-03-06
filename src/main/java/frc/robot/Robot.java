@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
 		TargetInfo.getInstance();
 		Lift.getInstance();
 		Climber.getInstance();
-		CargoPickup.getInstance();
+		Manipulator.getInstance();
 		mAutoProgram = new AutoDoNothing();
 
 		Calibration.loadSwerveCalibration();
@@ -93,11 +93,11 @@ public class Robot extends TimedRobot {
 		}
 
 		if (gamepad.activateIntake()) {
-			CargoPickup.intakeCargo();
+			Manipulator.intakeCargo();
 		}
 
 		if (gamepad.ejectCargo()) {
-			CargoPickup.ejectCargo();
+			Manipulator.ejectGamePiece();
 		}
 
 		if (gamepad.getManualLiftUp())  {
@@ -179,7 +179,7 @@ public class Robot extends TimedRobot {
 
 		Lift.tick();
 		Climber.tick();
-		CargoPickup.tick();
+		Manipulator.tick();
 		
 		// Vision.tick();
 	}
