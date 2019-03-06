@@ -10,6 +10,7 @@ public class KeyMap {
     private final HID gp2 = new HID(1);
     private final int gamepad1 = 0;
     private final int gamepad2 = 1;
+    private final int gamepad3 = 2;
 
     // MANAGEMENT BOOLEANS
     private boolean singleControllerMode = false;
@@ -22,7 +23,7 @@ public class KeyMap {
     // private final HID.Axis swerveYAxis = LogitechExtreme3D.STICK_Y;
     // private final HID.Axis swerveRotAxis = LogitechExtreme3D.STICK_ROT;
     
-    // CONTROLLER 1
+    // BASE CONTROLLER
     private final HID.Button startIntake = LogitechF310.BUMPER_RIGHT;
     private final HID.Button ejectCargo = LogitechF310.BUMPER_LEFT;
 
@@ -53,6 +54,8 @@ public class KeyMap {
 
     // Manipulator
     private final HID.Axis manualManipulator = LogitechF310.STICK_RIGHT_Y;
+
+    // TEST CONTROLLER
     
     
     public HID getHID(int gamepad) { 
