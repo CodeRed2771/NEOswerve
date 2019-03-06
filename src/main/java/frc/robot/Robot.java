@@ -4,20 +4,14 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.libs.PIDSourceFilter.PIDGetFilter;
 
 public class Robot extends TimedRobot {
 	KeyMap gamepad;
@@ -105,6 +99,10 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.getManualLiftDown()) {
 			Lift.moveSetpoint(1);
+		}
+
+		if (gamepad.getManualManipulator() > .1 || gamepad.getManualManipulator() < -.1) {  // Idk. I stole this code from the manual lift code 2018
+			Lift.move(-gamepad.getManualManipulator());
 		}
 
 		if(gamepad.getBringLiftToStart()){

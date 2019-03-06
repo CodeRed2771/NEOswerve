@@ -6,12 +6,13 @@ public class Wiring {
 	 * 
 	 * 1 thru 8 are the drive train
 	 */
-	public static final int LIFT_MASTER = 9;
+	public static final int LIFT_MASTER = 9; 
 	public static final int LIFT_FOLLLOWER = 12;
 	public static final int INTAKE_MOTOR = 13;
 	public static final int ARM_MOTOR = 15; 
 
 	public static final int CLIMB_MOTOR = 11;
+	public static final int MANIPULATOR_MOTOR = 10;
 
 	/*
 	 * PDP PORTS

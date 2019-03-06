@@ -50,6 +50,9 @@ public class KeyMap {
 
     private final HID.Button manualLiftUp = LogitechF310.DPAD_UP;
     private final HID.Button manualLiftDown = LogitechF310.DPAD_DOWN;
+
+    // Manipulator
+    private final HID.Axis manualManipulator = LogitechF310.STICK_RIGHT_Y;
     
     
     public HID getHID(int gamepad) { 
@@ -148,6 +151,9 @@ public class KeyMap {
     }
     public boolean getSingleClimbReverseRevolution() {
         return getHID(gamepad1).button(singleClimbRevolutionReverseButton);
+    }
+    public double getManualManipulator() {
+        return getHID(gamepad2).axis(manualManipulator);
     }
 
     /*
