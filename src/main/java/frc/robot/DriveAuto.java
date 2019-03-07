@@ -45,26 +45,26 @@ public class DriveAuto {
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
-		SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
-		SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I);
-		SmartDashboard.putNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D);
+		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
+		// SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I);
+		// SmartDashboard.putNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D);
 
-		SmartDashboard.putNumber("TURN P", Calibration.TURN_P);
-		SmartDashboard.putNumber("TURN I", Calibration.TURN_I);
-		SmartDashboard.putNumber("TURN D", Calibration.TURN_D);
+		// SmartDashboard.putNumber("TURN P", Calibration.TURN_P);
+		// SmartDashboard.putNumber("TURN I", Calibration.TURN_I);
+		// SmartDashboard.putNumber("TURN D", Calibration.TURN_D);
 
-		SmartDashboard.putNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY);
-		SmartDashboard.putNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL);
+		// SmartDashboard.putNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY);
+		// SmartDashboard.putNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL);
 
-		SmartDashboard.putNumber("ROT P", Calibration.AUTO_ROT_P);
-		SmartDashboard.putNumber("ROT I", Calibration.AUTO_ROT_I);
-		SmartDashboard.putNumber("ROT D", Calibration.AUTO_ROT_D);
-		SmartDashboard.putNumber("ROT F", Calibration.AUTO_ROT_F);
+		// SmartDashboard.putNumber("ROT P", Calibration.AUTO_ROT_P);
+		// SmartDashboard.putNumber("ROT I", Calibration.AUTO_ROT_I);
+		// SmartDashboard.putNumber("ROT D", Calibration.AUTO_ROT_D);
+		// SmartDashboard.putNumber("ROT F", Calibration.AUTO_ROT_F);
 
-		SmartDashboard.putBoolean("Tune Drive/Turn PIDs", true);
+		// SmartDashboard.putBoolean("Tune Drive/Turn PIDs", true);
 
-		SmartDashboard.putNumber("ROT Max Deg/Cycle", maxTurnSpeed);
-		SmartDashboard.putNumber("ROT Max Acc/Cycle", maxTurnAccel);
+		// SmartDashboard.putNumber("ROT Max Deg/Cycle", maxTurnSpeed);
+		// SmartDashboard.putNumber("ROT Max Acc/Cycle", maxTurnAccel);
 
 	}
 

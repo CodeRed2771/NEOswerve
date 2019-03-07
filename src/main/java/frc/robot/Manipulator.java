@@ -21,8 +21,6 @@ public class Manipulator { // Should be changed to Manipulator.
                                                  // what to score.
     private static boolean intakeRunning = false;
     private static double ejectEndTime;
-    private static double startReverseTime;
-    private static boolean reverseAllowed = false;
 
     public static Manipulator getInstance() {
         if (instance == null)
@@ -45,7 +43,6 @@ public class Manipulator { // Should be changed to Manipulator.
         resetIntakeStallDetector();
 
         ejectEndTime = aDistantFutureTime();
-        startReverseTime = aDistantFutureTime();
 
     }
 

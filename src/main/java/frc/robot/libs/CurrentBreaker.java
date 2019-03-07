@@ -33,8 +33,9 @@ public class CurrentBreaker {
 	}
 
 	public void checkCurrent() {
-//		SmartDashboard.putBoolean("Tripped", tripped);
-		
+		SmartDashboard.putBoolean("Tripped", tripped);
+		SmartDashboard.putNumber("Int Current", pdp.getCurrent(portnum));
+
 		if (System.currentTimeMillis() > ignoreTime) {
 			if (!tripped) {
 				tripped = (pdp.getCurrent(portnum) > currentThreshold);
