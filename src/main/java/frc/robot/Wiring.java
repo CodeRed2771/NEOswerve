@@ -6,7 +6,7 @@ public class Wiring {
 	 * 
 	 * 1 thru 8 are the drive train
 	 */
-	public static final int LIFT_MASTER = 9; 
+	public static final int LIFT_MASTER = 9;
 	public static final int LIFT_FOLLLOWER = 12;
 	public static final int ARM_MOTOR = 13;
 
@@ -16,12 +16,12 @@ public class Wiring {
 	/*
 	 * PDP PORTS
 	 */
-	public static final int INTAKE_PDP_PORT = 7;
-	
-	/* 
+	public static final int INTAKE_PDP_PORT = 9;
+
+	/*
 	 * PCM PORTS
 	 */
 	public static final int FLIPPER_PCM_PORTA = 0;
 	public static final int FLIPPER_PCM_PORTB = 1;
-	
+
 }

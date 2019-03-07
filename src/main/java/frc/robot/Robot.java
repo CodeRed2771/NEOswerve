@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
 	final String autoRotateTest = "Rotate Test";
 	final String autoCalibrateDrive = "Auto Calibrate Drive";
 	final String autoDrivePIDTune = "Drive PID Tune";
-	
 
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
@@ -59,7 +58,7 @@ public class Robot extends TimedRobot {
 		// compressor = new Compressor(0);
 		// compressor.setClosedLoopControl(true);
 
-		RobotGyro.reset(); 							
+		RobotGyro.reset();
 
 		SmartDashboard.putBoolean("Show Encoders", false);
 	}
@@ -74,17 +73,17 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 
 		// Climber.climb(gamepad.getManualClimb());
-		
+
 		// allow manual gyro reset if you press Start button
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
-		if (gamepad.getSingleClimbRevolution()) {
-			Climber.moveSetpoint(1);
-		}
-		if (gamepad.getSingleClimbReverseRevolution()) {
-			Climber.moveSetpoint(-1);
-		}
+		// if (gamepad.getSingleClimbRevolution()) {
+		// Climber.moveSetpoint(1);
+		// }
+		// if (gamepad.getSingleClimbReverseRevolution()) {
+		// Climber.moveSetpoint(-1);
+		// }
 
 		if (gamepad.activateIntake()) {
 			Manipulator.intakeCargo();
@@ -94,39 +93,47 @@ public class Robot extends TimedRobot {
 			Manipulator.ejectGamePiece();
 		}
 
-		if (gamepad.getManualLiftUp())  {
+		if (gamepad.getManualLiftUp()) {
 			Lift.moveSetpoint(-1);
 		}
 		if (gamepad.getManualLiftDown()) {
 			Lift.moveSetpoint(1);
 		}
 
-		if (gamepad.getManualManipulator() > .1 || gamepad.getManualManipulator() < -.1) {  // Idk. I stole this code from the manual lift code 2018
-			Lift.move(-gamepad.getManualManipulator());
+		// if (gamepad.getManualManipulator() > .1 || gamepad.getManualManipulator() <
+		// -.1) { // Idk. I stole this code from the manual lift code 2018
+		// Lift.move(-gamepad.getManualManipulator());
+		// }
+
+		if (gamepad.activateIntake()) {
+			Manipulator.intakeCargo();
+		}
+		if (gamepad.ejectCargo()) {
+			Manipulator.ejectGamePiece();
 		}
 
-		if(gamepad.getBringLiftToStart()){
+		if (gamepad.getBringLiftToStart()) {
 			Lift.goToStart();
 		}
-		if (gamepad.getHatchRocketLvl1()){
+		if (gamepad.getHatchRocketLvl1()) {
 			Lift.goHatchLvl1();
 		}
-		if (gamepad.getHatchRocketLvl2()){
+		if (gamepad.getHatchRocketLvl2()) {
 			Lift.goHatchLvl2();
 		}
-		if (gamepad.getHatchRocketLvl3()){
+		if (gamepad.getHatchRocketLvl3()) {
 			Lift.goHatchLvl3();
 		}
 		if (gamepad.getCargoRocketLvl1()) {
 			Lift.goCargoLvl1();
 		}
-		if (gamepad.getCargoRocketLvl2()){
+		if (gamepad.getCargoRocketLvl2()) {
 			Lift.goCargoLvl2();
 		}
-		if (gamepad.getCargoRocketLvl3()){
+		if (gamepad.getCargoRocketLvl3()) {
 			Lift.goCargoLvl3();
 		}
-		if (gamepad.getcargoShipPlacement()){
+		if (gamepad.getcargoShipPlacement()) {
 			Lift.goCargoShipCargo();
 		}
 
@@ -134,20 +141,20 @@ public class Robot extends TimedRobot {
 		if (gamepad.getButtonY(0)) {
 			Vision.setTargetTrackingMode();
 		}
-		//DPAD Left
+		// DPAD Left
 		if (gamepad.getDpadLeft(0) && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoSlideOver();
 			mAutoProgram.start(AutoBaseClass.Direction.LEFT);
 		}
-		//DPAD Right
+		// DPAD Right
 		if (gamepad.getDpadRight(0) && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoSlideOver();
 			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
 		}
 		// A
 		// if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
-		// 	mAutoProgram = new AutoFindHatch();
-		// 	mAutoProgram.start();
+		// mAutoProgram = new AutoFindHatch();
+		// mAutoProgram.start();
 		// }
 		// B
 		if (gamepad.getButtonB(0)) {
@@ -169,16 +176,16 @@ public class Robot extends TimedRobot {
 			double driveYAxisAmount = gamepad.getSwerveYAxis();
 			double driveXAxisAmount = -gamepad.getSwerveXAxis();
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
-			
+
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
-		
+
 		showDashboardInfo();
 
 		Lift.tick();
 		Climber.tick();
-		Manipulator.tick();
-		
+		// Manipulator.tick();
+
 		// Vision.tick();
 	}
 
@@ -189,7 +196,7 @@ public class Robot extends TimedRobot {
 		// SmartDashboard.putNumber("Vision Dist", Vision.getDistanceFromTarget());
 		// SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		// SmartDashboard.putNumber("line sensor", line.getAverageValue());
-		
+
 		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
 		SmartDashboard.putNumber("Gyro", round2(RobotGyro.getAngle()));
@@ -199,29 +206,29 @@ public class Robot extends TimedRobot {
 			DriveTrain.showDriveEncodersOnDash();
 		}
 
-
 	}
 
 	private double rotationalAdjust(double rotateAmt) {
-			// put some rotational power restrictions in place to make it
-			// more controlled
-			double adjustedAmt = 0;
+		// put some rotational power restrictions in place to make it
+		// more controlled
+		double adjustedAmt = 0;
 
-			if (Math.abs(rotateAmt) < .2) {
-				adjustedAmt = 0;
+		if (Math.abs(rotateAmt) < .2) {
+			adjustedAmt = 0;
+		} else {
+			if (Math.abs(rotateAmt) < .6) {
+				adjustedAmt = .3 * Math.signum(rotateAmt);
 			} else {
-				if (Math.abs(rotateAmt) < .6) {
-					adjustedAmt = .3 * Math.signum(rotateAmt);
+				if (Math.abs(rotateAmt) < .95) {
+					adjustedAmt = .6 * Math.signum(rotateAmt);
 				} else {
-					if (Math.abs(rotateAmt) < .95) {
-						adjustedAmt = .6 * Math.signum(rotateAmt);
-					} else {
-						adjustedAmt = rotateAmt;
-					}
+					adjustedAmt = rotateAmt;
 				}
 			}
-			return adjustedAmt;
+		}
+		return adjustedAmt;
 	}
+
 	@Override
 	public void autonomousInit() {
 

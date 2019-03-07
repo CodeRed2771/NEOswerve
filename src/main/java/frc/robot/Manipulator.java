@@ -17,7 +17,8 @@ public class Manipulator { // Should be changed to Manipulator.
     private static LimitSwitchNormal limitSwitch;
 
     private static boolean holdingCargo = false;
-    private static boolean holdingHatch = false; // I kept it different in case we want to use this for logic regarding what to score. 
+    private static boolean holdingHatch = false; // I kept it different in case we want to use this for logic regarding
+                                                 // what to score.
     private static boolean intakeRunning = false;
     private static double ejectEndTime;
     private static double startReverseTime;
@@ -25,40 +26,40 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static Manipulator getInstance() {
         if (instance == null)
-instance = new Manipulator();
+            instance = new Manipulator();
         return instance;
-}
+    }
 
     public Manipulator() {
-manipulator = new TalonSRX(Wiring.MANIPULATOR_MOTOR);
-            manipulator.setInverted(true);
-    
-            manipulator.configOpenloopRamp(.2, 0);
-    
-            manipulator.setNeutralMode(NeutralMode.Brake);
+        manipulator = new TalonSRX(Wiring.MANIPULATOR_MOTOR);
+        manipulator.setInverted(true);
 
-flipper = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
-    
-currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 250, 2000);
-  
-            resetIntakeStallDetector();
-    
-ejectEndTime = aDistantFutureTime();
-startReverseTime = aDistantFutureTime();
-    
-}
+        manipulator.configOpenloopRamp(.2, 0);
+
+        manipulator.setNeutralMode(NeutralMode.Brake);
+
+        flipper = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
+
+        currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 250, 2000);
+
+        resetIntakeStallDetector();
+
+        ejectEndTime = aDistantFutureTime();
+        startReverseTime = aDistantFutureTime();
+
+    }
 
     public static void tick() {
         if (intakeStalled() && !holdingCargo) {
             holdGamePiece();
-}
+        }
 
         // this turns off the intake a little while after starting an eject
         if (System.currentTimeMillis() > ejectEndTime) {
             stopIntake();
-ejectEndTime = aDistantFutureTime();
-}
-}
+            ejectEndTime = aDistantFutureTime();
+        }
+    }
 
     // CONTROL METHODS ------------------------------------------------
     public static void move(double speed) {
@@ -69,93 +70,93 @@ ejectEndTime = aDistantFutureTime();
             speed = .3;
 
         manipulator.set(ControlMode.PercentOutput, speed);
-}
-    
+    }
+
     public static void intakeCargo() {
         manipulator.set(ControlMode.PercentOutput, -.8);
 
-intakeRunning = true;
-holdingCargo = false;
+        intakeRunning = true;
+        holdingCargo = false;
         resetIntakeStallDetector();
-ejectEndTime = aDistantFutureTime();
-}
+        ejectEndTime = aDistantFutureTime();
+    }
 
     public static void intakeHatch() {
         manipulator.set(ControlMode.PercentOutput, .8);
 
-intakeRunning = true;
-holdingHatch = false;
-holdingCargo = false;
+        intakeRunning = true;
+        holdingHatch = false;
+        holdingCargo = false;
         resetIntakeStallDetector();
-ejectEndTime = aDistantFutureTime();
-}
+        ejectEndTime = aDistantFutureTime();
+    }
 
     public static void lowerPneumaticActuator() {
         flipper.set(Value.kForward);
-}
+    }
 
     public static void bringPneumaticActuatorUp() {
         flipper.set(Value.kReverse);
-}
+    }
 
     public static boolean isIntakeRunning() {
         return intakeRunning;
-}
+    }
 
     public static void holdGamePiece() {
         stopIntake();
         manipulator.set(ControlMode.PercentOutput, -.15);
-holdingCargo = true;
-}
+        holdingCargo = true;
+    }
 
     public static void ejectGamePiece() {
-        if (holdingCargo){
+        if (holdingCargo) {
             manipulator.set(ControlMode.PercentOutput, .5);
 
-holdingCargo = false;
+            holdingCargo = false;
             resetIntakeStallDetector();
-    
-ejectEndTime = System.currentTimeMillis() + 750;
-} else if (holdingHatch) {
+
+            ejectEndTime = System.currentTimeMillis() + 750;
+        } else if (holdingHatch) {
             manipulator.set(ControlMode.PercentOutput, -.5);
 
-holdingHatch = false;
+            holdingHatch = false;
             resetIntakeStallDetector();
-    
-ejectEndTime = System.currentTimeMillis() + 750;
-}
-}
+
+            ejectEndTime = System.currentTimeMillis() + 750;
+        }
+    }
 
     public static void stopIntake() {
         manipulator.set(ControlMode.PercentOutput, 0);
         resetIntakeStallDetector();
-intakeRunning = false;
-}
+        intakeRunning = false;
+    }
 
     // UTILITY METHODS ---------------------------------------------------------
 
     public static boolean intakeStalled() {
         return (currentBreaker.tripped());
-}
+    }
 
     public static void resetIntakeStallDetector() {
         currentBreaker.reset();
-}
+    }
 
     private static double aDistantFutureTime() {
         return System.currentTimeMillis() + 900000; // 15 minutes in the future
-}
+    }
 
     /*
- * TEST METHODS
- */
+     * TEST METHODS
+     */
 
     public static void testIntakeCargo(double speed) {
         manipulator.set(ControlMode.PercentOutput, speed);
-}
+    }
 
     public static void testEjectCargo(double speed) {
         manipulator.set(ControlMode.PercentOutput, -speed);
-}
+    }
 
 }
