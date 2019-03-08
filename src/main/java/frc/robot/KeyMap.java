@@ -8,6 +8,7 @@ public class KeyMap {
     // GAMEPADS
     private final HID gp1 = new HID(0);
     private final HID gp2 = new HID(1);
+    private final HID gp3 = new HID(2);
     private final int gamepad1 = 0;
     private final int gamepad2 = 1;
     private final int gamepad3 = 2;
@@ -48,7 +49,9 @@ public class KeyMap {
     // TEST CONTROLLER
     private final HID.Button singleClimbRevolutionButton = LogitechF310.A;
     private final HID.Button singleClimbRevolutionReverseButton = LogitechF310.B;
-    private final HID.Axis manualManipulator = LogitechF310.STICK_RIGHT_Y;
+    private final HID.Button linkageUp = LogitechF310.DPAD_UP;
+    private final HID.Button linkageDown = LogitechF310.DPAD_DOWN;
+    private final HID.Axis manualLinkage = LogitechF310.STICK_RIGHT_Y;
 
     public HID getHID(int gamepad) {
         if (!singleControllerMode) {
@@ -57,6 +60,8 @@ public class KeyMap {
                 return gp1;
             case gamepad2:
                 return gp2;
+            case gamepad3:
+                return gp3;
             default:
                 return null;
             }
@@ -150,8 +155,16 @@ public class KeyMap {
         return getHID(gamepad3).button(singleClimbRevolutionReverseButton);
     }
 
-    public double getManualManipulator() {
-        return getHID(gamepad3).axis(manualManipulator);
+    public double getManualLinkage() {
+        return getHID(gamepad3).axis(manualLinkage);
+    }
+
+    public boolean getLinkageUp() {
+        return getHID(gamepad3).button(linkageUp);
+    }
+
+    public boolean getLinkageDown() {
+        return getHID(gamepad3).button(linkageDown);
     }
 
     /*
@@ -198,5 +211,4 @@ public class KeyMap {
     public double getLeftStickY(int gamePadNumber) {
         return getHID(gamePadNumber).axis(LogitechF310.STICK_LEFT_Y);
     }
-
 }

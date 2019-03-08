@@ -78,12 +78,12 @@ public class Robot extends TimedRobot {
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
-		// if (gamepad.getSingleClimbRevolution()) {
-		// Climber.moveSetpoint(1);
-		// }
-		// if (gamepad.getSingleClimbReverseRevolution()) {
-		// Climber.moveSetpoint(-1);
-		// }
+		if (gamepad.getSingleClimbRevolution()) {
+		Climber.moveSetpoint(1);
+		}
+		if (gamepad.getSingleClimbReverseRevolution()) {
+		Climber.moveSetpoint(-1);
+		}
 
 		if (gamepad.activateIntake()) {
 			Manipulator.intakeCargo();
@@ -100,10 +100,15 @@ public class Robot extends TimedRobot {
 			Lift.moveSetpoint(1);
 		}
 
-		// if (gamepad.getManualManipulator() > .1 || gamepad.getManualManipulator() <
-		// -.1) { // Idk. I stole this code from the manual lift code 2018
-		// Lift.move(-gamepad.getManualManipulator());
-		// }
+		// Manipulator.linkageMove(gamepad.getManualLinkage());
+
+		if (gamepad.getLinkageUp()) {
+			Manipulator.linkageUp();
+		}
+
+		if (gamepad.getLinkageDown()) {
+			Manipulator.linkageDown();
+		}
 
 		if (gamepad.activateIntake()) {
 			Manipulator.intakeCargo();
@@ -184,7 +189,7 @@ public class Robot extends TimedRobot {
 
 		Lift.tick();
 		Climber.tick();
-		// Manipulator.tick();
+		Manipulator.tick();
 
 		// Vision.tick();
 	}

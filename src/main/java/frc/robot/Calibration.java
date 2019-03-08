@@ -107,8 +107,15 @@ public class Calibration {
 	public static final double LIFT_I = 0.0;
 	public static final double LIFT_D = 0.0;
 	public static final double LIFT_F = 1.0;
-	public static final int LIFT_ACCEL = 2000;
-	public static final int LIFT_VELOCITY = 4000;
+	public static final int LIFT_ACCEL = 1000;
+	public static final int LIFT_VELOCITY = 2000;
+
+	public static final double LINKAGE_P = 3.2;
+	public static final double LINKAGE_I = 0.0;
+	public static final double LINKAGE_D = 0.0;
+	public static final double LINKAGE_F = 1.0;
+	public static final int LINKAGE_ACCEL = 500;
+	public static final int LINKAGE_VELOCITY = 1000;
 
 	public static void loadSwerveCalibration() {
 		File calibrationFile = new File("/home/lvuser/swerve.calibration");

@@ -11,7 +11,7 @@ public class Climber {
     private static CANSparkMax climbMotor = new CANSparkMax(Wiring.CLIMB_MOTOR, MotorType.kBrushless);
 
     public Climber() {
-      climbMotor.getPIDController().setOutputRange(-0.25, 0.25);
+      climbMotor.getPIDController().setOutputRange(-0.85, 0.85);
       climbMotor.getPIDController().setP(1);
     }
 
