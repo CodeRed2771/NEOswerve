@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 		Climber.moveSetpoint(-1);
 		}
 
-		if (gamepad.activateIntake()) {
+		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
 		}
 
@@ -102,20 +102,13 @@ public class Robot extends TimedRobot {
 
 		// Manipulator.linkageMove(gamepad.getManualLinkage());
 
-		if (gamepad.getLinkageUp()) {
-			Manipulator.linkageUp();
-		}
+		// if (gamepad.getLinkageUp()) {
+		// 	Manipulator.linkageUp();
+		// }
 
-		if (gamepad.getLinkageDown()) {
-			Manipulator.linkageDown();
-		}
-
-		if (gamepad.activateIntake()) {
-			Manipulator.intakeCargo();
-		}
-		if (gamepad.ejectCargo()) {
-			Manipulator.ejectGamePiece();
-		}
+		// if (gamepad.getLinkageDown()) {
+		// 	Manipulator.linkageDown();
+		// }
 
 		if (gamepad.getBringLiftToStart()) {
 			Lift.goToStart();

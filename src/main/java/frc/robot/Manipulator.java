@@ -131,6 +131,7 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     public static void intakeCargo() {
+        linkageDown();
         manipulator.set(ControlMode.PercentOutput, -1);
 
         intakeRunning = true;
@@ -163,6 +164,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void holdGamePiece() {
         stopIntake();
+        linkageUp();
         manipulator.set(ControlMode.PercentOutput, -.25);
         holdingCargo = true;
     }

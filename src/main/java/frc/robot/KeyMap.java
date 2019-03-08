@@ -8,10 +8,10 @@ public class KeyMap {
     // GAMEPADS
     private final HID gp1 = new HID(0);
     private final HID gp2 = new HID(1);
-    private final HID gp3 = new HID(2);
+    // private final HID gp3 = new HID(2);
     private final int gamepad1 = 0;
     private final int gamepad2 = 1;
-    private final int gamepad3 = 2;
+    // private final int gamepad3 = 2;
 
     // MANAGEMENT BOOLEANS
     private boolean singleControllerMode = false;
@@ -31,7 +31,7 @@ public class KeyMap {
     private final HID.Axis manualClimberAxis = LogitechF310.STICK_LEFT_Y;
 
     // CONTROLLER 2
-    private final HID.Button startIntake = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button intakeCargo = LogitechF310.BUMPER_RIGHT;
     private final HID.Button ejectCargo = LogitechF310.BUMPER_LEFT;
 
     // Hatch Placement
@@ -60,8 +60,8 @@ public class KeyMap {
                 return gp1;
             case gamepad2:
                 return gp2;
-            case gamepad3:
-                return gp3;
+            // case gamepad3:
+            //     return gp3;
             default:
                 return null;
             }
@@ -86,8 +86,8 @@ public class KeyMap {
         return getHID(gamepad1).axis(swerveRotAxis);
     }
 
-    public boolean activateIntake() {
-        return getHID(gamepad2).button(startIntake);
+    public boolean activateCargoIntake() {
+        return getHID(gamepad2).button(intakeCargo);
     }
 
     public boolean ejectCargo() {
@@ -148,24 +148,24 @@ public class KeyMap {
     }
 
     public boolean getSingleClimbRevolution() {
-        return getHID(gamepad3).button(singleClimbRevolutionButton);
+        return getHID(gamepad1).button(singleClimbRevolutionButton);
     }
 
     public boolean getSingleClimbReverseRevolution() {
-        return getHID(gamepad3).button(singleClimbRevolutionReverseButton);
+        return getHID(gamepad1).button(singleClimbRevolutionReverseButton);
     }
 
-    public double getManualLinkage() {
-        return getHID(gamepad3).axis(manualLinkage);
-    }
+    // public double getManualLinkage() {
+    //     return getHID(gamepad3).axis(manualLinkage);
+    // }
 
-    public boolean getLinkageUp() {
-        return getHID(gamepad3).button(linkageUp);
-    }
+    // public boolean getLinkageUp() {
+    //     return getHID(gamepad2).button(linkageUp);
+    // }
 
-    public boolean getLinkageDown() {
-        return getHID(gamepad3).button(linkageDown);
-    }
+    // public boolean getLinkageDown() {
+    //     return getHID(gamepad2).button(linkageDown);
+    // }
 
     /*
      * 
