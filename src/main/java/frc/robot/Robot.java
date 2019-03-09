@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 		// --------------------------------------------------
 		// GYRO - allow manual gyro reset by pressing Start 
 		// --------------------------------------------------
-		if (gamepad.getStartButton(0)) {
+		if (gamepad.getZeroGyro()) {
 			RobotGyro.reset();
 		}
 
@@ -81,101 +81,86 @@ public class Robot extends TimedRobot {
 		//    CLIMB
 		// --------------------------------------------------
 		// Manual controls
-		if (gamepad.getSingleClimbRevolution()) {
-			Climber.moveSetpoint(1);
-		}
-		if (gamepad.getSingleClimbReverseRevolution()) {
-			Climber.moveSetpoint(-1);
-		}
+		// if (gamepad.getSingleClimbRevolution()) {
+		// 	Climber.moveSetpoint(1);
+		// }
+		// if (gamepad.getSingleClimbReverseRevolution()) {
+		// 	Climber.moveSetpoint(-1);
+		// }
 
 		// --------------------------------------------------
-		//   CARGO
+		//   GAME PIECES
 		// --------------------------------------------------
 		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
 		}
-		if (gamepad.ejectCargo()) {
+		if (gamepad.activateHatchIntake()) {
+			Manipulator.intakeHatch();
+		}
+		if (gamepad.activateHatchFloorIntake()) {
+			Manipulator.intakeHatchFloor();
+		}
+		if (gamepad.ejectGamePiece()) {
 			Manipulator.ejectGamePiece();
 		}
-
+		if (gamepad.gamePieceOverride()) {
+			Manipulator.holdGamePieceOverride();
+		}
 		// --------------------------------------------------
 		//   LIFT
 		// --------------------------------------------------
 
-		if (gamepad.getManualLiftUp()) {
-			Lift.moveSetpoint(-1);
-		}
-		if (gamepad.getManualLiftDown()) {
-			Lift.moveSetpoint(1);
-		}
-		if (gamepad.getBringLiftToStart()) {
+		Lift.moveSetpoint(gamepad.getManualLift());
+		
+		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
+			Manipulator.goToTravelPosition();
 		}
-		if (gamepad.getHatchRocketLvl1()) {
+		if (gamepad.goToLvl1()) {
 			Lift.goHatchLvl1();
 		}
-		if (gamepad.getHatchRocketLvl2()) {
+		if (gamepad.goToLvl2()) {
 			Lift.goHatchLvl2();
 		}
-		if (gamepad.getHatchRocketLvl3()) {
+		if (gamepad.goToLvl3()) {
 			Lift.goHatchLvl3();
 		}
-		if (gamepad.getCargoRocketLvl1()) {
-			Lift.goCargoLvl1();
-		}
-		if (gamepad.getCargoRocketLvl2()) {
-			Lift.goCargoLvl2();
-		}
-		if (gamepad.getCargoRocketLvl3()) {
-			Lift.goCargoLvl3();
-		}
-		if (gamepad.getcargoShipPlacement()) {
+		
+		if (gamepad.getCargoShipPlacement()) {
 			Lift.goCargoShipCargo();
 		}
-
-		// --------------------------------------------------
-		//   LINKAGE
-		// --------------------------------------------------
-		// Manipulator.linkageMove(gamepad.getManualLinkage());
-
-		// if (gamepad.getLinkageUp()) {
-		// Manipulator.linkageUp();
-		// }
-
-		// if (gamepad.getLinkageDown()) {
-		// Manipulator.linkageDown();
-		// }
 
 		// --------------------------------------------------
 		//   AUTO SUB ROUTINES
 		// --------------------------------------------------
 		
 		// DRIVE OFF PLATFORM
-		if (gamepad.getButtonX(0)) {
+		if (gamepad.driveOffPlatform() && mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoDriveOffPlatform();
 			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
 		}
 
 		// SLIDE LEFT
-		if (gamepad.getDpadLeft(0) && !mAutoProgram.isRunning()) {
+		if (gamepad.shipMoveLeft() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoSlideOver();
 			mAutoProgram.start(AutoBaseClass.Direction.LEFT);
 		}
 
 		// SLIDE RIGHT
-		if (gamepad.getDpadRight(0) && !mAutoProgram.isRunning()) {
+		if (gamepad.shipMoveRight() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoSlideOver();
 			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
 		}
 
 		// FIND HATCH TARGET
-		// if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
-		// mAutoProgram = new AutoFindHatch();
-		// mAutoProgram.start();
-		// }
+		if (gamepad.findRocketTarget() && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoFindHatch();
+			mAutoProgram.start();
+		}
 
-		// STOP ANY AUTO ROUTINE
-		if (gamepad.getButtonB(0)) {
+		//  TODO: MAKE FUNCTIONS FOR FIND SHIP AND FIND FEEDER STATION.
+
+		if (Math.abs(gamepad.getSwerveYAxis()) > .1 || Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1) {
 			mAutoProgram.stop();
 		}
 
@@ -194,15 +179,6 @@ public class Robot extends TimedRobot {
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
-		}
-
-		// --------------------------------------------------
-		//   TESTING
-		// --------------------------------------------------
-		
-		// Y
-		if (gamepad.getButtonY(0)) {
-			Vision.setTargetTrackingMode();
 		}
 
 		// --------------------------------------------------

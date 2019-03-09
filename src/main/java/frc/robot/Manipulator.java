@@ -18,12 +18,19 @@ public class Manipulator { // Should be changed to Manipulator.
     private static CurrentBreaker currentBreaker;
     private static TalonSRX linkage;
     private static DoubleSolenoid flipper; // I know this is a dumb name. Sorry :)
-    private static LimitSwitchNormal limitSwitch;
 
-    private static boolean holdingCargo = false;
-    private static boolean holdingHatch = false; // I kept it different in case we want to use this for logic regarding
-                                                 // what to score.
-    private static boolean intakeRunning = false;
+    private enum ManipulatorState {
+        INACTIVE,
+        GETTING_CARGO,
+        GETTING_HATCH,
+        GETTING_HATCH_FLOOR,
+        HOLDING_CARGO,
+        HOLDING_HATCH,
+        HOLDING_HATCH_FLOOR,
+    }
+
+    private static ManipulatorState manipulatorState;
+
     private static double ejectEndTime;
 
     public static Manipulator getInstance() {
@@ -35,6 +42,8 @@ public class Manipulator { // Should be changed to Manipulator.
     public Manipulator() {
         manipulator = new TalonSRX(Wiring.MANIPULATOR_MOTOR);
         linkage = new TalonSRX(Wiring.LINKAGE_MOTOR);
+
+        manipulatorState = ManipulatorState.INACTIVE;
 
         manipulator.setInverted(true);
 
@@ -99,10 +108,14 @@ public class Manipulator { // Should be changed to Manipulator.
 			linkage.config_kP(0, SmartDashboard.getNumber("Link P", 1.0), 0);
 			linkage.config_kI(0, SmartDashboard.getNumber("Link I", 0), 0);
 			linkage.config_kD(0, SmartDashboard.getNumber("Link D", 0), 0);
-		}
+        }
 
-        if (intakeStalled() && !holdingCargo) {
-            holdGamePiece();
+        if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_CARGO) {
+            holdCargo();
+        } else if (manipulator.getSensorCollection().isFwdLimitSwitchClosed() && manipulatorState == ManipulatorState.GETTING_HATCH) {
+            holdHatch();
+        } else if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_HATCH_FLOOR) {
+            holdHatchFloor();
         }
 
         // this turns off the intake a little while after starting an eject
@@ -132,20 +145,32 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void intakeCargo() {
         linkageDown();
+        Lift.goToStart();
+
+        manipulatorState = ManipulatorState.GETTING_CARGO;
         manipulator.set(ControlMode.PercentOutput, -1);
 
-        intakeRunning = true;
-        holdingCargo = false;
         resetIntakeStallDetector();
         ejectEndTime = aDistantFutureTime();
     }
 
     public static void intakeHatch() {
-        manipulator.set(ControlMode.PercentOutput, .1);
+        linkageDown();
+        Lift.getHatchPanel();
+        
+        manipulatorState = ManipulatorState.GETTING_HATCH;
 
-        intakeRunning = true;
-        holdingHatch = false;
-        holdingCargo = false;
+        resetIntakeStallDetector();
+        ejectEndTime = aDistantFutureTime();
+    }
+
+    public static void intakeHatchFloor() {
+        linkageDown();
+        Lift.goToStart();
+
+        manipulatorState = ManipulatorState.GETTING_HATCH_FLOOR;
+        manipulator.set(ControlMode.PercentOutput, .5);
+
         resetIntakeStallDetector();
         ejectEndTime = aDistantFutureTime();
     }
@@ -155,42 +180,67 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     public static void bringFlipperUp() {
+        Lift.goHatchLvl1();
         flipper.set(Value.kReverse);
     }
 
-    public static boolean isIntakeRunning() {
-        return intakeRunning;
-    }
-
-    public static void holdGamePiece() {
-        stopIntake();
+    private static void holdCargo() {
+        manipulatorState = ManipulatorState.HOLDING_CARGO;
+        resetIntakeStallDetector();
         linkageUp();
         manipulator.set(ControlMode.PercentOutput, -.25);
-        holdingCargo = true;
+    }
+
+    private static void holdHatch() {
+        manipulatorState = ManipulatorState.HOLDING_CARGO;
+        manipulator.set(ControlMode.PercentOutput, -.25);
+        linkageUp();
+    }
+
+    private static void holdHatchFloor() {
+        manipulatorState = ManipulatorState.HOLDING_HATCH_FLOOR;
+        manipulator.set(ControlMode.PercentOutput, .15);
+        resetIntakeStallDetector();
+        linkageUp();
+        bringFlipperUp();
+    }
+
+    public static void holdGamePieceOverride() {
+        if (manipulatorState == ManipulatorState.GETTING_CARGO) {
+            holdCargo();
+        } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
+            holdHatch();
+        } else if (manipulatorState == ManipulatorState.GETTING_HATCH_FLOOR) {
+            holdHatchFloor();
+        }
     }
 
     public static void ejectGamePiece() {
-        if (holdingCargo) {
+        if (manipulatorState == ManipulatorState.HOLDING_CARGO) {
             manipulator.set(ControlMode.PercentOutput, 1);
-
-            holdingCargo = false;
-            resetIntakeStallDetector();
-
-            ejectEndTime = System.currentTimeMillis() + 750;
-        } else if (holdingHatch) {
-            manipulator.set(ControlMode.PercentOutput, -1);
-
-            holdingHatch = false;
-            resetIntakeStallDetector();
-
-            ejectEndTime = System.currentTimeMillis() + 750;
+        } else if (manipulatorState == ManipulatorState.HOLDING_HATCH) {
+            Lift.scoreHatchPanel();
+        } else if (manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR) {
+            manipulator.set(ControlMode.PercentOutput, -.25);
+            Lift.scoreHatchPanel();
         }
+
+        manipulatorState = ManipulatorState.INACTIVE;
+        resetIntakeStallDetector();
+        ejectEndTime = System.currentTimeMillis();
+    }
+
+    public static void goToTravelPosition() {
+        manipulatorState = ManipulatorState.INACTIVE;
+        linkageUp();
+        lowerFlipper();
+        stopIntake();
+
     }
 
     public static void stopIntake() {
         manipulator.set(ControlMode.PercentOutput, 0);
         resetIntakeStallDetector();
-        intakeRunning = false;
     }
 
     // UTILITY METHODS ---------------------------------------------------------
