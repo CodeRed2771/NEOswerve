@@ -10,6 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Lift {
 	private static Lift instance;
 	private static TalonSRX liftMotor;
+	private static TalonSRX liftFollowMotor;
+
+	private static boolean encoderSet = false;
+	private static boolean encoderSetting = false;
+	private static double encoderSettingStartTime = System.currentTimeMillis();
 
 	public static Lift getInstance() {
 		if (instance == null)
@@ -19,6 +24,9 @@ public class Lift {
 
 	public Lift() {
 		liftMotor = new TalonSRX(Wiring.LIFT_MASTER);
+		liftFollowMotor = new TalonSRX(Wiring.LIFT_FOLLLOWER);
+		liftFollowMotor.follow(liftMotor);
+		liftFollowMotor.setInverted(false);
 
 		/* first choose the sensor */
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -64,7 +72,18 @@ public class Lift {
 	public static void tick() {
 
 		SmartDashboard.putNumber("lift cur", liftMotor.getOutputCurrent());
-		
+
+		if (!encoderSet && !encoderSetting) {
+			liftMotor.set(ControlMode.PercentOutput, .05);
+			encoderSetting = true;
+		}
+
+		if (encoderSetting && (System.currentTimeMillis() >= encoderSettingStartTime + 1000)) {
+			liftMotor.getSensorCollection().setQuadraturePosition(0, 20);
+			encoderSetting = false;
+			encoderSet = true;
+		}
+
 		if (SmartDashboard.getBoolean("Lift TUNE", false)) {
 			liftMotor.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Lift Vel", 0), 0);
 			liftMotor.configMotionAcceleration((int) SmartDashboard.getNumber("Lift Accel", 0), 0);
@@ -129,7 +148,7 @@ public class Lift {
 	public static void scoreHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, liftMotor.getSensorCollection().getQuadraturePosition() - HATCH_SCORING);
 	}
-	
+
 	public static void goHatchLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_1);
 	}
