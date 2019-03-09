@@ -157,7 +157,7 @@ public class Lift {
 	// This here may not be right we assumued that this is just hatch level one so
 	// we put the variable in it has 'HATCH_LEVEL_1'
 	public static void goCargoShipCargo() {
-		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_3);
+		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_2);
 	}
 
 	public static void stop() {
