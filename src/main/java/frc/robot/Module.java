@@ -185,7 +185,6 @@ public class Module {
 	}
 	
 	public boolean hasDriveCompleted(int allowedError) {
-		SmartDashboard.putNumber("Drive Comp diff", Math.abs(currentDriveSetpoint - getDriveEnc()));
 		return Math.abs(currentDriveSetpoint - getDriveEnc()) <= allowedError;
 	}
 	

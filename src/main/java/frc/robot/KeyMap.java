@@ -185,4 +185,54 @@ public class KeyMap {
     // public boolean getSingleClimbReverseRevolution() {
     //     return getHID(gamepad1).button(singleClimbRevolutionReverseButton);
     // }
+
+
+     /*
+     * 
+     * Provide some direct access to the commonly used F310 gamepad features
+     * 
+     */
+    public boolean getBumperLeft(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.BUMPER_LEFT);
+    }
+
+    public boolean getButtonA(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.A);
+    }
+
+    public boolean getButtonB(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.B);
+    }
+
+    public boolean getButtonX(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.X);
+    }
+
+    public boolean getButtonY(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.Y);
+    }
+
+    public boolean getStartButton(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.START);
+    }
+
+    public boolean getDpadLeft(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_LEFT);
+    }
+
+    public boolean getDpadRight(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_RIGHT);
+    }
+
+    public boolean getDpadUp(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_UP);
+    }
+
+    public boolean getDpadDown(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.DPAD_DOWN);
+    }
+
+    public double getLeftStickY(int gamePadNumber) {
+        return getHID(gamePadNumber).axis(LogitechF310.STICK_LEFT_Y);
+    }
 }

@@ -44,6 +44,11 @@ public class Climber {
     return climbMotor.getEncoder().getPosition() >= (EXTENDED_POSITION - 15);
   }
 
+  public static void manualDrive(double speed) {
+    climbMotor.set(speed);
+    SmartDashboard.putNumber("ModB Enc", DriveTrain.moduleB.getDriveEnc());
+  }
+
   public static void moveSetpoint(double direction) {
     double newSetpoint;
 

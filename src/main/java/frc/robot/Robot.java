@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -113,11 +112,6 @@ public class Robot extends TimedRobot {
 		if (Math.abs(gamepad.getManualLift()) > .1){
 			Lift.moveSetpoint(gamepad.getManualLift());
 		}
-
-		if (Math.abs(gamepad.manualClimb()) > .1) {
-			// DO STUFF
-		}
-		
 		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
 			Manipulator.goToTravelPosition();
@@ -141,13 +135,13 @@ public class Robot extends TimedRobot {
 		// --------------------------------------------------
 		
 		// DRIVE OFF PLATFORM
-		if (gamepad.driveOffPlatform() && mAutoProgram.isRunning()) {
+		if (gamepad.driveOffPlatform() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoDriveOffPlatform();
 			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
 		}
 
 		//AUTO CLIMB
-		if (gamepad.getClimb()) {
+		if (gamepad.getClimb() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoClimb();
 			mAutoProgram.start();
 		}
@@ -172,6 +166,16 @@ public class Robot extends TimedRobot {
 
 		//  TODO: MAKE FUNCTIONS FOR FIND SHIP AND FIND FEEDER STATION.
 
+		// temporary manual climb drive motor 
+		//   Controller 3 - Left Bumper, Left stick Y
+		if (gamepad.getBumperLeft(2)) {
+			Climber.manualDrive(gamepad.manualClimb());
+		}
+		
+		//
+		// AUTO ABORT 
+		// If driver hits any drive sticks, any running auto will ABORT
+		//
 		if (Math.abs(gamepad.getSwerveYAxis()) > .1 || Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1) {
 			mAutoProgram.stop();
 		}

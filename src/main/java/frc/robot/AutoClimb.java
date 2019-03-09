@@ -23,9 +23,36 @@ public class AutoClimb extends AutoBaseClass {
 
 			SmartDashboard.putNumber("Auto Step", getCurrentStep());
 			switch (getCurrentStep()) {
-            case 0:
+			case 0:
+				Climber.climberExtend();
 				break;
 			case 1:
+				if (Climber.isExtended()) {
+					setStep(2);
+				}
+				break;
+			case 2:
+				DriveTrain.moduleB.setTurnOrientation(.25);
+				DriveTrain.moduleC.setTurnOrientation(.25);
+
+				// Start driving forward using module B motor
+				// FIX FIX FIX TO DO - the +1000 is a guess
+				DriveTrain.moduleB.setDrivePIDToSetPoint(DriveTrain.moduleB.getDriveEnc() + 1000);
+				break;
+			case 3:
+				if (DriveTrain.moduleB.hasDriveCompleted(20)) {
+					DriveAuto.stopDriving();
+					setStep(4);
+				}
+				break;
+			case 4:
+				Climber.climberRetract();
+				setTimerAndAdvanceStep(5000);
+				break;
+			case 5:
+				break;
+			case 6:
+				stop();
 				break;
 			}
 		}
