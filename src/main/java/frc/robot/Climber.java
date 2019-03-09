@@ -61,5 +61,4 @@ public class Climber {
 
     climbMotor.getPIDController().setReference(newSetpoint, ControlType.kPosition);
   }
-
 }

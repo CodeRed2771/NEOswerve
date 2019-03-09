@@ -110,7 +110,13 @@ public class Robot extends TimedRobot {
 		//   LIFT
 		// --------------------------------------------------
 
-		Lift.moveSetpoint(gamepad.getManualLift());
+		if (Math.abs(gamepad.getManualLift()) > .1){
+			Lift.moveSetpoint(gamepad.getManualLift());
+		}
+
+		if (Math.abs(gamepad.manualClimb()) > .1) {
+			// DO STUFF
+		}
 		
 		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
@@ -138,6 +144,12 @@ public class Robot extends TimedRobot {
 		if (gamepad.driveOffPlatform() && mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoDriveOffPlatform();
 			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
+		}
+
+		//AUTO CLIMB
+		if (gamepad.getClimb()) {
+			mAutoProgram = new AutoClimb();
+			mAutoProgram.start();
 		}
 
 		// SLIDE LEFT

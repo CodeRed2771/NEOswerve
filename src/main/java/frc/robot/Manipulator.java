@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,7 @@ public class Manipulator { // Should be changed to Manipulator.
     private static CurrentBreaker currentBreaker;
     private static TalonSRX linkage;
     private static DoubleSolenoid flipper; // I know this is a dumb name. Sorry :)
+    private static DigitalInput limitSwitch;
 
     private enum ManipulatorState {
         INACTIVE,
@@ -42,6 +44,7 @@ public class Manipulator { // Should be changed to Manipulator.
     public Manipulator() {
         manipulator = new TalonSRX(Wiring.MANIPULATOR_MOTOR);
         linkage = new TalonSRX(Wiring.LINKAGE_MOTOR);
+        limitSwitch = new DigitalInput(0);
 
         manipulatorState = ManipulatorState.INACTIVE;
 
@@ -112,7 +115,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
         if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_CARGO) {
             holdCargo();
-        } else if (manipulator.getSensorCollection().isFwdLimitSwitchClosed() && manipulatorState == ManipulatorState.GETTING_HATCH) {
+        } else if (!limitSwitch.get() && manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
         } else if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_HATCH_FLOOR) {
             holdHatchFloor();
