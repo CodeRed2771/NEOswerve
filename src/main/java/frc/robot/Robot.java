@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
 	KeyMap gamepad;
-	Compressor compressor;
+
 	SendableChooser<String> autoChooser;
 	SendableChooser<String> positionChooser;
 
@@ -49,14 +49,12 @@ public class Robot extends TimedRobot {
 		Lift.getInstance();
 		Climber.getInstance();
 		Manipulator.getInstance();
+
 		mAutoProgram = new AutoDoNothing();
 
 		Calibration.loadSwerveCalibration();
 
 		setupAutoChoices();
-
-		// compressor = new Compressor(0);
-		// compressor.setClosedLoopControl(true);
 
 		RobotGyro.reset();
 
@@ -72,26 +70,37 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		// Climber.climb(gamepad.getManualClimb());
-
-		// allow manual gyro reset if you press Start button
+		// --------------------------------------------------
+		// GYRO - allow manual gyro reset by pressing Start 
+		// --------------------------------------------------
 		if (gamepad.getStartButton(0)) {
 			RobotGyro.reset();
 		}
+
+		// --------------------------------------------------
+		//    CLIMB
+		// --------------------------------------------------
+		// Manual controls
 		if (gamepad.getSingleClimbRevolution()) {
-		Climber.moveSetpoint(1);
+			Climber.moveSetpoint(1);
 		}
 		if (gamepad.getSingleClimbReverseRevolution()) {
-		Climber.moveSetpoint(-1);
+			Climber.moveSetpoint(-1);
 		}
 
+		// --------------------------------------------------
+		//   CARGO
+		// --------------------------------------------------
 		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
 		}
-
 		if (gamepad.ejectCargo()) {
 			Manipulator.ejectGamePiece();
 		}
+
+		// --------------------------------------------------
+		//   LIFT
+		// --------------------------------------------------
 
 		if (gamepad.getManualLiftUp()) {
 			Lift.moveSetpoint(-1);
@@ -99,17 +108,6 @@ public class Robot extends TimedRobot {
 		if (gamepad.getManualLiftDown()) {
 			Lift.moveSetpoint(1);
 		}
-
-		// Manipulator.linkageMove(gamepad.getManualLinkage());
-
-		// if (gamepad.getLinkageUp()) {
-		// 	Manipulator.linkageUp();
-		// }
-
-		// if (gamepad.getLinkageDown()) {
-		// 	Manipulator.linkageDown();
-		// }
-
 		if (gamepad.getBringLiftToStart()) {
 			Lift.goToStart();
 		}
@@ -135,39 +133,59 @@ public class Robot extends TimedRobot {
 			Lift.goCargoShipCargo();
 		}
 
-		// Y
-		if (gamepad.getButtonY(0)) {
-			Vision.setTargetTrackingMode();
-		}
-		// DPAD Left
-		if (gamepad.getDpadLeft(0) && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoSlideOver();
-			mAutoProgram.start(AutoBaseClass.Direction.LEFT);
-		}
-		// DPAD Right
-		if (gamepad.getDpadRight(0) && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoSlideOver();
-			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
-		}
-		// A
-		// if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
-		// mAutoProgram = new AutoFindHatch();
-		// mAutoProgram.start();
+		// --------------------------------------------------
+		//   LINKAGE
+		// --------------------------------------------------
+		// Manipulator.linkageMove(gamepad.getManualLinkage());
+
+		// if (gamepad.getLinkageUp()) {
+		// Manipulator.linkageUp();
 		// }
-		// B
-		if (gamepad.getButtonB(0)) {
-			mAutoProgram.stop();
-		}
-		// X
+
+		// if (gamepad.getLinkageDown()) {
+		// Manipulator.linkageDown();
+		// }
+
+		// --------------------------------------------------
+		//   AUTO SUB ROUTINES
+		// --------------------------------------------------
+		
+		// DRIVE OFF PLATFORM
 		if (gamepad.getButtonX(0)) {
 			mAutoProgram = new AutoDriveOffPlatform();
 			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
 		}
 
+		// SLIDE LEFT
+		if (gamepad.getDpadLeft(0) && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoSlideOver();
+			mAutoProgram.start(AutoBaseClass.Direction.LEFT);
+		}
+
+		// SLIDE RIGHT
+		if (gamepad.getDpadRight(0) && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoSlideOver();
+			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
+		}
+
+		// FIND HATCH TARGET
+		// if (gamepad.getButtonA(0) && !mAutoProgram.isRunning()) {
+		// mAutoProgram = new AutoFindHatch();
+		// mAutoProgram.start();
+		// }
+
+		// STOP ANY AUTO ROUTINE
+		if (gamepad.getButtonB(0)) {
+			mAutoProgram.stop();
+		}
+
 		SmartDashboard.putBoolean("Auto Running", mAutoProgram.isRunning());
+
+		// DRIVE 
 		if (mAutoProgram.isRunning()) {
 			mAutoProgram.tick();
 		} else {
+			// 
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
@@ -178,13 +196,26 @@ public class Robot extends TimedRobot {
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
 		}
 
-		showDashboardInfo();
+		// --------------------------------------------------
+		//   TESTING
+		// --------------------------------------------------
+		
+		// Y
+		if (gamepad.getButtonY(0)) {
+			Vision.setTargetTrackingMode();
+		}
+
+		// --------------------------------------------------
+		//   TICK 
+		// --------------------------------------------------
 
 		Lift.tick();
 		Climber.tick();
 		Manipulator.tick();
-
 		// Vision.tick();
+
+		showDashboardInfo();
+
 	}
 
 	private void showDashboardInfo() {
