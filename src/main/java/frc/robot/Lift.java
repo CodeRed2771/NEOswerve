@@ -24,6 +24,8 @@ public class Lift {
 
 	public Lift() {
 		liftMotor = new TalonSRX(Wiring.LIFT_MASTER);
+		liftMotor.setInverted(false);
+
 		liftFollowMotor = new TalonSRX(Wiring.LIFT_FOLLLOWER);
 		liftFollowMotor.follow(liftMotor);
 		liftFollowMotor.setInverted(false);
@@ -71,17 +73,21 @@ public class Lift {
 
 	public static void tick() {
 
-		SmartDashboard.putNumber("lift cur", liftMotor.getOutputCurrent());
+		// SmartDashboard.putNumber("lift cur", liftMotor.getOutputCurrent());
 
 		if (!encoderSet && !encoderSetting) {
-			liftMotor.set(ControlMode.PercentOutput, .05);
+			liftMotor.set(ControlMode.PercentOutput, -.2);
+			encoderSettingStartTime = System.currentTimeMillis();
 			encoderSetting = true;
+			System.out.println("calibrating lift");
 		}
 
-		if (encoderSetting && (System.currentTimeMillis() >= encoderSettingStartTime + 1000)) {
+		if (encoderSetting && (System.currentTimeMillis() >= (encoderSettingStartTime + 1000))) {
 			liftMotor.getSensorCollection().setQuadraturePosition(0, 20);
+			liftMotor.set(ControlMode.PercentOutput, 0);
 			encoderSetting = false;
 			encoderSet = true;
+			System.out.println("calibrating lift done");
 		}
 
 		if (SmartDashboard.getBoolean("Lift TUNE", false)) {
@@ -110,16 +116,20 @@ public class Lift {
 		liftMotor.set(ControlMode.PercentOutput, speed);
 	}
 
+	public static void resetLift() {
+		encoderSet = false;
+	}
+
 	public static void moveSetpoint(double direction) {
 		int newSetpoint;
 
 		if (direction > 0) {
-			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 4000;
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 4000;
 			if (newSetpoint >= 0) {
 				newSetpoint = 0;
 			}
 		} else {
-			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 4000;
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 4000;
 			if (newSetpoint < -40000) {
 				newSetpoint = -40000;
 			}
@@ -132,14 +142,17 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, 0);
 	}
 
-	private static final double HATCH_ACQUIRING = -2000; // WARNING THIS IS WRONG
-	private static final double HATCH_SCORING = -200;
-	private static final double HATCH_LEVEL_1 = -1340;
-	private static final double HATCH_LEVEL_2 = -11000;
-	private static final double HATCH_LEVEL_3 = -22000;
-	private static final double CARGO_LEVEL_1 = -4340;
-	private static final double CARGO_LEVEL_2 = -14000;
-	private static final double CARGO_LEVEL_3 = -25000;
+	private static final double HATCH_ACQUIRING = 2000; // WARNING THIS IS WRONG
+	private static final double HATCH_SCORING = 500;
+	private static final double HATCH_LEVEL_1 = 1340;
+	private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
+	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 5500;
+	private static final double HATCH_LEVEL_2 = 11000;
+	private static final double HATCH_FLOOR_LEVEL_2 = HATCH_LEVEL_2 + 2000;
+	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5500;
+	private static final double HATCH_LEVEL_3 = 21000;
+	private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
+	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5500;
 
 	public static void getHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);
@@ -153,12 +166,19 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_1);
 	}
 
+	public static void goHatchFloorLvl1() {
+		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1);
+	}
+
 	public static void goCargoLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_1);
 	}
 
 	public static void goHatchLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_2);
+	}
+	public static void goHatchFloorLvl2() {
+		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_2);
 	}
 
 	public static void goCargoLvl2() {
@@ -167,6 +187,9 @@ public class Lift {
 
 	public static void goHatchLvl3() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_3);
+	}
+	public static void goHatchFloorLvl3() {
+		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_3);
 	}
 
 	public static void goCargoLvl3() {

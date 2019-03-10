@@ -2,7 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -20,6 +19,10 @@ public class Manipulator { // Should be changed to Manipulator.
     private static TalonSRX linkage;
     private static DoubleSolenoid flipper; // I know this is a dumb name. Sorry :)
     private static DigitalInput limitSwitch;
+
+    private static boolean linkageEncoderSet = false;
+	private static boolean linkageEncoderSetting = false;
+	private static double linkageEncoderSettingStartTime = System.currentTimeMillis();
 
     private enum ManipulatorState {
         INACTIVE,
@@ -113,6 +116,21 @@ public class Manipulator { // Should be changed to Manipulator.
 			linkage.config_kD(0, SmartDashboard.getNumber("Link D", 0), 0);
         }
 
+        if (!linkageEncoderSet && !linkageEncoderSetting) {
+			linkage.set(ControlMode.PercentOutput, .5);
+			linkageEncoderSettingStartTime = System.currentTimeMillis();
+			linkageEncoderSetting = true;
+			System.out.println("calibrating linkage");
+		}
+
+		if (linkageEncoderSetting && (System.currentTimeMillis() >= (linkageEncoderSettingStartTime + 1000))) {
+			linkage.getSensorCollection().setQuadraturePosition(0, 20);
+			linkage.set(ControlMode.PercentOutput, 0);
+			linkageEncoderSetting = false;
+			linkageEncoderSet = true;
+			System.out.println("calibrating linkage done");
+        }
+        
         if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_CARGO) {
             holdCargo();
         } else if (!limitSwitch.get() && manipulatorState == ManipulatorState.GETTING_HATCH) {
@@ -139,15 +157,20 @@ public class Manipulator { // Should be changed to Manipulator.
     }
     
     public static void linkageDown() {
-        linkage.set(ControlMode.MotionMagic, -900);
+        linkage.set(ControlMode.MotionMagic, -975);
     }
 
     public static void linkageUp(){
         linkage.set(ControlMode.MotionMagic, 0);
     }
 
+    public static void resetLinkage() {
+        linkageEncoderSet = false;
+    }
+
     public static void intakeCargo() {
         linkageDown();
+        lowerFlipper();
         Lift.goToStart();
 
         manipulatorState = ManipulatorState.GETTING_CARGO;
@@ -159,6 +182,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void intakeHatch() {
         linkageDown();
+        lowerFlipper();
         Lift.getHatchPanel();
         
         manipulatorState = ManipulatorState.GETTING_HATCH;
@@ -169,6 +193,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void intakeHatchFloor() {
         linkageDown();
+        lowerFlipper();
         Lift.goToStart();
 
         manipulatorState = ManipulatorState.GETTING_HATCH_FLOOR;
@@ -190,21 +215,28 @@ public class Manipulator { // Should be changed to Manipulator.
     private static void holdCargo() {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         resetIntakeStallDetector();
-        linkageUp();
+        // linkageUp();
         manipulator.set(ControlMode.PercentOutput, -.25);
     }
 
     private static void holdHatch() {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         manipulator.set(ControlMode.PercentOutput, -.25);
-        linkageUp();
+        // linkageUp();
+    }
+
+    public static boolean isHoldingCargo() {
+        return manipulatorState == ManipulatorState.HOLDING_CARGO;
+    }
+    public static boolean isHoldingFloorHatch() {
+        return manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR;
     }
 
     private static void holdHatchFloor() {
         manipulatorState = ManipulatorState.HOLDING_HATCH_FLOOR;
         manipulator.set(ControlMode.PercentOutput, .15);
         resetIntakeStallDetector();
-        linkageUp();
+        Lift.goHatchLvl1();
         bringFlipperUp();
     }
 
@@ -224,21 +256,25 @@ public class Manipulator { // Should be changed to Manipulator.
         } else if (manipulatorState == ManipulatorState.HOLDING_HATCH) {
             Lift.scoreHatchPanel();
         } else if (manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR) {
-            manipulator.set(ControlMode.PercentOutput, -.25);
+            manipulator.set(ControlMode.PercentOutput, -.75);
             Lift.scoreHatchPanel();
         }
 
         manipulatorState = ManipulatorState.INACTIVE;
         resetIntakeStallDetector();
-        ejectEndTime = System.currentTimeMillis();
+        ejectEndTime = System.currentTimeMillis() + 800;
     }
 
     public static void goToTravelPosition() {
         manipulatorState = ManipulatorState.INACTIVE;
+        bringFlipperUp();
         linkageUp();
-        lowerFlipper();
         stopIntake();
+    }
 
+    public static void setLinkageForPlacement() {
+        linkageDown();
+        bringFlipperUp();
     }
 
     public static void stopIntake() {

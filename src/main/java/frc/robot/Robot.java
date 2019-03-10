@@ -60,6 +60,14 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Show Encoders", false);
 	}
 
+	@Override
+	public void teleopInit() {
+		mAutoProgram.stop();
+		Lift.resetLift();
+		Manipulator.resetLinkage();
+		Manipulator.bringFlipperUp();
+	}
+
 	/*
 	 * 
 	 * TELEOP PERIODIC
@@ -80,12 +88,12 @@ public class Robot extends TimedRobot {
 		//    CLIMB
 		// --------------------------------------------------
 		// Manual controls
-		// if (gamepad.getSingleClimbRevolution()) {
-		// 	Climber.moveSetpoint(1);
-		// }
-		// if (gamepad.getSingleClimbReverseRevolution()) {
-		// 	Climber.moveSetpoint(-1);
-		// }
+		if (gamepad.getSingleClimbRevolution()) {
+			Climber.moveSetpoint(1);
+		}
+		if (gamepad.getSingleClimbReverseRevolution()) {
+			Climber.moveSetpoint(-1);
+		}
 
 		// --------------------------------------------------
 		//   GAME PIECES
@@ -117,16 +125,35 @@ public class Robot extends TimedRobot {
 			Manipulator.goToTravelPosition();
 		}
 		if (gamepad.goToLvl1()) {
-			Lift.goHatchLvl1();
+			Manipulator.setLinkageForPlacement();
+			if (Manipulator.isHoldingCargo())
+				Lift.goCargoLvl1();
+			else if (Manipulator.isHoldingFloorHatch())
+				Lift.goHatchFloorLvl1();
+			else
+				Lift.goHatchLvl1();
 		}
 		if (gamepad.goToLvl2()) {
-			Lift.goHatchLvl2();
+			Manipulator.setLinkageForPlacement();
+			if (Manipulator.isHoldingCargo())
+				Lift.goCargoLvl2();
+			else if (Manipulator.isHoldingFloorHatch())
+				Lift.goHatchFloorLvl2();
+			else
+				Lift.goHatchLvl2();
 		}
 		if (gamepad.goToLvl3()) {
-			Lift.goHatchLvl3();
+			Manipulator.setLinkageForPlacement();
+			if (Manipulator.isHoldingCargo())
+				Lift.goCargoLvl3();
+			else if (Manipulator.isHoldingFloorHatch())
+				Lift.goHatchFloorLvl3();
+			else
+				Lift.goHatchLvl3();
 		}
 		
 		if (gamepad.getCargoShipPlacement()) {
+			Manipulator.setLinkageForPlacement();
 			Lift.goCargoShipCargo();
 		}
 
@@ -141,7 +168,7 @@ public class Robot extends TimedRobot {
 		}
 
 		//AUTO CLIMB
-		if (gamepad.getClimb() && !mAutoProgram.isRunning()) {
+		if (gamepad.getBumperLeft(1) & gamepad.getClimb() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoClimb();
 			mAutoProgram.start();
 		}
@@ -168,10 +195,15 @@ public class Robot extends TimedRobot {
 
 		// temporary manual climb drive motor 
 		//   Controller 3 - Left Bumper, Left stick Y
-		if (gamepad.getBumperLeft(2)) {
-			Climber.manualDrive(gamepad.manualClimb());
-		}
-		
+		// if (gamepad.getBumperLeft(2)) {
+		// 	Climber.manualDrive(gamepad.manualClimb());
+		// }
+		// if (gamepad.getButtonX(2)) {
+		// 	Manipulator.lowerFlipper();
+		// }
+		// if (gamepad.getButtonY(2)) {
+		// 	Manipulator.bringFlipperUp();
+		// }
 		//
 		// AUTO ABORT 
 		// If driver hits any drive sticks, any running auto will ABORT
@@ -295,11 +327,6 @@ public class Robot extends TimedRobot {
 		DriveAuto.showEncoderValues();
 		showDashboardInfo();
 
-	}
-
-	@Override
-	public void teleopInit() {
-		mAutoProgram.stop();
 	}
 
 	@Override

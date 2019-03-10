@@ -45,7 +45,12 @@ public class Climber {
   }
 
   public static void manualDrive(double speed) {
-    climbMotor.set(speed);
+    DriveTrain.moduleB.setTurnOrientation(.25);
+    DriveTrain.moduleC.setTurnOrientation(.25);
+
+    DriveTrain.moduleB.unReverseModule();
+    DriveTrain.moduleB.setDrivePower(speed);
+
     SmartDashboard.putNumber("ModB Enc", DriveTrain.moduleB.getDriveEnc());
   }
 

@@ -34,7 +34,7 @@ public class AutoClimb extends AutoBaseClass {
 			case 2:
 				DriveTrain.moduleB.setTurnOrientation(.25);
 				DriveTrain.moduleC.setTurnOrientation(.25);
-
+				DriveTrain.moduleB.unReverseModule();
 				// Start driving forward using module B motor
 				// FIX FIX FIX TO DO - the +1000 is a guess
 				DriveTrain.moduleB.setDrivePIDToSetPoint(DriveTrain.moduleB.getDriveEnc() + 1000);

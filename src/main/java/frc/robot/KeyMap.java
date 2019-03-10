@@ -168,6 +168,13 @@ public class KeyMap {
     public boolean getClimb() {
         return getHID(gamepad1).button(climb);
     }
+    public boolean getSingleClimbRevolution() {
+        return getHID(gamepad3).button(singleClimbRevolutionButton);
+    }
+
+    public boolean getSingleClimbReverseRevolution() {
+        return getHID(gamepad3).button(singleClimbRevolutionReverseButton);
+    }
 
     public boolean driveOffPlatform() {
         return getHID(gamepad1).button(driveOffPlatform);

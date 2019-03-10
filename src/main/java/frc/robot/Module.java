@@ -137,6 +137,10 @@ public class Module {
 	public boolean modulesReversed() {
 		return isReversed;
 	}
+
+	public void unReverseModule() {
+		isReversed = false;
+	}
 	
 	public void resetTurnEnc() {
 		this.turn.getSensorCollection().setQuadraturePosition(0,0); 

@@ -52,7 +52,7 @@ public class Calibration {
 	public final static double VISION_ROT_I = 0;
 	public final static double VISION_ROT_D = 0;
 	
-	public final static double TURN_P = 10;
+	public final static double TURN_P = 13; //was 10 3.10.19
 	public final static double TURN_I = 0.01;
 	public final static double TURN_D = 400;
 	
