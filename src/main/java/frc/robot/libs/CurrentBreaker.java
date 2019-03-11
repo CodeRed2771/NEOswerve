@@ -41,7 +41,7 @@ public class CurrentBreaker {
 			if (pdp.getCurrent(portnum) > currentThreshold && trippedTime == -1) {
 				trippedTime = System.currentTimeMillis() + timeOut;
 			}
-			if (System.currentTimeMillis() >= trippedTime) {
+			if (trippedTime != -1 && System.currentTimeMillis() >= trippedTime) {
 				tripped = true;
 				sc.set(0.0);
 			}
