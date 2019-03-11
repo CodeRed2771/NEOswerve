@@ -13,9 +13,8 @@ public class CurrentBreaker {
 	int portnum;
 	double currentThreshold;
 	int timeOut;
-	boolean motorOff = false;
 	boolean tripped = false;
-	long motorOffTime = -1;
+	long trippedTime = -1;
 	long ignoreTime = -1;
 	long ignoreDuration;
 
@@ -33,26 +32,20 @@ public class CurrentBreaker {
 	}
 
 	public void checkCurrent() {
+		SmartDashboard.putNumber("Current", pdp.getCurrent(portnum));
 		SmartDashboard.putBoolean("Tripped", tripped);
-		SmartDashboard.putNumber("Int Current", pdp.getCurrent(portnum));
-		SmartDashboard.putNumber("checkcurrent", System.currentTimeMillis());
-	
+		SmartDashboard.putNumber("Tripped Time", trippedTime);
+		SmartDashboard.putNumber("Current Time", System.currentTimeMillis());
+		
 		if (System.currentTimeMillis() > ignoreTime) {
-			if (!tripped) {
-				tripped = (pdp.getCurrent(portnum) > currentThreshold);
-				// Logger.getInstance().log(Logger.Level.ERROR, 1,
-//				 String.valueOf(pdp.getCurrent(portnum)));
-
+			if (pdp.getCurrent(portnum) > currentThreshold && trippedTime == -1) {
+				trippedTime = System.currentTimeMillis() + timeOut;
 			}
-			if (motorOffTime == -1) {
-				motorOffTime = System.currentTimeMillis() + timeOut;
-			}
-			if (motorOff || System.currentTimeMillis() >= motorOffTime) {
-				motorOff = true;
+			if (System.currentTimeMillis() >= trippedTime) {
+				tripped = true;
 				sc.set(0.0);
 			}
 		}
-
 	}
 
 	public boolean tripped() {
@@ -62,15 +55,14 @@ public class CurrentBreaker {
 
 	public void set(double speed) {
 		checkCurrent();
-		if (!motorOff) {
+		if (!tripped) {
 			sc.set(speed);
 		}
 	}
 
 	public void reset() {
 		tripped = false;
-		motorOff = false;
-		motorOffTime = -1;
+		trippedTime = -1;
 		if (ignoreDuration != -1) {
 			ignoreTime = System.currentTimeMillis() + ignoreDuration;
 //			 SmartDashboard.putNumber("ignoreDuration", ignoreDuration);

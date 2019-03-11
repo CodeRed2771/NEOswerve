@@ -142,17 +142,17 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, 0);
 	}
 
-	private static final double HATCH_ACQUIRING = 2000; // WARNING THIS IS WRONG
-	private static final double HATCH_SCORING = 500;
-	private static final double HATCH_LEVEL_1 = 1340;
+	private static final double HATCH_ACQUIRING = 2000;
+	private static final double HATCH_SCORING = 1000;
+	private static final double HATCH_LEVEL_1 = 2140;
 	private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
-	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 5500;
-	private static final double HATCH_LEVEL_2 = 11000;
+	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 4800;
+	private static final double HATCH_LEVEL_2 = 11500;
 	private static final double HATCH_FLOOR_LEVEL_2 = HATCH_LEVEL_2 + 2000;
-	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5500;
-	private static final double HATCH_LEVEL_3 = 21000;
+	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5000;
+	private static final double HATCH_LEVEL_3 = 21500;
 	private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
-	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5500;
+	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5000;
 
 	public static void getHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);

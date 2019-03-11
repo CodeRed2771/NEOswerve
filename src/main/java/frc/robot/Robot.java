@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
 		// --------------------------------------------------
 
 		if (Math.abs(gamepad.getManualLift()) > .1){
-			Lift.moveSetpoint(gamepad.getManualLift());
+			Lift.moveSetpoint(0.75 * powerOf2PreserveSign(-gamepad.getManualLift()));
 		}
 		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
@@ -208,7 +208,7 @@ public class Robot extends TimedRobot {
 		// AUTO ABORT 
 		// If driver hits any drive sticks, any running auto will ABORT
 		//
-		if (Math.abs(gamepad.getSwerveYAxis()) > .1 || Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1) {
+		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1 || Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1)) {
 			mAutoProgram.stop();
 		}
 
@@ -352,6 +352,8 @@ public class Robot extends TimedRobot {
 
 		showDashboardInfo();
 	}
+
+	
 
 	private void setupAutoChoices() {
 		// Position Chooser

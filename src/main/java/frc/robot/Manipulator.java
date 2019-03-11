@@ -35,6 +35,7 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     private static ManipulatorState manipulatorState;
+    private static ManipulatorState previousState;
 
     private static double ejectEndTime;
 
@@ -50,6 +51,7 @@ public class Manipulator { // Should be changed to Manipulator.
         limitSwitch = new DigitalInput(0);
 
         manipulatorState = ManipulatorState.INACTIVE;
+        previousState = ManipulatorState.INACTIVE;
 
         manipulator.setInverted(true);
 
@@ -59,7 +61,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
         flipper = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
 
-        currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 250, 2000);
+        currentBreaker = new CurrentBreaker(null, Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 1000, 2000);
 
         resetIntakeStallDetector();
 
@@ -106,6 +108,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
         SmartDashboard.putNumber("Link Enc", linkage.getSensorCollection().getQuadraturePosition());
         SmartDashboard.putNumber("Link Err", linkage.getClosedLoopError());
+        SmartDashboard.putString("Man State", manipulatorState.toString());
 
         if (SmartDashboard.getBoolean("Link TUNE", false)) {
 			linkage.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Link Vel", 0), 0);
@@ -220,7 +223,7 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     private static void holdHatch() {
-        manipulatorState = ManipulatorState.HOLDING_CARGO;
+        manipulatorState = ManipulatorState.HOLDING_HATCH;
         manipulator.set(ControlMode.PercentOutput, -.25);
         // linkageUp();
     }
@@ -251,11 +254,14 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     public static void ejectGamePiece() {
-        if (manipulatorState == ManipulatorState.HOLDING_CARGO) {
+        ManipulatorState state = manipulatorState != ManipulatorState.INACTIVE ? manipulatorState : previousState;
+        previousState = state;
+
+        if (state == ManipulatorState.HOLDING_CARGO) {
             manipulator.set(ControlMode.PercentOutput, 1);
-        } else if (manipulatorState == ManipulatorState.HOLDING_HATCH) {
+        } else if (state == ManipulatorState.HOLDING_HATCH) {
             Lift.scoreHatchPanel();
-        } else if (manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR) {
+        } else if (state == ManipulatorState.HOLDING_HATCH_FLOOR) {
             manipulator.set(ControlMode.PercentOutput, -.75);
             Lift.scoreHatchPanel();
         }
