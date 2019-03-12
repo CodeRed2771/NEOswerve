@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class HID {
 
+    private boolean dpadUpWasFalse = false;
     Joystick joystick;
     public static Button UNMAPPED = new Button(-1);
     public static Axis UNMAPPED_AXIS = new Axis(-1);
@@ -22,6 +23,15 @@ public class HID {
     public boolean button(Button button) {
         if (button == UNMAPPED) {
             return false;
+        }
+        // FRC 2019, DPAD_UP is always true if no controllers are plugged in
+        if (button == LogitechF310.DPAD_UP) {
+            if (!joystick.getRawButton(button.button)) {
+                dpadUpWasFalse = true;
+            }
+            if (!dpadUpWasFalse) {
+                return false;
+            }
         }
         if (button instanceof AxisButton) {
             AxisButton axis = (AxisButton) button;
