@@ -41,6 +41,7 @@ public class Module {
 		
 		drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 0);
 		drive.configMotionAcceleration(Calibration.DT_MM_ACCEL, 0);
+		drive.setSensorPhase(true);
 		
 		turn = new WPI_TalonSRX(turnTalonID);
 		turnZeroPos = tZeroPos;

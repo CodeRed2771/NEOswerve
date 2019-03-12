@@ -80,7 +80,7 @@ public class Manipulator { // Should be changed to Manipulator.
 		linkage.configPeakOutputForward(1, 0);
         linkage.configPeakOutputReverse(-1, 0);
 
-        linkage.configContinuousCurrentLimit(25);
+        linkage.configContinuousCurrentLimit(20);
 
 		linkage.setNeutralMode(NeutralMode.Brake);
 
@@ -183,15 +183,16 @@ public class Manipulator { // Should be changed to Manipulator.
         ejectEndTime = aDistantFutureTime();
     }
 
-    public static void intakeHatch() {
+    public static void prepareToGetHatch() {
         linkageDown();
         lowerFlipper();
+        Lift.goHatchLvl1();
+    }
+
+    public static void intakeHatch() {
         Lift.getHatchPanel();
         
         manipulatorState = ManipulatorState.GETTING_HATCH;
-
-        resetIntakeStallDetector();
-        ejectEndTime = aDistantFutureTime();
     }
 
     public static void intakeHatchFloor() {
@@ -211,7 +212,6 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     public static void bringFlipperUp() {
-        Lift.goHatchLvl1();
         flipper.set(Value.kReverse);
     }
 
@@ -233,6 +233,9 @@ public class Manipulator { // Should be changed to Manipulator.
     }
     public static boolean isHoldingFloorHatch() {
         return manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR;
+    }
+    public static boolean isHoldingHatch() {
+        return manipulatorState == ManipulatorState.HOLDING_HATCH;
     }
 
     private static void holdHatchFloor() {
@@ -280,7 +283,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void setLinkageForPlacement() {
         linkageDown();
-        bringFlipperUp();
+        lowerFlipper();
     }
 
     public static void stopIntake() {

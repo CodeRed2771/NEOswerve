@@ -32,6 +32,7 @@ public class KeyMap {
     // Climbing
     private final HID.Button prepareToClimb = LogitechF310.DPAD_DOWN;
     private final HID.Button climb = LogitechF310.DPAD_UP;
+    private final HID.Button climbControl = LogitechF310.BUMPER_LEFT;
     
     // Auto Programs
     private final HID.Button shipMoveLeft = LogitechF310.DPAD_LEFT;
@@ -46,6 +47,7 @@ public class KeyMap {
     private final HID.Button intakeHatchFloor = LogitechF310.DPAD_RIGHT;
     private final HID.Button gamePieceOverride = LogitechF310.DPAD_DOWN;
     private final HID.Axis ejectGamePiece = LogitechF310.TRIGGER_RIGHT_AXIS;
+    private final HID.Axis intakeHatchAutoModifier = LogitechF310.TRIGGER_LEFT_AXIS;
 
     // Hatch Placement
     private final HID.Button goToLvl1 = LogitechF310.A;
@@ -104,6 +106,10 @@ public class KeyMap {
 
     public boolean activateHatchIntake() {
         return getHID(gamepad2).button(intakeHatch);
+    }
+
+    public boolean activateHatchIntakeAuto() {
+        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).axis(intakeHatchAutoModifier) > 0.8;
     }
 
     public boolean activateHatchFloorIntake() {
@@ -166,7 +172,7 @@ public class KeyMap {
     }
 
     public boolean getClimb() {
-        return getHID(gamepad1).button(climb);
+        return getHID(gamepad1).button(climbControl) & getHID(gamepad1).button(climb);
     }
     public boolean getSingleClimbRevolution() {
         return getHID(gamepad3).button(singleClimbRevolutionButton);

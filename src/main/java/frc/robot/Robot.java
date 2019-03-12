@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 		Lift.resetLift();
 		Manipulator.resetLinkage();
 		Manipulator.bringFlipperUp();
+		DriveTrain.setAllTurnOrientiation(0);
 	}
 
 	/*
@@ -161,6 +162,12 @@ public class Robot extends TimedRobot {
 		//   AUTO SUB ROUTINES
 		// --------------------------------------------------
 		
+		// AUTO GET HATCH
+		if (gamepad.activateHatchIntakeAuto() && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoGrabHatchFromFeeder();
+			mAutoProgram.start();
+		}
+
 		// DRIVE OFF PLATFORM
 		if (gamepad.driveOffPlatform() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoDriveOffPlatform();
@@ -168,7 +175,7 @@ public class Robot extends TimedRobot {
 		}
 
 		//AUTO CLIMB
-		if (gamepad.getBumperLeft(1) & gamepad.getClimb() && !mAutoProgram.isRunning()) {
+		if (gamepad.getClimb() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoClimb();
 			mAutoProgram.start();
 		}
@@ -236,7 +243,7 @@ public class Robot extends TimedRobot {
 		Lift.tick();
 		Climber.tick();
 		Manipulator.tick();
-		// Vision.tick();
+		Vision.tick();
 
 		showDashboardInfo();
 

@@ -61,6 +61,10 @@ public class Lift {
 		/* zero the sensor */
 		liftMotor.setSelectedSensorPosition(0, 0, 0);
 
+		// Current limit
+		liftMotor.configContinuousCurrentLimit(25);
+		liftFollowMotor.configContinuousCurrentLimit(25);
+
 		SmartDashboard.putNumber("Lift Vel", Calibration.LIFT_VELOCITY);
 		SmartDashboard.putNumber("Lift Accel", Calibration.LIFT_ACCEL);
 		SmartDashboard.putNumber("Lift P", Calibration.LIFT_P);
@@ -76,10 +80,9 @@ public class Lift {
 		// SmartDashboard.putNumber("lift cur", liftMotor.getOutputCurrent());
 
 		if (!encoderSet && !encoderSetting) {
-			liftMotor.set(ControlMode.PercentOutput, -.2);
+			liftMotor.set(ControlMode.PercentOutput, -.20);
 			encoderSettingStartTime = System.currentTimeMillis();
 			encoderSetting = true;
-			System.out.println("calibrating lift");
 		}
 
 		if (encoderSetting && (System.currentTimeMillis() >= (encoderSettingStartTime + 1000))) {
@@ -87,7 +90,6 @@ public class Lift {
 			liftMotor.set(ControlMode.PercentOutput, 0);
 			encoderSetting = false;
 			encoderSet = true;
-			System.out.println("calibrating lift done");
 		}
 
 		if (SmartDashboard.getBoolean("Lift TUNE", false)) {
