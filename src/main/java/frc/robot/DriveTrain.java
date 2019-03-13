@@ -89,7 +89,7 @@ public class DriveTrain implements PIDOutput {
 		return (moduleA.getDriveVelocity() + moduleB.getDriveVelocity() + moduleC.getDriveVelocity()
 				+ moduleD.getDriveVelocity()) / 4;
 	}
-	
+
 	public static boolean hasDriveCompleted(int allowedError) {
 		// just checking two of the modules to see if they are done moving
 		return moduleB.hasDriveCompleted(allowedError) && moduleA.hasDriveCompleted(allowedError);
@@ -117,6 +117,7 @@ public class DriveTrain implements PIDOutput {
 		// position is a value from 0 to 1 that indicates
 		// where in the rotation of the module the wheel should be set.
 		// e.g. a value of .5 indicates a half turn from the zero position
+
 		moduleA.setTurnOrientation(modAPosition);
 		moduleB.setTurnOrientation(modBPosition);
 		moduleC.setTurnOrientation(modCPosition);
@@ -139,21 +140,27 @@ public class DriveTrain implements PIDOutput {
 	public static void setDrivePosition(int modAPosition, int modBPosition, int modCPosition, int modDPosition) {
 		if (getInstance() == null)
 			return;
+
 		SmartDashboard.putNumber("Drive A Setpoint", modAPosition);
+		SmartDashboard.putNumber("Drive B Setpoint", modBPosition);
+		SmartDashboard.putNumber("Drive C Setpoint", modCPosition);
+		SmartDashboard.putNumber("Drive D Setpoint", modDPosition);
+
 		moduleA.setDrivePIDToSetPoint(modAPosition);
 		moduleB.setDrivePIDToSetPoint(modBPosition);
 		moduleC.setDrivePIDToSetPoint(modCPosition);
 		moduleD.setDrivePIDToSetPoint(modDPosition);
+
 	}
 
 	public static void addToAllDrivePositions(int ticks) {
 		if (getInstance() == null)
 			return;
 
-		setDrivePosition(moduleA.getDriveEnc() + ((moduleA.modulesReversed() ? -1 : 1) * ticks), 
-		moduleB.getDriveEnc() + ((moduleB.modulesReversed() ? -1 : 1) * ticks), 
-		moduleC.getDriveEnc() + ((moduleC.modulesReversed() ? -1 : 1) * ticks),
-		moduleD.getDriveEnc() + ((moduleD.modulesReversed() ? -1 : 1) * ticks));
+		setDrivePosition(moduleA.getDriveEnc() + ((moduleA.modulesReversed() ? -1 : 1) * ticks),
+				moduleB.getDriveEnc() + ((moduleB.modulesReversed() ? -1 : 1) * ticks),
+				moduleC.getDriveEnc() + ((moduleC.modulesReversed() ? -1 : 1) * ticks),
+				moduleD.getDriveEnc() + ((moduleD.modulesReversed() ? -1 : 1) * ticks));
 	}
 
 	public static int getDriveEnc() {
@@ -248,15 +255,21 @@ public class DriveTrain implements PIDOutput {
 		allowTurnEncoderReset = false;
 	}
 
+	public static void unReverseModules() {
+		moduleA.unReverseModule();
+		moduleB.unReverseModule();
+		moduleC.unReverseModule();
+		moduleD.unReverseModule();
+	}
+
 	/*
-	 * Resets the turn encoder values relative to what we've determined to be
-	 * the "zero" position. (the calibration values). This is so the rest of the
-	 * program can just treat the turn encoder as if zero is the straight
-	 * position. We don't have to always calculate based off the calibrated zero
-	 * position. e.g. if the calibrated zero position is .25 and our current
-	 * absolute position is .40 then we reset the encoder value to be .15 *
-	 * 4095, so we know were .15 away from the zero position. The 4095 converts
-	 * the position back to ticks.
+	 * Resets the turn encoder values relative to what we've determined to be the
+	 * "zero" position. (the calibration values). This is so the rest of the program
+	 * can just treat the turn encoder as if zero is the straight position. We don't
+	 * have to always calculate based off the calibrated zero position. e.g. if the
+	 * calibrated zero position is .25 and our current absolute position is .40 then
+	 * we reset the encoder value to be .15 * 4095, so we know were .15 away from
+	 * the zero position. The 4095 converts the position back to ticks.
 	 * 
 	 * Bottom line is that this is what applies the turn calibration values.
 	 */
@@ -368,7 +381,6 @@ public class DriveTrain implements PIDOutput {
 			ws4 /= max;
 		}
 
-	
 		// SmartDashboard.putNumber("swerve a", a);
 		// SmartDashboard.putNumber("swerve b", b);
 		// SmartDashboard.putNumber("swerve c", c);
@@ -382,7 +394,7 @@ public class DriveTrain implements PIDOutput {
 		// SmartDashboard.putNumber("ws1", ws1);
 
 		DriveTrain.setTurnOrientation(angleToLoc(wa4), angleToLoc(wa2), angleToLoc(wa1), angleToLoc(wa3));
-		DriveTrain.setDrivePower(ws4, ws2, ws1, ws3); 
+		DriveTrain.setDrivePower(ws4, ws2, ws1, ws3);
 	}
 
 	public static void showDriveEncodersOnDash() {
@@ -404,10 +416,10 @@ public class DriveTrain implements PIDOutput {
 		SmartDashboard.putNumber("TURN C POS", round(moduleC.getTurnPosition(), 2));
 		SmartDashboard.putNumber("TURN D POS", round(moduleD.getTurnPosition(), 2));
 
-		SmartDashboard.putNumber("TURN A ANGLE", round(moduleA.getTurnAngle(),0));
-		SmartDashboard.putNumber("TURN B ANGLE", round(moduleB.getTurnAngle(),0));
-		SmartDashboard.putNumber("TURN C ANGLE", round(moduleC.getTurnAngle(),0));
-		SmartDashboard.putNumber("TURN D ANGLE", round(moduleD.getTurnAngle(),0));
+		SmartDashboard.putNumber("TURN A ANGLE", round(moduleA.getTurnAngle(), 0));
+		SmartDashboard.putNumber("TURN B ANGLE", round(moduleB.getTurnAngle(), 0));
+		SmartDashboard.putNumber("TURN C ANGLE", round(moduleC.getTurnAngle(), 0));
+		SmartDashboard.putNumber("TURN D ANGLE", round(moduleD.getTurnAngle(), 0));
 
 		SmartDashboard.putNumber("TURN A ERR", moduleA.getTurnError());
 		SmartDashboard.putNumber("TURN B ERR", moduleB.getTurnError());
@@ -489,7 +501,7 @@ public class DriveTrain implements PIDOutput {
 			pidControllerRot.setPID(Calibration.DT_ROT_PID_P, 0, Calibration.DT_ROT_PID_D);
 			pidControllerRot.setContinuous(true);
 		}
-		if(inPIDRotationMode){
+		if (inPIDRotationMode) {
 			swerveDrive(pidFWD, pidSTR, output);
 		} else {
 			swerveDrive(-output, pidSTR, 0);
@@ -502,11 +514,11 @@ public class DriveTrain implements PIDOutput {
 		pidControllerRot.disable();
 	}
 
-	public static void setDistancePIDMode(){
+	public static void setDistancePIDMode() {
 		inPIDRotationMode = false;
 	}
 
-	public static void setRotationPIDMode(){
+	public static void setRotationPIDMode() {
 		inPIDRotationMode = true;
 	}
 
@@ -526,7 +538,7 @@ public class DriveTrain implements PIDOutput {
 		moduleC.setDrivePIDValues(p, i, d);
 		moduleD.setDrivePIDValues(p, i, d);
 	}
-	
+
 	public static void setTurnPIDValues(double p, double i, double d) {
 		if (getInstance() == null)
 			return;
@@ -538,7 +550,7 @@ public class DriveTrain implements PIDOutput {
 	}
 
 	private static volatile double pidFWD = 0, pidSTR = 0;
-	
+
 	public static Double round(Double val, int scale) {
 		return new BigDecimal(val.toString()).setScale(scale, RoundingMode.HALF_UP).doubleValue();
 	}

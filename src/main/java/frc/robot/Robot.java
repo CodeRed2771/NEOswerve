@@ -63,9 +63,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		mAutoProgram.stop();
-		Lift.resetLift();
-		Manipulator.resetLinkage();
-		Manipulator.bringFlipperUp();
+
+		DriveTrain.unReverseModules();
 		DriveTrain.setAllTurnOrientiation(0);
 	}
 
@@ -83,6 +82,9 @@ public class Robot extends TimedRobot {
 		// --------------------------------------------------
 		if (gamepad.getZeroGyro()) {
 			RobotGyro.reset();
+			Lift.resetLift();
+			Manipulator.bringFlipperUp();
+			Manipulator.resetLinkage();
 		}
 
 		// --------------------------------------------------
@@ -95,7 +97,6 @@ public class Robot extends TimedRobot {
 		if (gamepad.getSingleClimbReverseRevolution()) {
 			Climber.moveSetpoint(-1);
 		}
-
 		// --------------------------------------------------
 		//   GAME PIECES
 		// --------------------------------------------------
@@ -230,10 +231,10 @@ public class Robot extends TimedRobot {
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
 			double driveYAxisAmount = gamepad.getSwerveYAxis();
-			double driveXAxisAmount = -gamepad.getSwerveXAxis();
+			double driveStrafeAxisAmount = strafeAdjust(-gamepad.getSwerveXAxis());
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
-			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveXAxisAmount, driveRotAxisAmount);
+			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
 		}
 
 		// --------------------------------------------------
@@ -245,6 +246,57 @@ public class Robot extends TimedRobot {
 		Manipulator.tick();
 		Vision.tick();
 
+		showDashboardInfo();
+
+	}
+
+
+	@Override
+	public void autonomousInit() {
+
+		Lift.resetLift();
+		Manipulator.resetLinkage();
+
+		String selectedPos = positionChooser.getSelected();
+		SmartDashboard.putString("Position Chooser Selected", selectedPos);
+		char robotPosition = selectedPos.toCharArray()[0];
+
+		System.out.println("Robot position: " + robotPosition);
+
+		autoSelected = (String) autoChooser.getSelected();
+		SmartDashboard.putString("Auto Selected: ", autoSelected);
+
+		mAutoProgram = null;
+
+		switch (autoSelected) {
+		case autoDrivePIDTune:
+			SmartDashboard.putNumber("Drive To Setpoint", 0);
+			mAutoProgram = new AutoDrivePIDTune();
+			break;
+		case autoRotateTest:
+			mAutoProgram = new AutoRotateTest();
+			break;
+		}
+
+		DriveTrain.setAllTurnOrientiation(0);
+		DriveAuto.reset();
+
+		if (mAutoProgram != null) {
+			mAutoProgram.start();
+		} else
+			System.out.println("No auto program started in switch statement");
+	}
+
+	@Override
+	public void autonomousPeriodic() {
+
+		if (mAutoProgram != null) {
+			mAutoProgram.tick();
+		}
+
+		DriveAuto.tick();
+
+		DriveAuto.showEncoderValues();
 		showDashboardInfo();
 
 	}
@@ -289,51 +341,25 @@ public class Robot extends TimedRobot {
 		return adjustedAmt;
 	}
 
-	@Override
-	public void autonomousInit() {
+	private double strafeAdjust(double strafeAmt) {
+		// put some power restrictions in place to make it
+		// more controlled
+		double adjustedAmt = 0;
 
-		String selectedPos = positionChooser.getSelected();
-		SmartDashboard.putString("Position Chooser Selected", selectedPos);
-		char robotPosition = selectedPos.toCharArray()[0];
-
-		System.out.println("Robot position: " + robotPosition);
-
-		autoSelected = (String) autoChooser.getSelected();
-		SmartDashboard.putString("Auto Selected: ", autoSelected);
-
-		mAutoProgram = null;
-
-		switch (autoSelected) {
-		case autoDrivePIDTune:
-			SmartDashboard.putNumber("Drive To Setpoint", 0);
-			mAutoProgram = new AutoDrivePIDTune();
-			break;
-		case autoRotateTest:
-			mAutoProgram = new AutoRotateTest();
-			break;
+		if (Math.abs(strafeAmt) < .1) {
+			adjustedAmt = 0;
+		} else {
+			if (Math.abs(strafeAmt) < .4) {
+				adjustedAmt = .2 * Math.signum(strafeAmt);
+			} else {
+				if (Math.abs(strafeAmt) < .95) {
+					adjustedAmt = .5 * Math.signum(strafeAmt);
+				} else {
+					adjustedAmt = strafeAmt;
+				}
+			}
 		}
-
-		DriveTrain.setAllTurnOrientiation(0);
-		DriveAuto.reset();
-
-		if (mAutoProgram != null) {
-			mAutoProgram.start();
-		} else
-			System.out.println("No auto program started in switch statement");
-	}
-
-	@Override
-	public void autonomousPeriodic() {
-
-		if (mAutoProgram != null) {
-			mAutoProgram.tick();
-		}
-
-		DriveAuto.tick();
-
-		DriveAuto.showEncoderValues();
-		showDashboardInfo();
-
+		return adjustedAmt;
 	}
 
 	@Override

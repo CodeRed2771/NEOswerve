@@ -80,7 +80,7 @@ public class Lift {
 		// SmartDashboard.putNumber("lift cur", liftMotor.getOutputCurrent());
 
 		if (!encoderSet && !encoderSetting) {
-			liftMotor.set(ControlMode.PercentOutput, -.20);
+			liftMotor.set(ControlMode.PercentOutput, -.25);
 			encoderSettingStartTime = System.currentTimeMillis();
 			encoderSetting = true;
 		}

@@ -81,6 +81,8 @@ public class DriveAuto {
 		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * speedFactor));
 
 		// angle at which the wheel modules should be turned
+		
+		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags are reset.
 		DriveTrain.setAllTurnOrientiation(-DriveTrain.angleToLoc(strafeAngle));
 
 		// give it just a little time to get the modules turned to position
