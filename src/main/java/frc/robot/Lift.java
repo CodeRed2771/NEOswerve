@@ -212,4 +212,8 @@ public class Lift {
 	public static boolean driveCautionNeeded() {
 		return Math.abs(liftMotor.getSensorCollection().getPulseWidthPosition()) > 15000;
 	}
+
+	public static double getEncoderPosition() {
+		return liftMotor.getSensorCollection().getQuadraturePosition();
+	}
 }

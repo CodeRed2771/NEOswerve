@@ -317,4 +317,8 @@ public class Manipulator { // Should be changed to Manipulator.
         manipulator.set(ControlMode.PercentOutput, -speed);
     }
 
+    public static double getLinkageEncoderPosition() {
+        return linkage.getSensorCollection().getQuadraturePosition();
+    }
+
 }

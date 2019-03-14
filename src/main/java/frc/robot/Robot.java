@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
 	final String autoRotateTest = "Rotate Test";
 	final String autoCalibrateDrive = "Auto Calibrate Drive";
 	final String autoDrivePIDTune = "Drive PID Tune";
+	final String autoTestEncoders = "Test Encoders";
 
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
@@ -276,6 +277,9 @@ public class Robot extends TimedRobot {
 		case autoRotateTest:
 			mAutoProgram = new AutoRotateTest();
 			break;
+		case autoTestEncoders:
+			mAutoProgram = new AutoTestEncoders();
+			break;
 		}
 
 		DriveTrain.setAllTurnOrientiation(0);
@@ -402,6 +406,7 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(autoRotateTest, autoRotateTest);
 		autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
 		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
+		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
 
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
