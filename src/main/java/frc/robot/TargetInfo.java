@@ -11,8 +11,14 @@ package frc.robot;
  * Add your docs here.
  */
 public class TargetInfo {
+    public enum TargetType {
+        SHIP_TARGET,
+        ROCKET_TARGET,
+        FEEDER_TARGET,
+    }
     
     private static TargetInfo instance;
+    private static TargetType targetType;
 
     public static TargetInfo getInstance() {
 		if (instance == null) {
@@ -31,17 +37,39 @@ public class TargetInfo {
     public static double targetAngle() {
         double currentGyroAngle = RobotGyro.getAngle();
 
-        if (currentGyroAngle > 6 && currentGyroAngle < 75) {
-            return 30;
+        if (targetType == TargetType.ROCKET_TARGET){
+            if (currentGyroAngle > 6 && currentGyroAngle < 75) {
+                return 30;
+            }
+            if (currentGyroAngle > 76 && currentGyroAngle < 170) {
+                return 90;
+            }
+            if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+                return 150;
+            }
+            if (currentGyroAngle > -6 && currentGyroAngle < -75) {
+                return -30;
+            }
+            if (currentGyroAngle > -76 && currentGyroAngle < -170) {
+                return -90;
+            }
+            if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+                return -150;
+            }
         }
-        if (currentGyroAngle > 76 && currentGyroAngle < 170) {
-            return 90;
+        if (targetType == TargetType.SHIP_TARGET) {
+            if (currentGyroAngle < 40 && currentGyroAngle > -40) {
+                return 0;
+            }
+            if (currentGyroAngle < 70 && currentGyroAngle > 120) {
+                return 90;
+            }
+            if (currentGyroAngle < -70 && currentGyroAngle > -120) {
+                return -90;
+            }
         }
-        if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-            return 150;
-        }
-        if (currentGyroAngle < 5 && currentGyroAngle > -5) {
-            return 0;
+        if (targetType == TargetType.FEEDER_TARGET) {
+            return 180;
         }
 
         // NEED MORE IF STATEMENTS FOR OTHER POSITIONS

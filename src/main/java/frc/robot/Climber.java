@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -9,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Climber {
   private static Climber instance;
   private static CANSparkMax climbMotor = new CANSparkMax(Wiring.CLIMB_MOTOR, MotorType.kBrushless);
+  private static TalonSRX climbDrive = new TalonSRX(Wiring.CLIMB_DRIVE);
 
   public static final double EXTENDED_POSITION = 274;
 
@@ -25,6 +27,10 @@ public class Climber {
 
   public static void tick() {
     SmartDashboard.putNumber("Climb Enc", climbMotor.getEncoder().getPosition());
+  }
+
+  public static void climbDrive() {
+    
   }
 
   public static void climbManual(double speed) {
@@ -44,15 +50,7 @@ public class Climber {
     return climbMotor.getEncoder().getPosition() >= (EXTENDED_POSITION - 15);
   }
 
-  public static void manualDrive(double speed) {
-    DriveTrain.moduleB.setTurnOrientation(.25);
-    DriveTrain.moduleC.setTurnOrientation(.25);
-
-    DriveTrain.moduleB.unReverseModule();
-    DriveTrain.moduleB.setDrivePower(speed);
-
-    SmartDashboard.putNumber("ModB Enc", DriveTrain.moduleB.getDriveEnc());
-  }
+  
 
   public static void moveSetpoint(double direction) {
     double newSetpoint;

@@ -23,7 +23,6 @@ public class AutoFindHatch extends AutoBaseClass {
         super.start();
         Vision.setTargetTrackingMode();
     }
-
     public void stop() {
         super.stop();
         Vision.setDriverMode();

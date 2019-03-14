@@ -197,7 +197,15 @@ public class Robot extends TimedRobot {
 		// FIND HATCH TARGET
 		if (gamepad.findRocketTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			mAutoProgram.start();
+			mAutoProgram.start(TargetInfo.TargetType.ROCKET_TARGET);
+		}
+		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoFindHatch();
+			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
+		}
+		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoFindHatch();
+			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 
 		//  TODO: MAKE FUNCTIONS FOR FIND SHIP AND FIND FEEDER STATION.

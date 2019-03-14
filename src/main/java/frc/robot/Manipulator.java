@@ -160,10 +160,12 @@ public class Manipulator { // Should be changed to Manipulator.
     }
     
     public static void linkageDown() {
+        lowerFlipper();
         linkage.set(ControlMode.MotionMagic, -975);
     }
 
     public static void linkageUp(){
+        bringFlipperUp();
         linkage.set(ControlMode.MotionMagic, 0);
     }
 
@@ -183,7 +185,8 @@ public class Manipulator { // Should be changed to Manipulator.
         ejectEndTime = aDistantFutureTime();
     }
 
-    public static void prepareToGetHatch() {
+    public static void prepareToGetHatchFromFeeder() {
+        manipulator.set(ControlMode.PercentOutput, -1);
         linkageDown();
         lowerFlipper();
         Lift.goHatchLvl1();
@@ -201,7 +204,7 @@ public class Manipulator { // Should be changed to Manipulator.
         Lift.goToStart();
 
         manipulatorState = ManipulatorState.GETTING_HATCH_FLOOR;
-        manipulator.set(ControlMode.PercentOutput, .5);
+        manipulator.set(ControlMode.PercentOutput, 1);
 
         resetIntakeStallDetector();
         ejectEndTime = aDistantFutureTime();
@@ -276,7 +279,6 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void goToTravelPosition() {
         manipulatorState = ManipulatorState.INACTIVE;
-        bringFlipperUp();
         linkageUp();
         stopIntake();
     }

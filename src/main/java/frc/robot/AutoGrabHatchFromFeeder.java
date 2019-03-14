@@ -30,17 +30,20 @@ public class AutoGrabHatchFromFeeder extends AutoBaseClass {
             SmartDashboard.putNumber("Hatch Step", getCurrentStep());
 
             switch (getCurrentStep()) {
-            case 0:    
-                driveInches(6, 0, .5);
-                Manipulator.prepareToGetHatch();  
-                setTimerAndAdvanceStep(1000);          
+            case 0: 
+                Manipulator.resetIntakeStallDetector();
+                driveInches(35, 0, .3);
+                Manipulator.prepareToGetHatchFromFeeder();  
+                setTimerAndAdvanceStep(2000);          
                 break;
             case 1:
-                if (driveCompleted()) {
+                if (Manipulator.intakeStalled()) {
                     advanceStep();
+                    Manipulator.resetIntakeStallDetector();
                 }
                 break;
             case 2: 
+                DriveAuto.stopDriving();
                 Manipulator.intakeHatch();
                 setTimerAndAdvanceStep(1000);
                 break;
@@ -50,7 +53,7 @@ public class AutoGrabHatchFromFeeder extends AutoBaseClass {
                 }
                 break;
             case 4:
-                driveInches(-24, 0, .5);
+                driveInches(-30, 0, .4);
                 setTimerAndAdvanceStep(1000);
                 break;
             case 5:

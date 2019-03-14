@@ -160,6 +160,10 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);
 	}
 
+	public static void prepareToGetHatchPanel() {
+		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1 - 1000);
+	}
+
 	public static void scoreHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, liftMotor.getSensorCollection().getQuadraturePosition() - HATCH_SCORING);
 	}
