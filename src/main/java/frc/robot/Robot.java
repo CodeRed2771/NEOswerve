@@ -98,6 +98,8 @@ public class Robot extends TimedRobot {
 		if (gamepad.getSingleClimbReverseRevolution()) {
 			Climber.moveSetpoint(-1);
 		}
+		Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
+		SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
 		// --------------------------------------------------
 		//   GAME PIECES
 		// --------------------------------------------------

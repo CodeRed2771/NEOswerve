@@ -62,6 +62,7 @@ public class KeyMap {
     private final HID.Button singleClimbRevolutionButton = LogitechF310.A;
     private final HID.Button singleClimbRevolutionReverseButton = LogitechF310.B;
     private final HID.Axis manualClimb = LogitechF310.STICK_LEFT_Y;
+    private final HID.Axis manualClimbDrive = LogitechF310.STICK_RIGHT_Y;
 
     public HID getHID(int gamepad) {
         if (!singleControllerMode) {
@@ -180,6 +181,10 @@ public class KeyMap {
 
     public boolean getSingleClimbReverseRevolution() {
         return getHID(gamepad3).button(singleClimbRevolutionReverseButton);
+    }
+
+    public double getClimbDrive() {
+        return getHID(gamepad3).axis(manualClimbDrive);
     }
 
     public boolean driveOffPlatform() {
