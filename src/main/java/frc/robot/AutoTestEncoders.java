@@ -40,7 +40,7 @@ public class AutoTestEncoders extends AutoBaseClass {
         SmartDashboard.putBoolean("Encoders/selfTestCompleted", false);
 
         DriveAuto.driveInches(10, 0, 0.5);
-        DriveTrain.setAllTurnOrientiation(0);
+        DriveTrain.setAllTurnOrientation(0);
 
         startTime = System.currentTimeMillis();
     }

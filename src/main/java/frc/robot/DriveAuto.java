@@ -83,7 +83,7 @@ public class DriveAuto {
 		// angle at which the wheel modules should be turned
 		
 		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags are reset.
-		DriveTrain.setAllTurnOrientiation(-DriveTrain.angleToLoc(strafeAngle));
+		DriveTrain.setAllTurnOrientation(-DriveTrain.angleToLoc(strafeAngle));
 
 		// give it just a little time to get the modules turned to position
 		// before starting the drive

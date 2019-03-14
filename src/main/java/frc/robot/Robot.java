@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
 		mAutoProgram.stop();
 
 		DriveTrain.unReverseModules();
-		DriveTrain.setAllTurnOrientiation(0);
+		DriveTrain.setAllTurnOrientation(0);
 	}
 
 	/*
@@ -292,7 +292,7 @@ public class Robot extends TimedRobot {
 			break;
 		}
 
-		DriveTrain.setAllTurnOrientiation(0);
+		DriveTrain.setAllTurnOrientation(0);
 		DriveAuto.reset();
 
 		if (mAutoProgram != null) {

@@ -125,7 +125,7 @@ public class DriveTrain implements PIDOutput {
 
 	}
 
-	public static void setAllTurnOrientiation(double loc) {
+	public static void setAllTurnOrientation(double loc) {
 		if (getInstance() == null)
 			return;
 		setTurnOrientation(loc, loc, loc, loc);
@@ -480,7 +480,7 @@ public class DriveTrain implements PIDOutput {
 	public static void tankDrive(double left, double right) {
 		if (getInstance() == null)
 			return;
-		setAllTurnOrientiation(0);
+		setAllTurnOrientation(0);
 		setDrivePower(right, left, right, left);
 	}
 
