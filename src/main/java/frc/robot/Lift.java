@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.libs.CurrentBreaker;
 
 public class Lift {
 	private static Lift instance;
@@ -15,6 +16,10 @@ public class Lift {
 	private static boolean encoderSet = false;
 	private static boolean encoderSetting = false;
 	private static double encoderSettingStartTime = System.currentTimeMillis();
+
+	private static CurrentBreaker currentBreaker;
+	private static final int MAX_SUSTAINED_CURRENT = 20;
+	private static final int MAX_TIME_AT_MAX_CURRENT = 4000;
 
 	public static Lift getInstance() {
 		if (instance == null)
@@ -65,6 +70,9 @@ public class Lift {
 		liftMotor.configContinuousCurrentLimit(25);
 		liftFollowMotor.configContinuousCurrentLimit(25);
 
+		currentBreaker = new CurrentBreaker(Wiring.LIFT_PDP_PORT, MAX_SUSTAINED_CURRENT, MAX_TIME_AT_MAX_CURRENT);
+		currentBreaker.reset();
+
 		SmartDashboard.putNumber("Lift Vel", Calibration.LIFT_VELOCITY);
 		SmartDashboard.putNumber("Lift Accel", Calibration.LIFT_ACCEL);
 		SmartDashboard.putNumber("Lift P", Calibration.LIFT_P);
@@ -78,6 +86,12 @@ public class Lift {
 	public static void tick() {
 
 		// SmartDashboard.putNumber("lift cur", liftMotor.getOutputCurrent());
+
+		if (liftStalled()) {
+			liftMotor.set(ControlMode.PercentOutput, 0);
+			System.out.println("LIFT CIRCUIT BREAKER TRIPPED");
+			currentBreaker.reset();
+		}
 
 		if (!encoderSet && !encoderSetting) {
 			liftMotor.set(ControlMode.PercentOutput, -.25);
@@ -108,6 +122,10 @@ public class Lift {
 			SmartDashboard.putNumber("Lift Setpt", -1);
 	}
 
+	public static boolean liftStalled() {
+        return (currentBreaker.tripped());
+	}
+	
 	public static void move(double speed) {
 		// limit speed
 		if (speed < -.3)

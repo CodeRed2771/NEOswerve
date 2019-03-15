@@ -431,8 +431,8 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
 		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
 		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
-		autoChooser.addDefaultOption(autoTeleop, autoTeleop);
-
+		autoChooser.setDefaultOption(autoTeleop, autoTeleop);
+I
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
 	}
