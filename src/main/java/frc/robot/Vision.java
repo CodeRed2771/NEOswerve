@@ -125,92 +125,92 @@ public class Vision {
 			return 0;
 		}
 		
-		// if(tvert >= 53)
-		// 	return 24;
-		// else if(tvert >= 44)
-		// 	return 30;
-		// else if (tvert >=37) 
-		// 	return 36;
-		// else if (tvert >= 36) 
-		// 	return 42;
-		// else if (tvert >= 32) 
-		// 	return 48;
-		// else if (tvert >= 28) 
-		// 	return 54;
-		// else if (tvert >= 25) 
-		// 	return 60;
-		// else if (tvert >= 23)
-		// 	return 66;
-		// else if (tvert >= 22) 
-		// 	return 72;
-		// else if (tvert >= 21)
-		// 	return 78;
-		// else if (tvert >= 20) 
-		// 	return 84;
-		// else if (tvert >= 17)
-		// 	return 90;
-		// else if (tvert >= 16)
-		// 	return 94;
-		// else if (tvert >= 15)
-		// 	return 102;
-		// else if (tvert >= 14) 
-		// 	return 108;
-		// else if (tvert >= 13)
-		// 	return 122;
-		// else if (tvert >= 12)
-		// 	return 132;
-		// else if (tvert >= 11)
-		// 	return 138;
-		// else if (tvert >= 10)
-		// 	return 150;
-		// else
-		// 	return 0;
+		if(tvert >= 53)
+			return 24;
+		else if(tvert >= 44)
+			return 30;
+		else if (tvert >=37) 
+			return 36;
+		else if (tvert >= 36) 
+			return 42;
+		else if (tvert >= 32) 
+			return 48;
+		else if (tvert >= 28) 
+			return 54;
+		else if (tvert >= 25) 
+			return 60;
+		else if (tvert >= 23)
+			return 66;
+		else if (tvert >= 22) 
+			return 72;
+		else if (tvert >= 21)
+			return 78;
+		else if (tvert >= 20) 
+			return 84;
+		else if (tvert >= 17)
+			return 90;
+		else if (tvert >= 16)
+			return 94;
+		else if (tvert >= 15)
+			return 102;
+		else if (tvert >= 14) 
+			return 108;
+		else if (tvert >= 13)
+			return 122;
+		else if (tvert >= 12)
+			return 132;
+		else if (tvert >= 11)
+			return 138;
+		else if (tvert >= 10)
+			return 150;
+		else
+			return 0;
 		
 
-		//THIS IS HOW WE CALCULATE DISTANCE THROUGH THE TARGET AREA.
-		double ta = targetArea();
-		if (ta == 0)
-			return 0;
-		if (ta > 12.3)
-			return 24;
-		else if (ta > 8.5)
-			return 30;
-		else if (ta > 5.8)
-			return 36; 
-		else if (ta > 4.425)
-			return 42;
-		else if (ta > 3.05)
-			return 48;
-		else if (ta > 2.4785)
-			return 54;
-		else if (ta > 1.907)
-			return 60;
-		else if (ta > 1.616)
-			return 66;
-		else if (ta > 1.325)
-			return 72;
-		else if (ta > 1.1545 )
-			return 78;
-		else if (ta > .984)
-			return 84;
-		else if (ta > 0.8585) 
-			return 90;
-		else if (ta > .733) 
-			return 96;
-		else if (ta > 0.6325)
-			return 102;
-		else if (ta > .532) 
-			return 108;
-		else if (ta > 0.4835)
-			return 114;
-		else if (ta > .435) 
-			return 120;
-		else if (ta > 0.393)
-			return 126;
-		else if (ta > .351) 
-			return 132;
-		else
-			return 144;
+		// //THIS IS HOW WE CALCULATE DISTANCE THROUGH THE TARGET AREA.
+		// double ta = targetArea();
+		// if (ta == 0)
+		// 	return 0;
+		// if (ta > 12.3)
+		// 	return 24;
+		// else if (ta > 8.5)
+		// 	return 30;
+		// else if (ta > 5.8)
+		// 	return 36; 
+		// else if (ta > 4.425)
+		// 	return 42;
+		// else if (ta > 3.05)
+		// 	return 48;
+		// else if (ta > 2.4785)
+		// 	return 54;
+		// else if (ta > 1.907)
+		// 	return 60;
+		// else if (ta > 1.616)
+		// 	return 66;
+		// else if (ta > 1.325)
+		// 	return 72;
+		// else if (ta > 1.1545 )
+		// 	return 78;
+		// else if (ta > .984)
+		// 	return 84;
+		// else if (ta > 0.8585) 
+		// 	return 90;
+		// else if (ta > .733) 
+		// 	return 96;
+		// else if (ta > 0.6325)
+		// 	return 102;
+		// else if (ta > .532) 
+		// 	return 108;
+		// else if (ta > 0.4835)
+		// 	return 114;
+		// else if (ta > .435) 
+		// 	return 120;
+		// else if (ta > 0.393)
+		// 	return 126;
+		// else if (ta > .351) 
+		// 	return 132;
+		// else
+		// 	return 144;
 
 		
 	}
