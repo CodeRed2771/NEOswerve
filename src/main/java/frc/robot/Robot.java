@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 
 		// --------------------------------------------------
-		// GYRO - allow manual gyro reset by pressing Start 
+		// GYRO - allow manual gyro reset by pressing Start
 		// --------------------------------------------------
 		if (gamepad.getZeroGyro()) {
 			RobotGyro.reset();
@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
 		}
 
 		// --------------------------------------------------
-		//    CLIMB
+		// CLIMB
 		// --------------------------------------------------
 		// Manual controls
 		if (gamepad.getSingleClimbRevolution()) {
@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
 		// Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
 		// SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
 		// --------------------------------------------------
-		//   GAME PIECES
+		// GAME PIECES
 		// --------------------------------------------------
 		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
@@ -121,10 +121,10 @@ public class Robot extends TimedRobot {
 			Manipulator.holdGamePieceOverride();
 		}
 		// --------------------------------------------------
-		//   LIFT
+		// LIFT
 		// --------------------------------------------------
 
-		if (Math.abs(gamepad.getManualLift()) > .1){
+		if (Math.abs(gamepad.getManualLift()) > .1) {
 			Lift.moveSetpoint(0.75 * powerOf2PreserveSign(-gamepad.getManualLift()));
 		}
 		if (gamepad.goToTravelPosition()) {
@@ -158,16 +158,16 @@ public class Robot extends TimedRobot {
 			else
 				Lift.goHatchLvl3();
 		}
-		
+
 		if (gamepad.getCargoShipPlacement()) {
 			Manipulator.setLinkageForPlacement();
 			Lift.goCargoShipCargo();
 		}
 
 		// --------------------------------------------------
-		//   AUTO SUB ROUTINES
+		// AUTO SUB ROUTINES
 		// --------------------------------------------------
-		
+
 		// AUTO GET HATCH
 		if (gamepad.activateHatchIntakeAuto() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoGrabHatchFromFeeder();
@@ -180,7 +180,7 @@ public class Robot extends TimedRobot {
 			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
 		}
 
-		//AUTO CLIMB
+		// AUTO CLIMB
 		if (gamepad.getClimb() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoClimb();
 			mAutoProgram.start();
@@ -212,34 +212,35 @@ public class Robot extends TimedRobot {
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 
-		//  TODO: MAKE FUNCTIONS FOR FIND SHIP AND FIND FEEDER STATION.
+		// TODO: MAKE FUNCTIONS FOR FIND SHIP AND FIND FEEDER STATION.
 
-		// temporary manual climb drive motor 
-		//   Controller 3 - Left Bumper, Left stick Y
+		// temporary manual climb drive motor
+		// Controller 3 - Left Bumper, Left stick Y
 		// if (gamepad.getBumperLeft(2)) {
-		// 	Climber.manualDrive(gamepad.manualClimb());
+		// Climber.manualDrive(gamepad.manualClimb());
 		// }
 		// if (gamepad.getButtonX(2)) {
-		// 	Manipulator.lowerFlipper();
+		// Manipulator.lowerFlipper();
 		// }
 		// if (gamepad.getButtonY(2)) {
-		// 	Manipulator.bringFlipperUp();
+		// Manipulator.bringFlipperUp();
 		// }
 		//
-		// AUTO ABORT 
+		// AUTO ABORT
 		// If driver hits any drive sticks, any running auto will ABORT
 		//
-		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1 || Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1)) {
+		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1
+				|| Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1)) {
 			mAutoProgram.stop();
 		}
 
 		SmartDashboard.putBoolean("Auto Running", mAutoProgram.isRunning());
 
-		// DRIVE 
+		// DRIVE
 		if (mAutoProgram.isRunning()) {
 			mAutoProgram.tick();
 		} else {
-			// 
+			//
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
@@ -248,10 +249,15 @@ public class Robot extends TimedRobot {
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
+
+			if (isTippingOver()) {
+				System.out.print("ANTI-TIP CODE ACTIVATED");
+				Lift.goToStart(); // if we start tipping, bring the lift down
+			}
 		}
 
 		// --------------------------------------------------
-		//   TICK 
+		// TICK
 		// --------------------------------------------------
 
 		Lift.tick();
@@ -262,7 +268,6 @@ public class Robot extends TimedRobot {
 		showDashboardInfo();
 
 	}
-
 
 	@Override
 	public void autonomousInit() {
@@ -353,12 +358,15 @@ public class Robot extends TimedRobot {
 		// more controlled
 		double adjustedAmt = 0;
 
-		if (Math.abs(rotateAmt) < .2) {
+		if (Math.abs(rotateAmt) < .1) {
 			adjustedAmt = 0;
 		} else {
-			if (Math.abs(rotateAmt) < .6) {
-				adjustedAmt = .3 * Math.signum(rotateAmt);
+			if (Math.abs(rotateAmt) < .4) {
+				adjustedAmt = .2 * Math.signum(rotateAmt);
 			} else {
+				if (Math.abs(rotateAmt) < .7) {
+					adjustedAmt = .3 * Math.signum(rotateAmt);
+				} else {
 				if (Math.abs(rotateAmt) < .95) {
 					adjustedAmt = .6 * Math.signum(rotateAmt);
 				} else {
@@ -414,8 +422,6 @@ public class Robot extends TimedRobot {
 		showDashboardInfo();
 	}
 
-	
-
 	private void setupAutoChoices() {
 		// Position Chooser
 		positionChooser = new SendableChooser<String>();
@@ -432,19 +438,18 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
 		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
 		autoChooser.setDefaultOption(autoTeleop, autoTeleop);
-I
+
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
+	}
+
+	private boolean isTippingOver() {
+		return RobotGyro.getTiltDegrees() > 5;
 	}
 
 	// Is this used?
 	private double powerOf2PreserveSign(double v) {
 		return (v > 0) ? Math.pow(v, 2) : -Math.pow(v, 2);
-	}
-
-	// Is this used?
-	private double powerOf3PreserveSign(double v) {
-		return Math.pow(v, 3);
 	}
 
 	// Is this used?
