@@ -11,73 +11,80 @@ package frc.robot;
  * Add your docs here.
  */
 public class TargetInfo {
-    public enum TargetType {
-        SHIP_TARGET,
-        ROCKET_TARGET,
-        FEEDER_TARGET,
+    public static enum TargetType {
+        SHIP_TARGET, ROCKET_TARGET, FEEDER_TARGET,
     }
-    
+
     private static TargetInfo instance;
     private static TargetType targetType;
 
     public static TargetInfo getInstance() {
-		if (instance == null) {
-			try {
-				instance = new TargetInfo();
-			} catch (Exception ex) {
-				System.out.println("Target Info module could not be initialized due to the following error: ");
-				System.out.println(ex.getMessage());
-				System.out.println(ex.getStackTrace());
-				return null;
-			}
-		}
-		return instance;
+        if (instance == null) {
+            try {
+                instance = new TargetInfo();
+            } catch (Exception ex) {
+                System.out.println("Target Info module could not be initialized due to the following error: ");
+                System.out.println(ex.getMessage());
+                System.out.println(ex.getStackTrace());
+                return null;
+            }
+        }
+        return instance;
     }
-    
+
     public static double targetAngle() {
         double currentGyroAngle = RobotGyro.getAngle();
 
-        if (targetType == TargetType.ROCKET_TARGET){
-            if (currentGyroAngle > 6 && currentGyroAngle < 75) {
+        if (targetType == TargetType.ROCKET_TARGET) {
+            if (currentGyroAngle > -80 && currentGyroAngle < -10)
+                return -30;
+            else
                 return 30;
-            }
-            if (currentGyroAngle > 76 && currentGyroAngle < 170) {
-                return 90;
-            }
-            if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-                return -30;
-            }
-            if (currentGyroAngle > -6 && currentGyroAngle < -75) {
-                return -30;
-            }
-            if (currentGyroAngle > -76 && currentGyroAngle < -170) {
-                return -90;
-            }
-            if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-                return -150;
-            }
-        }
-        if (targetType == TargetType.SHIP_TARGET) {
-            if (currentGyroAngle < 40 && currentGyroAngle > -40) {
-                return 0;
-            }
-            if (currentGyroAngle < 70 && currentGyroAngle > 120) {
-                return 90;
-            }
-            if (currentGyroAngle < -70 && currentGyroAngle > -120) {
-                return -90;
-            }
-        }
-        if (targetType == TargetType.FEEDER_TARGET) {
+        } else if (targetType == TargetType.SHIP_TARGET) {
+            return 0;
+        } else
             return 180;
-        }
 
-        return 90;
+        // if (targetType == TargetType.ROCKET_TARGET) {
+        //     if (currentGyroAngle > 6 && currentGyroAngle < 75) {
+        //         return 30;
+        //     }
+        //     if (currentGyroAngle > 76 && currentGyroAngle < 170) {
+        //         return 90;
+        //     }
+        //     if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+        //         return -30;
+        //     }
+        //     if (currentGyroAngle > -6 && currentGyroAngle < -75) {
+        //         return -30;
+        //     }
+        //     if (currentGyroAngle > -76 && currentGyroAngle < -170) {
+        //         return -90;
+        //     }
+        //     if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+        //         return -150;
+        //     }
+        // }
+        // if (targetType == TargetType.SHIP_TARGET) {
+        //     if (currentGyroAngle < 40 && currentGyroAngle > -40) {
+        //         return 0;
+        //     }
+        //     if (currentGyroAngle < 70 && currentGyroAngle > 120) {
+        //         return 90;
+        //     }
+        //     if (currentGyroAngle < -70 && currentGyroAngle > -120) {
+        //         return -90;
+        //     }
+        // }
+        // if (targetType == TargetType.FEEDER_TARGET) {
+        //     return 180;
+        // }
+
+        // return 90;
 
         // // NEED MORE IF STATEMENTS FOR OTHER POSITIONS
-        
+
         // return 90;
-        
+
     }
 }
-
