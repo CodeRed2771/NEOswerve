@@ -120,6 +120,7 @@ public class Robot extends TimedRobot {
 		if (gamepad.gamePieceOverride()) {
 			Manipulator.holdGamePieceOverride();
 		}
+
 		// --------------------------------------------------
 		// LIFT
 		// --------------------------------------------------

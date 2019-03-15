@@ -18,7 +18,7 @@ public class Lift {
 	private static double encoderSettingStartTime = System.currentTimeMillis();
 
 	private static CurrentBreaker currentBreaker;
-	private static final int MAX_SUSTAINED_CURRENT = 20;
+	private static final int MAX_SUSTAINED_CURRENT = 15;
 	private static final int MAX_TIME_AT_MAX_CURRENT = 4000;
 
 	public static Lift getInstance() {

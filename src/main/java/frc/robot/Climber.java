@@ -47,7 +47,7 @@ public class Climber {
     }
 
     public static void climberRetract() {
-        climbMotor.getPIDController().setReference(EXTENDED_POSITION / 4, ControlType.kPosition);
+        climbMotor.getPIDController().setReference(EXTENDED_POSITION / 5, ControlType.kPosition);
     }
 
     public static boolean isExtended() {
