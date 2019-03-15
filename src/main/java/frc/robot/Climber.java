@@ -59,12 +59,12 @@ public class Climber {
         double newSetpoint;
 
         if (direction > 0) {
-            newSetpoint = climbMotor.getEncoder().getPosition() + 39.05;
+            newSetpoint = climbMotor.getEncoder().getPosition() + (39.05 / 2); // half revolution
             // if (newSetpoint >= 0) {
             // newSetpoint = 0;
             // }
         } else {
-            newSetpoint = climbMotor.getEncoder().getPosition() - 39.05;
+            newSetpoint = climbMotor.getEncoder().getPosition() - (39.05 / 2); // half rotation
             // if (newSetpoint < -40000) {
             // newSetpoint = -40000;
             // }
