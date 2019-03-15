@@ -261,7 +261,7 @@ public class DriveAuto {
 			if (Math.abs(angleAdjust) > 5) 
 				angleAdjust = 5 * Math.signum(angleAdjust);
 
-			DriveTrain.setAllTurnOrientiation(-DriveTrain.angleToLoc(strafeAngle + angleAdjust));
+			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToLoc(strafeAngle + angleAdjust));
 			SmartDashboard.putNumber("DA Ang Adj", angleAdjust);
 		}
 
