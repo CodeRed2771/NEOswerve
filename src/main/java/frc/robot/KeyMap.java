@@ -196,14 +196,6 @@ public class KeyMap {
         return getHID(gamepad3).axis(manualClimb);
     }
 
-    // public boolean getSingleClimbRevolution() {
-    //     return getHID(gamepad1).button(singleClimbRevolutionButton);
-    // }
-
-    // public boolean getSingleClimbReverseRevolution() {
-    //     return getHID(gamepad1).button(singleClimbRevolutionReverseButton);
-    // }
-
 
      /*
      * 

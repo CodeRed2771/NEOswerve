@@ -38,37 +38,36 @@ public class TargetInfo {
         double currentGyroAngle = RobotGyro.getAngle();
 
         if (targetType == TargetType.ROCKET_TARGET){
-            return 30;
-        //     if (currentGyroAngle > 6 && currentGyroAngle < 75) {
-        //         return 30;
-        //     }
-        //     if (currentGyroAngle > 76 && currentGyroAngle < 170) {
-        //         return 90;
-        //     }
-        //     if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-        //         return -30;
-        //     }
-        //     if (currentGyroAngle > -6 && currentGyroAngle < -75) {
-        //         return -30;
-        //     }
-        //     if (currentGyroAngle > -76 && currentGyroAngle < -170) {
-        //         return -90;
-        //     }
-        //     if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-        //         return -150;
-        //     }
+            if (currentGyroAngle > 6 && currentGyroAngle < 75) {
+                return 30;
+            }
+            if (currentGyroAngle > 76 && currentGyroAngle < 170) {
+                return 90;
+            }
+            if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+                return -30;
+            }
+            if (currentGyroAngle > -6 && currentGyroAngle < -75) {
+                return -30;
+            }
+            if (currentGyroAngle > -76 && currentGyroAngle < -170) {
+                return -90;
+            }
+            if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+                return -150;
+            }
         }
-        // if (targetType == TargetType.SHIP_TARGET) {
-        //     if (currentGyroAngle < 40 && currentGyroAngle > -40) {
-        //         return 0;
-        //     }
-        //     if (currentGyroAngle < 70 && currentGyroAngle > 120) {
-        //         return 90;
-        //     }
-        //     if (currentGyroAngle < -70 && currentGyroAngle > -120) {
-        //         return -90;
-        //     }
-        // }
+        if (targetType == TargetType.SHIP_TARGET) {
+            if (currentGyroAngle < 40 && currentGyroAngle > -40) {
+                return 0;
+            }
+            if (currentGyroAngle < 70 && currentGyroAngle > 120) {
+                return 90;
+            }
+            if (currentGyroAngle < -70 && currentGyroAngle > -120) {
+                return -90;
+            }
+        }
         if (targetType == TargetType.FEEDER_TARGET) {
             return 180;
         }
