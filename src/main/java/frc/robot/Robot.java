@@ -27,6 +27,7 @@ public class Robot extends TimedRobot {
 	final String autoCalibrateDrive = "Auto Calibrate Drive";
 	final String autoDrivePIDTune = "Drive PID Tune";
 	final String autoTestEncoders = "Test Encoders";
+	final String autoTeleop = "TELEOP";
 
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
@@ -266,6 +267,12 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 
+		mAutoProgram.stop();
+		Climber.stop();
+
+		DriveTrain.unReverseModules();
+		DriveTrain.setAllTurnOrientation(0);
+
 		Lift.resetLift();
 		Manipulator.resetLinkage();
 
@@ -281,6 +288,9 @@ public class Robot extends TimedRobot {
 		mAutoProgram = null;
 
 		switch (autoSelected) {
+		case autoTeleop:
+			// don't do anything
+			break;
 		case autoDrivePIDTune:
 			SmartDashboard.putNumber("Drive To Setpoint", 0);
 			mAutoProgram = new AutoDrivePIDTune();
@@ -309,11 +319,14 @@ public class Robot extends TimedRobot {
 			mAutoProgram.tick();
 		}
 
-		DriveAuto.tick();
+		if (autoSelected == autoTeleop) {
+			teleopPeriodic();
+		} else {
+			DriveAuto.tick();
 
-		DriveAuto.showEncoderValues();
-		showDashboardInfo();
-
+			DriveAuto.showEncoderValues();
+			showDashboardInfo();
+		}
 	}
 
 	private void showDashboardInfo() {
@@ -418,6 +431,7 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
 		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
 		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
+		autoChooser.addDefaultOption(autoTeleop, autoTeleop);
 
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
