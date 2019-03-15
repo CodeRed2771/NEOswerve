@@ -173,7 +173,7 @@ public class KeyMap {
     }
 
     public boolean getClimb() {
-        return getHID(gamepad1).button(climbControl) & getHID(gamepad1).button(climb);
+        return getHID(gamepad1).button(climbControl);
     }
     public boolean getSingleClimbRevolution() {
         return getHID(gamepad3).button(singleClimbRevolutionButton);
