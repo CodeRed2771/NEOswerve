@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		mAutoProgram.stop();
+		Climber.stop();
 
 		DriveTrain.unReverseModules();
 		DriveTrain.setAllTurnOrientation(0);
@@ -98,8 +99,8 @@ public class Robot extends TimedRobot {
 		if (gamepad.getSingleClimbReverseRevolution()) {
 			Climber.moveSetpoint(-1);
 		}
-		Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
-		SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
+		// Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
+		// SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
 		// --------------------------------------------------
 		//   GAME PIECES
 		// --------------------------------------------------
