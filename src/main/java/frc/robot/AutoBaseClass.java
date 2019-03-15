@@ -92,6 +92,11 @@ public abstract class AutoBaseClass {
 	public void driveInches(double distance, double angle, double maxPower) {
 		DriveAuto.driveInches(distance, angle, maxPower);
 	}
+
+	public void driveInches(double distance, double angle, double maxPower, boolean followTarget) {
+		DriveAuto.driveInches(distance, angle, maxPower, followTarget);
+	}
+
 	
 	public boolean driveCompleted() {
 		return DriveAuto.hasArrived();
