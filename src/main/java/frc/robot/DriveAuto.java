@@ -12,6 +12,7 @@ public class DriveAuto {
 
 	private static boolean isDriving = false;
 	private static boolean isTurning = false;
+	private static boolean followingTarget = false;
 
 	private static double heading = 0; // keeps track of intended heading - used for driving "straight"
 	private static double strafeAngle = 0;
@@ -68,7 +69,9 @@ public class DriveAuto {
 
 	}
 
-	public static void driveInches(double inches, double angle, double speedFactor) {
+	public static void driveInches(double inches, double angle, double speedFactor, boolean followTarget) {
+
+		followingTarget = followTarget;
 
 		SmartDashboard.putNumber("DRIVE INCHES", inches);
 
@@ -98,6 +101,11 @@ public class DriveAuto {
 
 		// set the new drive distance setpoint
 		DriveTrain.addToAllDrivePositions(convertToTicks(inches));
+		
+	}
+
+	public static void driveInches(double inches, double angle, double speedFactor) {
+		driveInches(inches, angle, speedFactor, false);
 	}
 
 	public static void reset() {
@@ -242,9 +250,20 @@ public class DriveAuto {
 
 		double cyclesToDecelerate = maxTurnSpeed / maxTurnAccel;
 		double cyclesLeft = Math.abs(finalTurnSetpoint - interimTurnSetpoint) / maxTurnSpeed;
+		double angleAdjust = 0;
 
 		maxTurnSpeed = SmartDashboard.getNumber("ROT Max Deg/Cycle", maxTurnSpeed);
 		maxTurnAccel = SmartDashboard.getNumber("ROT Max Acc/Cycle", maxTurnAccel);
+
+		// try to keep target in center by adjusting module angles
+		if (isDriving && followingTarget) {
+			angleAdjust = - Vision.offsetFromTarget();
+			if (Math.abs(angleAdjust) > 5) 
+				angleAdjust = 5 * Math.signum(angleAdjust);
+
+			DriveTrain.setAllTurnOrientiation(-DriveTrain.angleToLoc(strafeAngle + angleAdjust));
+			SmartDashboard.putNumber("DA Ang Adj", angleAdjust);
+		}
 
 		if (isTurning) {
 			if (cyclesLeft > cyclesToDecelerate) {
