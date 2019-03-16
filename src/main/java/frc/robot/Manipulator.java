@@ -224,7 +224,7 @@ public class Manipulator { // Should be changed to Manipulator.
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         resetIntakeStallDetector();
         // linkageUp();
-        manipulator.set(ControlMode.PercentOutput, -.25);
+        manipulator.set(ControlMode.PercentOutput, -.30); // was .25 3-16 3:40pm
     }
 
     private static void holdHatch() {

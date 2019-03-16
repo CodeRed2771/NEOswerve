@@ -16,7 +16,6 @@ public class TargetInfo {
     }
 
     private static TargetInfo instance;
-    private static TargetType targetType;
 
     public static TargetInfo getInstance() {
         if (instance == null) {
@@ -32,12 +31,16 @@ public class TargetInfo {
         return instance;
     }
 
-    public static double targetAngle() {
+    public static double targetAngle(TargetType targetType) {
         double currentGyroAngle = RobotGyro.getAngle();
 
         if (targetType == TargetType.ROCKET_TARGET) {
             if (currentGyroAngle > -80 && currentGyroAngle < -10)
                 return -30;
+            else if (currentGyroAngle > -170 && currentGyroAngle < -100)
+                return -150;
+            else if (currentGyroAngle > 100 && currentGyroAngle < 170)
+                return 150;
             else
                 return 30;
         } else if (targetType == TargetType.SHIP_TARGET) {
@@ -46,38 +49,38 @@ public class TargetInfo {
             return 180;
 
         // if (targetType == TargetType.ROCKET_TARGET) {
-        //     if (currentGyroAngle > 6 && currentGyroAngle < 75) {
-        //         return 30;
-        //     }
-        //     if (currentGyroAngle > 76 && currentGyroAngle < 170) {
-        //         return 90;
-        //     }
-        //     if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-        //         return -30;
-        //     }
-        //     if (currentGyroAngle > -6 && currentGyroAngle < -75) {
-        //         return -30;
-        //     }
-        //     if (currentGyroAngle > -76 && currentGyroAngle < -170) {
-        //         return -90;
-        //     }
-        //     if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-        //         return -150;
-        //     }
+        // if (currentGyroAngle > 6 && currentGyroAngle < 75) {
+        // return 30;
+        // }
+        // if (currentGyroAngle > 76 && currentGyroAngle < 170) {
+        // return 90;
+        // }
+        // if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+        // return -30;
+        // }
+        // if (currentGyroAngle > -6 && currentGyroAngle < -75) {
+        // return -30;
+        // }
+        // if (currentGyroAngle > -76 && currentGyroAngle < -170) {
+        // return -90;
+        // }
+        // if (currentGyroAngle < -10 && currentGyroAngle > -90) {
+        // return -150;
+        // }
         // }
         // if (targetType == TargetType.SHIP_TARGET) {
-        //     if (currentGyroAngle < 40 && currentGyroAngle > -40) {
-        //         return 0;
-        //     }
-        //     if (currentGyroAngle < 70 && currentGyroAngle > 120) {
-        //         return 90;
-        //     }
-        //     if (currentGyroAngle < -70 && currentGyroAngle > -120) {
-        //         return -90;
-        //     }
+        // if (currentGyroAngle < 40 && currentGyroAngle > -40) {
+        // return 0;
+        // }
+        // if (currentGyroAngle < 70 && currentGyroAngle > 120) {
+        // return 90;
+        // }
+        // if (currentGyroAngle < -70 && currentGyroAngle > -120) {
+        // return -90;
+        // }
         // }
         // if (targetType == TargetType.FEEDER_TARGET) {
-        //     return 180;
+        // return 180;
         // }
 
         // return 90;

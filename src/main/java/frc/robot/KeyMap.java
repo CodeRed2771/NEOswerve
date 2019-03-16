@@ -47,7 +47,6 @@ public class KeyMap {
     private final HID.Button intakeHatchFloor = LogitechF310.DPAD_RIGHT;
     private final HID.Button gamePieceOverride = LogitechF310.DPAD_DOWN;
     private final HID.Axis ejectGamePiece = LogitechF310.TRIGGER_RIGHT_AXIS;
-    private final HID.Axis intakeHatchAutoModifier = LogitechF310.TRIGGER_LEFT_AXIS;
 
     // Hatch Placement
     private final HID.Button goToLvl1 = LogitechF310.A;
@@ -55,6 +54,7 @@ public class KeyMap {
     private final HID.Button goToLvl3 = LogitechF310.Y;
     private final HID.Button goToShipCargo = LogitechF310.BUMPER_RIGHT;
     private final HID.Button goToTravelPosition = LogitechF310.X;
+    private final HID.Button modifier = LogitechF310.BUMPER_LEFT;
 
     private final Axis manualLift = LogitechF310.STICK_LEFT_Y;
 
@@ -110,7 +110,11 @@ public class KeyMap {
     }
 
     public boolean activateHatchIntakeAuto() {
-        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).axis(intakeHatchAutoModifier) > 0.8;
+        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).button(modifier);
+    }
+
+    public boolean linkageUp() {
+        return getHID(gamepad2).button(goToTravelPosition) && getHID(gamepad2).button(modifier);
     }
 
     public boolean activateHatchFloorIntake() {

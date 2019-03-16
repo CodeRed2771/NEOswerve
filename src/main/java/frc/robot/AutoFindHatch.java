@@ -18,14 +18,20 @@ public class AutoFindHatch extends AutoBaseClass {
     private double angleDiff;
     private double distToStayBack = 30;
     private double targetAngle = 0;
+    private boolean drivingAllowed = true;
 
     public void start() {
         super.start();
         Vision.setTargetTrackingMode();
     }
+
     public void stop() {
         super.stop();
         Vision.setDriverMode();
+    }
+
+    public void setDrivingAllowed(boolean isDrivingAllowed) {
+        drivingAllowed = isDrivingAllowed;
     }
 
     public void tick() {
@@ -44,7 +50,9 @@ public class AutoFindHatch extends AutoBaseClass {
                 }
                 break;
             case 1:
-                targetAngle = TargetInfo.targetAngle();
+                System.out.println("target type " + mTargetType.toString());
+                targetAngle = TargetInfo.targetAngle(mTargetType);
+                System.out.println("Target Angle " + targetAngle);
                 DriveAuto.turnDegrees(Vision.offsetFromTarget(), .25);
                 setTimerAndAdvanceStep(1000);
                 break;
@@ -55,6 +63,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 break;
             case 3:
                 angleDiff = targetAngle - RobotGyro.getAngle();
+                System.out.println("anglediff " + angleDiff);
                 DriveAuto.turnDegrees(angleDiff, .25); // Square up?
                 setTimerAndAdvanceStep(1000);
                 break;
@@ -76,17 +85,21 @@ public class AutoFindHatch extends AutoBaseClass {
 
                 SmartDashboard.putNumber("Dist to target", distanceToTarget);
                 SmartDashboard.putNumber("Drive dist", newDist);
-                SmartDashboard.putNumber("Target Angle", TargetInfo.targetAngle());
+       
                 SmartDashboard.putNumber("New Angle", newAngle);
                 SmartDashboard.putNumber("Angle Diff", angleDiff);
                 // SmartDashboard.putNumber("opposite", opposite);
                 // SmartDashboard.putNumber("adjacent", adjacent);
 
                 // DriveAuto.reset();
-                DriveAuto.driveInches(newDist, newAngle, .4, true);
+                if (drivingAllowed) {
+                    DriveAuto.driveInches(newDist, newAngle, .4, true);
 
-                setTimerAndAdvanceStep(3000);
-
+                    setTimerAndAdvanceStep(3000); 
+                }
+                 else {
+                     setTimerAndAdvanceStep(20);
+                 }
                 break;
             case 6:
                 if (DriveAuto.hasArrived()) {
@@ -115,8 +128,12 @@ public class AutoFindHatch extends AutoBaseClass {
                 }
                 break;
             case 10:
-                driveInches(distanceToTarget - 8, 0, .25, true);
-                setTimerAndAdvanceStep(1000);
+                if (drivingAllowed) {
+                    driveInches(distanceToTarget - 8, 0, .25, true);
+                    setTimerAndAdvanceStep(1000);    
+                } else {
+                    setTimerAndAdvanceStep(20);
+                }
                 break;
             case 11:
                 if (DriveAuto.hasArrived()) {

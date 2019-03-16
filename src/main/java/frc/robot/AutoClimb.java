@@ -23,8 +23,10 @@ public class AutoClimb extends AutoBaseClass {
 			SmartDashboard.putNumber("Auto Step", getCurrentStep());
 			switch (getCurrentStep()) {
 			case 0:
+				Manipulator.linkageUp();
 				Climber.climberExtend();
-				setTimerAndAdvanceStep(4000);
+				Climber.setClimbDriveSpeed(-.25);
+				setTimerAndAdvanceStep(5000);
 				break;
 			case 1:
 				if (Climber.isExtended()) {

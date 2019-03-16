@@ -16,7 +16,7 @@ public class Climber {
     public static final double EXTENDED_POSITION = 284;
 
     public Climber() {
-        climbMotor.getPIDController().setOutputRange(-0.85, 0.85);
+        climbMotor.getPIDController().setOutputRange(-0.90, 0.90);
         climbMotor.getPIDController().setP(1);
     }
 
@@ -47,7 +47,7 @@ public class Climber {
     }
 
     public static void climberRetract() {
-        climbMotor.getPIDController().setReference(EXTENDED_POSITION - (EXTENDED_POSITION / 4), ControlType.kPosition);
+        climbMotor.getPIDController().setReference(EXTENDED_POSITION - (EXTENDED_POSITION / 3), ControlType.kPosition);
     }
 
     public static boolean isExtended() {

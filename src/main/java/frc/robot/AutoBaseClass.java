@@ -7,7 +7,7 @@ public abstract class AutoBaseClass {
 	private Position mRobotPosition;
 	private boolean mIsRunning = false;
 	private Direction mDirection ;
-	private TargetInfo.TargetType mTargetType;
+	protected TargetInfo.TargetType mTargetType;
 
 	public static enum Direction {
 		LEFT, RIGHT

@@ -97,12 +97,12 @@ public class Robot extends TimedRobot {
 		// CLIMB
 		// --------------------------------------------------
 		// Manual controls
-		if (gamepad.getSingleClimbRevolution()) {
-			Climber.moveSetpoint(1);
-		}
-		if (gamepad.getSingleClimbReverseRevolution()) {
-			Climber.moveSetpoint(-1);
-		}
+		// if (gamepad.getSingleClimbRevolution()) {
+		// 	Climber.moveSetpoint(1);
+		// }
+		// if (gamepad.getSingleClimbReverseRevolution()) {
+		// 	Climber.moveSetpoint(-1);
+		// }
 		// Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
 		// SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
 		// --------------------------------------------------
@@ -133,6 +133,10 @@ public class Robot extends TimedRobot {
 			Manipulator.holdGamePieceOverride();
 		}
 
+		if (gamepad.linkageUp()) {
+			Manipulator.linkageUp();
+			Lift.goToStart();
+		}
 		// --------------------------------------------------
 		// LIFT
 		// --------------------------------------------------
@@ -214,14 +218,17 @@ public class Robot extends TimedRobot {
 		// FIND HATCH TARGET
 		if (gamepad.findRocketTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
 			mAutoProgram.start(TargetInfo.TargetType.ROCKET_TARGET);
 		}
 		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
 			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
 		}
 		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 
