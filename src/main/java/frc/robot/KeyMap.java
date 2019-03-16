@@ -106,11 +106,11 @@ public class KeyMap {
     }
 
     public boolean activateHatchIntake() {
-        return getHID(gamepad2).button(intakeHatch)&& getHID(gamepad2).axis(intakeHatchAutoModifier) > 0.8;
+        return getHID(gamepad2).button(intakeHatch);
     }
 
     public boolean activateHatchIntakeAuto() {
-        return getHID(gamepad2).button(intakeHatch);
+        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).axis(intakeHatchAutoModifier) > 0.8;
     }
 
     public boolean activateHatchFloorIntake() {

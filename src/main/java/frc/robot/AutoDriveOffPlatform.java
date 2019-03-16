@@ -22,21 +22,27 @@ public class AutoDriveOffPlatform extends AutoBaseClass {
 			SmartDashboard.putNumber("Auto Step", getCurrentStep());
 			switch (getCurrentStep()) {
 			case 0:
-				if (robotPosition() == Position.CENTER) {
-					mSubAutoProg = new AutoFindHatch();
-					mSubAutoProg.start();
-				} else {
-					// jump to steps to handle side programs
-					setStep(30);
-				}
+				driveInches(48, 0, .8, false);
+				// if (robotPosition() == Position.CENTER) {
+				// 	mSubAutoProg = new AutoFindHatch();
+				// 	mSubAutoProg.start();
+				// } else {
+				// 	// jump to steps to handle side programs
+				// 	setStep(30);
+				// }
 				advanceStep();
 				break;
 			case 1:
-				mSubAutoProg.tick();
-				if (!mSubAutoProg.isRunning())
-					setStep(100);
+				// mSubAutoProg.tick();
+				// if (!mSubAutoProg.isRunning())
+				// 	setStep(100);
+				if (driveCompleted())
+					advanceStep();
+				
 				break;
-
+			case 2:
+					stop();
+					break;
 				// routines for side positions
 			case 30:
 				driveInches(100, 0, .5);

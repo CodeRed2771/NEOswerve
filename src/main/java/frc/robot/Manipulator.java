@@ -50,8 +50,8 @@ public class Manipulator { // Should be changed to Manipulator.
         linkage = new TalonSRX(Wiring.LINKAGE_MOTOR);
         limitSwitch = new DigitalInput(0);
 
-        manipulatorState = ManipulatorState.INACTIVE;
-        previousState = ManipulatorState.INACTIVE;
+        manipulatorState = ManipulatorState.HOLDING_HATCH;
+        previousState = ManipulatorState.HOLDING_HATCH;
 
         manipulator.setInverted(true);
 
@@ -161,12 +161,14 @@ public class Manipulator { // Should be changed to Manipulator.
     
     public static void linkageDown() {
         lowerFlipper();
-        linkage.set(ControlMode.MotionMagic, -900);
+        linkage.set(ControlMode.Position, -800);
+        // linkage.set(ControlMode.MotionMagic, -900);
     }
 
     public static void linkageUp(){
         bringFlipperUp();
-        linkage.set(ControlMode.MotionMagic, 0);
+        linkage.set(ControlMode.Position, 0);
+        // linkage.set(ControlMode.MotionMagic, 0);
     }
 
     public static void resetLinkage() {

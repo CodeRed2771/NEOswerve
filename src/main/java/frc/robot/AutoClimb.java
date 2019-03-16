@@ -33,7 +33,7 @@ public class AutoClimb extends AutoBaseClass {
 				break;
 			case 2:
 				// if we get here we failed to climb
-				setStep(7);
+				setStep(99);
 				break;
 			case 3:
 				DriveTrain.moduleB.setTurnOrientation(.25);
@@ -44,13 +44,22 @@ public class AutoClimb extends AutoBaseClass {
 			case 4:
 				break;
 			case 5:
-				Climber.setClimbDriveSpeed(0);
-				Climber.climberRetract();
-				setTimerAndAdvanceStep(5000);
+				setTimerAndAdvanceStep(250);
+				Climber.setClimbDriveSpeed(.6); // drive back a titch
 				break;
 			case 6:
 				break;
 			case 7:
+				Climber.setClimbDriveSpeed(0);
+				Climber.climberRetract();
+				setTimerAndAdvanceStep(3000);
+				break;
+			case 8:
+				break;
+			case 9:
+				setStep(99);
+				break;
+			case 99:
 				Climber.stop();
 				stop();
 				break;

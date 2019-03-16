@@ -13,7 +13,7 @@ public class Climber {
     private static CANSparkMax climbMotor = new CANSparkMax(Wiring.CLIMB_MOTOR, MotorType.kBrushless);
     private static TalonSRX climbDrive = new TalonSRX(Wiring.CLIMB_DRIVE);
 
-    public static final double EXTENDED_POSITION = 294;
+    public static final double EXTENDED_POSITION = 284;
 
     public Climber() {
         climbMotor.getPIDController().setOutputRange(-0.85, 0.85);
@@ -47,7 +47,7 @@ public class Climber {
     }
 
     public static void climberRetract() {
-        climbMotor.getPIDController().setReference(EXTENDED_POSITION / 5, ControlType.kPosition);
+        climbMotor.getPIDController().setReference(EXTENDED_POSITION - (EXTENDED_POSITION / 4), ControlType.kPosition);
     }
 
     public static boolean isExtended() {

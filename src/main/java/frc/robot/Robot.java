@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
 	final String autoDrivePIDTune = "Drive PID Tune";
 	final String autoTestEncoders = "Test Encoders";
 	final String autoTeleop = "TELEOP";
+	final String autoDriveOffPlatform = "Auto Platform";
 
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
@@ -69,6 +70,8 @@ public class Robot extends TimedRobot {
 
 		DriveTrain.unReverseModules();
 		DriveTrain.setAllTurnOrientation(0);
+
+		Vision.setDriverMode();
 	}
 
 	/*
@@ -108,7 +111,7 @@ public class Robot extends TimedRobot {
 		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
 		}
-		
+
 		// Manipulator.linkageMove(gamepad.getRightStickY(2));
 
 		if (gamepad.getButtonX(2)) {
@@ -260,10 +263,10 @@ public class Robot extends TimedRobot {
 
 			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
 
-			if (isTippingOver()) {
-				System.out.print("ANTI-TIP CODE ACTIVATED");
-				Lift.goToStart(); // if we start tipping, bring the lift down
-			}
+			// if (isTippingOver()) {
+			// System.out.print("ANTI-TIP CODE ACTIVATED");
+			// Lift.goToStart(); // if we start tipping, bring the lift down
+			// }
 		}
 
 		// --------------------------------------------------
@@ -284,7 +287,7 @@ public class Robot extends TimedRobot {
 
 		mAutoProgram.stop();
 		Climber.stop();
-
+		Vision.setDriverMode();
 		DriveTrain.unReverseModules();
 		DriveTrain.setAllTurnOrientation(0);
 
@@ -300,11 +303,14 @@ public class Robot extends TimedRobot {
 		autoSelected = (String) autoChooser.getSelected();
 		SmartDashboard.putString("Auto Selected: ", autoSelected);
 
-		mAutoProgram = null;
+		mAutoProgram = new AutoDoNothing();
 
 		switch (autoSelected) {
 		case autoTeleop:
 			// don't do anything
+			break;
+		case autoDriveOffPlatform:
+			mAutoProgram = new AutoDriveOffPlatform();
 			break;
 		case autoDrivePIDTune:
 			SmartDashboard.putNumber("Drive To Setpoint", 0);
@@ -321,7 +327,10 @@ public class Robot extends TimedRobot {
 		DriveTrain.setAllTurnOrientation(0);
 		DriveAuto.reset();
 
-		if (mAutoProgram != null) {
+		if (autoSelected == autoTeleop) {
+			System.out.println("AUTO TELEOP SELECTED");
+		} else if (mAutoProgram != null) {
+			System.out.print("auto program started successfully " + autoSelected);
 			mAutoProgram.start();
 		} else
 			System.out.println("No auto program started in switch statement");
@@ -443,11 +452,12 @@ public class Robot extends TimedRobot {
 
 		/* Auto Chooser */
 		autoChooser = new SendableChooser<>();
-		autoChooser.addOption(targetTracking, targetTracking);
-		autoChooser.addOption(autoRotateTest, autoRotateTest);
-		autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
-		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
+		// autoChooser.addOption(targetTracking, targetTracking);
+		// autoChooser.addOption(autoRotateTest, autoRotateTest);
+		// autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
+		// autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
 		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
+		autoChooser.addOption(autoDriveOffPlatform, autoDriveOffPlatform);
 		autoChooser.setDefaultOption(autoTeleop, autoTeleop);
 
 		// Put options to smart dashboard
