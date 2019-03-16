@@ -161,7 +161,7 @@ public class Manipulator { // Should be changed to Manipulator.
     
     public static void linkageDown() {
         lowerFlipper();
-        linkage.set(ControlMode.MotionMagic, -975);
+        linkage.set(ControlMode.MotionMagic, -900);
     }
 
     public static void linkageUp(){
@@ -277,7 +277,9 @@ public class Manipulator { // Should be changed to Manipulator.
         ejectEndTime = System.currentTimeMillis() + 800;
     }
 
-    public static void goToTravelPosition() {
+    public static void goToTravelPositionDONTUSE() {
+        // I THINK THIS HAS MULTIPLE ISSUES
+        // such as erasing the fact that we have a gamepiece
         manipulatorState = ManipulatorState.INACTIVE;
         linkageUp();
         stopIntake();

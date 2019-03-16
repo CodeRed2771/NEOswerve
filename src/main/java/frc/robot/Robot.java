@@ -108,6 +108,15 @@ public class Robot extends TimedRobot {
 		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
 		}
+		
+		// Manipulator.linkageMove(gamepad.getRightStickY(2));
+
+		if (gamepad.getButtonX(2)) {
+			Manipulator.linkageDown();
+		}
+		if (gamepad.getButtonY(2)) {
+			Manipulator.linkageUp();
+		}
 		if (gamepad.activateHatchIntake()) {
 			Manipulator.intakeHatch();
 		}
@@ -130,7 +139,7 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
-			Manipulator.goToTravelPosition();
+			Manipulator.lowerFlipper();
 		}
 		if (gamepad.goToLvl1()) {
 			Manipulator.setLinkageForPlacement();
@@ -368,10 +377,11 @@ public class Robot extends TimedRobot {
 				if (Math.abs(rotateAmt) < .7) {
 					adjustedAmt = .3 * Math.signum(rotateAmt);
 				} else {
-				if (Math.abs(rotateAmt) < .95) {
-					adjustedAmt = .6 * Math.signum(rotateAmt);
-				} else {
-					adjustedAmt = rotateAmt;
+					if (Math.abs(rotateAmt) < .95) {
+						adjustedAmt = .6 * Math.signum(rotateAmt);
+					} else {
+						adjustedAmt = rotateAmt;
+					}
 				}
 			}
 		}

@@ -245,4 +245,9 @@ public class KeyMap {
     public double getLeftStickY(int gamePadNumber) {
         return getHID(gamePadNumber).axis(LogitechF310.STICK_LEFT_Y);
     }
+
+    public double getRightStickY(int gamePadNumber) {
+        return getHID(gamePadNumber).axis(LogitechF310.STICK_RIGHT_Y);
+    }
+
 }

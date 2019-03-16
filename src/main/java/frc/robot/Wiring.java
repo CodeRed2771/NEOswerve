@@ -18,7 +18,7 @@ public class Wiring {
 	 * PDP PORTS
 	 */
 	public static final int LIFT_PDP_PORT = 6;
-	public static final int INTAKE_PDP_PORT = 9;
+	public static final int INTAKE_PDP_PORT = 7;
 
 	/*
 	 * PCM PORTS
