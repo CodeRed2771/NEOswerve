@@ -25,7 +25,7 @@ public class AutoClimb extends AutoBaseClass {
 			case 0:
 				Manipulator.linkageUp();
 				Climber.climberExtend();
-				Climber.setClimbDriveSpeed(-.25);
+				Climber.setClimbDriveSpeed(-.12);
 				setTimerAndAdvanceStep(5000);
 				break;
 			case 1:

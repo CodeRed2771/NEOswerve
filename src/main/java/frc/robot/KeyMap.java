@@ -89,7 +89,7 @@ public class KeyMap {
         return getHID(gamepad1).axis(swerveYAxis);
     }
 
-    public boolean getSwitchToRobotCentric() {
+    public boolean getRobotCentricModifier() {
         return getHID(gamepad1).button(switchToRobotCentric);
     }
 

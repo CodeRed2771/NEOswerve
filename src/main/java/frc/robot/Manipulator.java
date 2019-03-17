@@ -16,6 +16,7 @@ public class Manipulator { // Should be changed to Manipulator.
     private static Manipulator instance;
     private static TalonSRX manipulator;
     private static CurrentBreaker currentBreaker;
+    private static CurrentBreaker linkageCurrentBreaker;
     private static TalonSRX linkage;
     private static DoubleSolenoid flipper; // I know this is a dumb name. Sorry :)
     private static DigitalInput limitSwitch;
@@ -62,6 +63,8 @@ public class Manipulator { // Should be changed to Manipulator.
         flipper = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
 
         currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 1000);
+        
+        linkageCurrentBreaker = new CurrentBreaker(Wiring.LINKAGE_PDP_PORT, 20, 4000);
 
         resetIntakeStallDetector();
 
@@ -151,8 +154,19 @@ public class Manipulator { // Should be changed to Manipulator.
         if (linkage.getControlMode() == ControlMode.MotionMagic)
 			SmartDashboard.putNumber("Link Setpt", linkage.getClosedLoopTarget());
 		else
-			SmartDashboard.putNumber("Link Setpt", -1);
+            SmartDashboard.putNumber("Link Setpt", -1);
+
+        if (linkageStalled()) {
+            linkage.set(ControlMode.PercentOutput, 0);
+            System.out.println("LIFT CIRCUIT BREAKER TRIPPED");
+            linkageCurrentBreaker.reset();
+        }
+            
     }
+
+    public static boolean linkageStalled() {
+        return (linkageCurrentBreaker.tripped());
+	}
 
     // CONTROL METHODS ------------------------------------------------
     public static void linkageMove(double speed) {

@@ -98,10 +98,10 @@ public class Robot extends TimedRobot {
 		// --------------------------------------------------
 		// Manual controls
 		// if (gamepad.getSingleClimbRevolution()) {
-		// 	Climber.moveSetpoint(1);
+		// Climber.moveSetpoint(1);
 		// }
 		// if (gamepad.getSingleClimbReverseRevolution()) {
-		// 	Climber.moveSetpoint(-1);
+		// Climber.moveSetpoint(-1);
 		// }
 		// Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
 		// SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
@@ -191,11 +191,11 @@ public class Robot extends TimedRobot {
 			mAutoProgram.start();
 		}
 
-		// DRIVE OFF PLATFORM
-		if (gamepad.driveOffPlatform() && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoDriveOffPlatform();
-			mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
-		}
+		// // DRIVE OFF PLATFORM
+		// if (gamepad.driveOffPlatform() && !mAutoProgram.isRunning()) {
+		// 	mAutoProgram = new AutoDriveOffPlatform();
+		// 	mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
+		// }
 
 		// AUTO CLIMB
 		if (gamepad.getClimb() && !mAutoProgram.isRunning()) {
@@ -268,7 +268,10 @@ public class Robot extends TimedRobot {
 			double driveStrafeAxisAmount = strafeAdjust(-gamepad.getSwerveXAxis());
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
-			DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
+			if (gamepad.getRobotCentricModifier())
+				DriveTrain.humanDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
+			else
+				DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
 
 			// if (isTippingOver()) {
 			// System.out.print("ANTI-TIP CODE ACTIVATED");
