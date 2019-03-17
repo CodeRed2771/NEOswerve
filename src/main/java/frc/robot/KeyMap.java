@@ -27,12 +27,13 @@ public class KeyMap {
 
     private final HID.Button zeroGyro = LogitechF310.START;
 
-    private final HID.Button driveOffPlatform = LogitechF310.BUMPER_LEFT;
+    // private final HID.Button driveOffPlatform = LogitechF310.BUMPER_LEFT;
 
     // Climbing
     private final HID.Button prepareToClimb = LogitechF310.DPAD_DOWN;
     private final HID.Button climb = LogitechF310.DPAD_UP;
     private final HID.Button climbControl = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button climbLvl2Control = LogitechF310.BUMPER_LEFT;
     
     // Auto Programs
     private final HID.Button shipMoveLeft = LogitechF310.DPAD_LEFT;
@@ -57,12 +58,13 @@ public class KeyMap {
     private final HID.Button modifier = LogitechF310.BUMPER_LEFT;
 
     private final Axis manualLift = LogitechF310.STICK_LEFT_Y;
+    private final HID.Axis manualClimbDrive = LogitechF310.STICK_RIGHT_Y;
+    
 
     // TEST CONTROLLER
     private final HID.Button singleClimbRevolutionButton = LogitechF310.A;
     private final HID.Button singleClimbRevolutionReverseButton = LogitechF310.B;
     private final HID.Axis manualClimb = LogitechF310.STICK_LEFT_Y;
-    private final HID.Axis manualClimbDrive = LogitechF310.STICK_RIGHT_Y;
 
     public HID getHID(int gamepad) {
         if (!singleControllerMode) {
@@ -179,6 +181,9 @@ public class KeyMap {
     public boolean getClimb() {
         return getHID(gamepad1).button(climbControl) && getHID(gamepad1).button(climb);
     }
+    public boolean getClimbLevel2() {
+        return getHID(gamepad1).button(climbLvl2Control) && getHID(gamepad1).button(climb);
+    }
     public boolean getSingleClimbRevolution() {
         return getHID(gamepad3).button(singleClimbRevolutionButton);
     }
@@ -188,12 +193,12 @@ public class KeyMap {
     }
 
     public double getClimbDrive() {
-        return getHID(gamepad3).axis(manualClimbDrive);
+        return getHID(gamepad2).axis(manualClimbDrive);
     }
 
-    public boolean driveOffPlatform() {
-        return getHID(gamepad1).button(driveOffPlatform);
-    }
+    // public boolean driveOffPlatform() {
+    //     return getHID(gamepad1).button(driveOffPlatform);
+    // }
 
     //TEST METHODS
     public double manualClimb() {

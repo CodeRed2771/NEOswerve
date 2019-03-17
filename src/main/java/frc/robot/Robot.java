@@ -114,12 +114,12 @@ public class Robot extends TimedRobot {
 
 		// Manipulator.linkageMove(gamepad.getRightStickY(2));
 
-		if (gamepad.getButtonX(2)) {
-			Manipulator.linkageDown();
-		}
-		if (gamepad.getButtonY(2)) {
-			Manipulator.linkageUp();
-		}
+		// if (gamepad.getButtonX(2)) {
+		// 	Manipulator.linkageDown();
+		// }
+		// if (gamepad.getButtonY(2)) {
+		// 	Manipulator.linkageUp();
+		// }
 		if (gamepad.activateHatchIntake()) {
 			Manipulator.intakeHatch();
 		}
@@ -198,8 +198,14 @@ public class Robot extends TimedRobot {
 		// }
 
 		// AUTO CLIMB
-		if (gamepad.getClimb() && !mAutoProgram.isRunning()) {
+		if (gamepad.getClimb()) {
+			mAutoProgram.stop();
 			mAutoProgram = new AutoClimb();
+			mAutoProgram.start();
+		}
+		if (gamepad.getClimbLevel2()) {
+			mAutoProgram.stop();
+			mAutoProgram = new AutoClimbLevel2();
 			mAutoProgram.start();
 		}
 
@@ -391,10 +397,10 @@ public class Robot extends TimedRobot {
 			adjustedAmt = 0;
 		} else {
 			if (Math.abs(rotateAmt) < .4) {
-				adjustedAmt = .2 * Math.signum(rotateAmt);
+				adjustedAmt = .1 * Math.signum(rotateAmt);
 			} else {
 				if (Math.abs(rotateAmt) < .7) {
-					adjustedAmt = .3 * Math.signum(rotateAmt);
+					adjustedAmt = .25 * Math.signum(rotateAmt);
 				} else {
 					if (Math.abs(rotateAmt) < .95) {
 						adjustedAmt = .6 * Math.signum(rotateAmt);

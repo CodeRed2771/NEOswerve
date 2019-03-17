@@ -35,18 +35,34 @@ public class TargetInfo {
         double currentGyroAngle = RobotGyro.getAngle();
 
         if (targetType == TargetType.ROCKET_TARGET) {
-            if (currentGyroAngle > -80 && currentGyroAngle < -10)
-                return -30;
-            else if (currentGyroAngle > -170 && currentGyroAngle < -100)
-                return -150;
-            else if (currentGyroAngle > 100 && currentGyroAngle < 170)
-                return 150;
-            else
-                return 30;
-        } else if (targetType == TargetType.SHIP_TARGET) {
-            return 0;
-        } else
+            if (Manipulator.isHoldingCargo()) {
+                if (currentGyroAngle > -10 && currentGyroAngle < -170) {
+                    return -90;
+                } else {
+                    return 90;
+                }
+            } else {
+                if (currentGyroAngle > -80 && currentGyroAngle < -10)
+                    return -30;
+                else if (currentGyroAngle > -170 && currentGyroAngle < -100)
+                    return -150;
+                else if (currentGyroAngle > 100 && currentGyroAngle < 170)
+                    return 150;
+                else
+                    return 30;
+            }
+        }
+        else if (targetType == TargetType.SHIP_TARGET) {
+            if (currentGyroAngle > -30 && currentGyroAngle < -170)
+                return -90;
+            else if (currentGyroAngle > 30 && currentGyroAngle < 170) 
+                return 90;
+            else 
+                return 0;          
+        } else {
             return 180;
+        }
+
 
         // if (targetType == TargetType.ROCKET_TARGET) {
         // if (currentGyroAngle > 6 && currentGyroAngle < 75) {

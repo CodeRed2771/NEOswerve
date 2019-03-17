@@ -38,6 +38,8 @@ public class Manipulator { // Should be changed to Manipulator.
     private static ManipulatorState manipulatorState;
     private static ManipulatorState previousState;
 
+    private static boolean linkageIsDown = false;
+
     private static double ejectEndTime;
 
     public static Manipulator getInstance() {
@@ -71,31 +73,31 @@ public class Manipulator { // Should be changed to Manipulator.
         ejectEndTime = aDistantFutureTime();
 
         /* first choose the sensor */
-		linkage.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		linkage.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
 		/* set the relevant frame periods to be at least as fast as periodic rate */
-		linkage.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 0);
-		linkage.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
+		linkage.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 10);
+		linkage.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 10);
 
 		/* set the peak and nominal outputs */
-		linkage.configNominalOutputForward(0, 0);
-		linkage.configNominalOutputReverse(0, 0);
-		linkage.configPeakOutputForward(1, 0);
-        linkage.configPeakOutputReverse(-1, 0);
+		linkage.configNominalOutputForward(0, 10);
+		linkage.configNominalOutputReverse(0, 10);
+		linkage.configPeakOutputForward(1, 10);
+        linkage.configPeakOutputReverse(-1, 10);
 
-        linkage.configContinuousCurrentLimit(20);
+        linkage.configContinuousCurrentLimit(20,10);
 
 		linkage.setNeutralMode(NeutralMode.Brake);
 
-		linkage.configClosedloopRamp(.25, 0);
+		linkage.configClosedloopRamp(.25, 10);
 
 		/* set closed loop gains in slot0 - see documentation */
 		linkage.selectProfileSlot(0, 0);
 
-		linkage.config_kP(0, Calibration.LINKAGE_P, 0);
-		linkage.config_kI(0, Calibration.LINKAGE_I, 0);
-		linkage.config_kD(0, Calibration.LINKAGE_D, 0);
-		linkage.config_kF(0, Calibration.LINKAGE_F, 0);
+		linkage.config_kP(0, Calibration.LINKAGE_P, 10);
+		linkage.config_kI(0, Calibration.LINKAGE_I, 10);
+		linkage.config_kD(0, Calibration.LINKAGE_D, 10);
+		linkage.config_kF(0, Calibration.LINKAGE_F, 10);
 
 		SmartDashboard.putNumber("Link Vel", Calibration.LINKAGE_VELOCITY);
 		SmartDashboard.putNumber("Link Accel", Calibration.LINKAGE_ACCEL);
@@ -114,12 +116,12 @@ public class Manipulator { // Should be changed to Manipulator.
         SmartDashboard.putString("Man State", manipulatorState.toString());
 
         if (SmartDashboard.getBoolean("Link TUNE", false)) {
-			linkage.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Link Vel", 0), 0);
-			linkage.configMotionAcceleration((int) SmartDashboard.getNumber("Link Accel", 0), 0);
-			linkage.config_kF(0, SmartDashboard.getNumber("Link F", 1.0), 0);
-			linkage.config_kP(0, SmartDashboard.getNumber("Link P", 1.0), 0);
-			linkage.config_kI(0, SmartDashboard.getNumber("Link I", 0), 0);
-			linkage.config_kD(0, SmartDashboard.getNumber("Link D", 0), 0);
+			linkage.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Link Vel", 0), 10);
+			linkage.configMotionAcceleration((int) SmartDashboard.getNumber("Link Accel", 0), 10);
+			linkage.config_kF(0, SmartDashboard.getNumber("Link F", 1.0), 10);
+			linkage.config_kP(0, SmartDashboard.getNumber("Link P", 1.0), 10);
+			linkage.config_kI(0, SmartDashboard.getNumber("Link I", 0), 10);
+			linkage.config_kD(0, SmartDashboard.getNumber("Link D", 0), 10);
         }
 
         if (!linkageEncoderSet && !linkageEncoderSetting) {
@@ -130,10 +132,11 @@ public class Manipulator { // Should be changed to Manipulator.
 		}
 
 		if (linkageEncoderSetting && (System.currentTimeMillis() >= (linkageEncoderSettingStartTime + 1000))) {
-			linkage.getSensorCollection().setQuadraturePosition(0, 20);
-			linkage.set(ControlMode.PercentOutput, 0);
+			linkage.getSensorCollection().setQuadraturePosition(0, 10);
+			linkage.set(ControlMode.PercentOutput, 10);
 			linkageEncoderSetting = false;
-			linkageEncoderSet = true;
+            linkageEncoderSet = true;
+            linkageIsDown = false;
 			System.out.println("calibrating linkage done");
         }
         
@@ -174,15 +177,25 @@ public class Manipulator { // Should be changed to Manipulator.
     }
     
     public static void linkageDown() {
+        if (linkageIsDown) {
+            linkage.set(ControlMode.PercentOutput, 0);
+        } else {
+            linkage.set(ControlMode.Position, -800);
+            linkageIsDown = true;
+            // linkage.set(ControlMode.MotionMagic, -900);
+        }
         lowerFlipper();
-        linkage.set(ControlMode.Position, -800);
-        // linkage.set(ControlMode.MotionMagic, -900);
     }
 
     public static void linkageUp(){
         bringFlipperUp();
-        linkage.set(ControlMode.Position, 0);
-        // linkage.set(ControlMode.MotionMagic, 0);
+        if (linkageIsDown) {
+            linkage.set(ControlMode.Position, 0);
+            linkageIsDown = false;
+            // linkage.set(ControlMode.MotionMagic, 0);
+        }
+        else
+            linkage.set(ControlMode.PercentOutput, 0);
     }
 
     public static void resetLinkage() {
@@ -202,8 +215,8 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     public static void prepareToGetHatchFromFeeder() {
-        manipulator.set(ControlMode.PercentOutput, -1);
         linkageDown();
+        manipulator.set(ControlMode.PercentOutput, -1);
         lowerFlipper();
         Lift.goHatchLvl1();
     }

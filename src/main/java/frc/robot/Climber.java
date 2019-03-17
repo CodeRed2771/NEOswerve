@@ -14,6 +14,7 @@ public class Climber {
     private static TalonSRX climbDrive = new TalonSRX(Wiring.CLIMB_DRIVE);
 
     public static final double EXTENDED_POSITION = 284;
+    public static final double EXTENDED_LEVEL_2_POS = 140;
 
     public Climber() {
         climbMotor.getPIDController().setOutputRange(-0.90, 0.90);
@@ -45,9 +46,14 @@ public class Climber {
     public static void climberExtend() {
         climbMotor.getPIDController().setReference(EXTENDED_POSITION, ControlType.kPosition);
     }
-
+    public static void climberExtendLevel2() {
+        climbMotor.getPIDController().setReference(EXTENDED_LEVEL_2_POS, ControlType.kPosition);
+    }
     public static void climberRetract() {
         climbMotor.getPIDController().setReference(EXTENDED_POSITION - (EXTENDED_POSITION / 3), ControlType.kPosition);
+    }
+    public static void climberRetractFull() {
+        climbMotor.getPIDController().setReference(20, ControlType.kPosition);
     }
 
     public static boolean isExtended() {

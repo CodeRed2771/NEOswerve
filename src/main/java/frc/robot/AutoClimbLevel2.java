@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 	Program that climbs onto HAB
  */
 
-public class AutoClimb extends AutoBaseClass {
+public class AutoClimbLevel2 extends AutoBaseClass {
     // Run climb motor to full height position
     // Rotate rear drive modules (B & C) to 90 degrees
 
     
-	public AutoClimb() {
+	public AutoClimbLevel2() {
 		super();
 	}
 
@@ -24,9 +24,9 @@ public class AutoClimb extends AutoBaseClass {
 			switch (getCurrentStep()) {
 			case 0:
 				Manipulator.linkageUp();
-				Climber.climberExtend();
-				Climber.setClimbDriveSpeed(-.12);
-				setTimerAndAdvanceStep(5000);
+				Climber.climberExtendLevel2();
+				Climber.setClimbDriveSpeed(-.10);
+				setTimerAndAdvanceStep(4000);
 				break;
 			case 1:
 				if (Climber.isExtended()) {
@@ -41,19 +41,19 @@ public class AutoClimb extends AutoBaseClass {
 				DriveTrain.moduleB.setTurnOrientation(.25);
 				DriveTrain.moduleC.setTurnOrientation(.25);
 				Climber.setClimbDriveSpeed(-.6); // drive forward
-				setTimerAndAdvanceStep(4000);
+				setTimerAndAdvanceStep(4500);
 				break;
 			case 4:
 				break;
 			case 5:
 				setTimerAndAdvanceStep(75);
-				Climber.setClimbDriveSpeed(.6); // drive back a titch
+				Climber.setClimbDriveSpeed(.4); // drive back a titch
 				break;
 			case 6:
 				break;
 			case 7:
 				Climber.setClimbDriveSpeed(0);
-				Climber.climberRetract();
+				Climber.climberRetractFull();
 				setTimerAndAdvanceStep(3000);
 				break;
 			case 8:

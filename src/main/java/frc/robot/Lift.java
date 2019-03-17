@@ -160,7 +160,6 @@ public class Lift {
 
 	public static void goToStart() {
 		liftMotor.set(ControlMode.MotionMagic, 0);
-		Manipulator.linkageMove(0);
 	}
 
 	private static final double HATCH_ACQUIRING = 2000;
