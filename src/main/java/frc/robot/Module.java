@@ -24,41 +24,41 @@ public class Module {
 	 */
 	public Module (int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos) {
 		drive = new WPI_TalonSRX(driveTalonID);
-		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
+		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,10); 
 		DRIVE_P = dP;
 		DRIVE_I = dI;
 		DRIVE_D = dD;
 		DRIVE_IZONE = dIZone;
 
-		drive.config_kP(0,  DRIVE_P, 0);
-		drive.config_kI(0,  DRIVE_I, 0);
-		drive.config_kD(0,  DRIVE_D, 0);
-		drive.config_IntegralZone(0, DRIVE_IZONE, 0);
+		drive.config_kP(0,  DRIVE_P, 10);
+		drive.config_kI(0,  DRIVE_I, 10);
+		drive.config_kD(0,  DRIVE_D, 10);
+		drive.config_IntegralZone(0, DRIVE_IZONE, 10);
 		drive.selectProfileSlot(0, 0);
 		
-		drive.configOpenloopRamp(.1, 0);
-		drive.configClosedloopRamp(.05, 0);
+		drive.configOpenloopRamp(.1, 10);
+		drive.configClosedloopRamp(.05, 10);
 		
-		drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 0);
-		drive.configMotionAcceleration(Calibration.DT_MM_ACCEL, 0);
+		drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 10);
+		drive.configMotionAcceleration(Calibration.DT_MM_ACCEL, 10);
 		drive.setSensorPhase(true);
 		
 		turn = new WPI_TalonSRX(turnTalonID);
 		turnZeroPos = tZeroPos;
 		
-		turn.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
+		turn.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,10); 
 		TURN_P = tP;
 		TURN_I = tI;
 		TURN_D = tD;
 		TURN_IZONE = tIZone;
 
-		turn.config_kP(0,  TURN_P, 0);
-		turn.config_kI(0,  TURN_I, 0);
-		turn.config_kD(0,  TURN_D, 0);
-		turn.config_IntegralZone(0, TURN_IZONE, 0);
+		turn.config_kP(0,  TURN_P, 10);
+		turn.config_kI(0,  TURN_I, 10);
+		turn.config_kD(0,  TURN_D, 10);
+		turn.config_IntegralZone(0, TURN_IZONE, 10);
 		turn.selectProfileSlot(0, 0);
 		
-		turn.configClosedloopRamp(.1, 0);
+		turn.configClosedloopRamp(.1, 10);
 	}
 	
 	public void setFollower(int talonToFollow) {
@@ -119,7 +119,7 @@ public class Module {
 		// to determine the relative turn position
 
 		double currentPos = getTurnAbsolutePosition();
-		if (currentPos - turnZeroPos > 0) {
+		if (currentPos - turnZeroPos > 0) {    // turnZeroPos is calibrated zero position
 			return currentPos - turnZeroPos;
 		} else {
 			return (1 - turnZeroPos) + currentPos;
