@@ -468,10 +468,10 @@ public class Robot extends TimedRobot {
 
 		/* Auto Chooser */
 		autoChooser = new SendableChooser<>();
-		// autoChooser.addOption(targetTracking, targetTracking);
-		// autoChooser.addOption(autoRotateTest, autoRotateTest);
-		// autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
-		// autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
+		autoChooser.addOption(targetTracking, targetTracking);
+		autoChooser.addOption(autoRotateTest, autoRotateTest);
+		autoChooser.addOption(autoCalibrateDrive, autoCalibrateDrive);
+		autoChooser.addOption(autoDrivePIDTune, autoDrivePIDTune);
 		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
 		autoChooser.addOption(autoDriveOffPlatform, autoDriveOffPlatform);
 		autoChooser.setDefaultOption(autoTeleop, autoTeleop);
