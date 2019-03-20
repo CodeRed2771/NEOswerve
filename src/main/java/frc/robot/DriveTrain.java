@@ -411,10 +411,10 @@ public class DriveTrain implements PIDOutput {
 		SmartDashboard.putNumber("TURN C RAW", round(moduleC.getTurnAbsolutePosition(), 3));
 		SmartDashboard.putNumber("TURN D RAW", round(moduleD.getTurnAbsolutePosition(), 3));
 
-		SmartDashboard.putNumber("TURN A POS", round(moduleA.getTurnRelativePosition(), 2));
-		SmartDashboard.putNumber("TURN B POS", round(moduleB.getTurnRelativePosition(), 2));
-		SmartDashboard.putNumber("TURN C POS", round(moduleC.getTurnRelativePosition(), 2));
-		SmartDashboard.putNumber("TURN D POS", round(moduleD.getTurnRelativePosition(), 2));
+		SmartDashboard.putNumber("TURN A POS", round(moduleA.getTurnEncoderValue(), 2));
+		SmartDashboard.putNumber("TURN B POS", round(moduleB.getTurnEncoderValue(), 2));
+		SmartDashboard.putNumber("TURN C POS", round(moduleC.getTurnEncoderValue(), 2));
+		SmartDashboard.putNumber("TURN D POS", round(moduleD.getTurnEncoderValue(), 2));
 
 		SmartDashboard.putNumber("TURN A ANGLE", round(moduleA.getTurnAngle(), 0));
 		SmartDashboard.putNumber("TURN B ANGLE", round(moduleB.getTurnAngle(), 0));
