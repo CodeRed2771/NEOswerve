@@ -18,11 +18,11 @@ public class DriveAuto {
 	private static double strafeAngle = 0;
 
 	// variable to handle controlled turns
-	private static double interimTurnSetpoint = 0;
-	private static double finalTurnSetpoint = 0;
-	private static double currentTurnSpeed = 0;
-	private static double maxTurnSpeed = 4; // max degrees per cycle (per 20ms)
-	private static double maxTurnAccel = .04; // max increase in degrees per cycle
+	// private static double interimTurnSetpoint = 0;
+	// private static double finalTurnSetpoint = 0;
+	// private static double currentTurnSpeed = 0;
+	// private static double maxTurnSpeed = 4; // max degrees per cycle (per 20ms)
+	// private static double maxTurnAccel = .04; // max increase in degrees per cycle
 
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
@@ -86,7 +86,7 @@ public class DriveAuto {
 		// angle at which the wheel modules should be turned
 		
 		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags are reset.
-		DriveTrain.setAllTurnOrientation(-DriveTrain.angleToLoc(strafeAngle));
+		DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle));
 
 		// give it just a little time to get the modules turned to position
 		// before starting the drive
@@ -208,13 +208,13 @@ public class DriveAuto {
 
 		isTurning = true;
 
-		interimTurnSetpoint = heading; // should be our current position
+		// interimTurnSetpoint = heading; // should be our current position
 		heading += degrees; // this is used later to help us drive straight after rotating
 
 		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
 
-		DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(-133.6677), DriveTrain.angleToLoc(46.3322), DriveTrain.angleToLoc(133.6677),
-				DriveTrain.angleToLoc(-46.3322));
+		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(-133.6677), DriveTrain.angleToPosition(46.3322), DriveTrain.angleToPosition(133.6677),
+				DriveTrain.angleToPosition(-46.3322));
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
@@ -222,7 +222,6 @@ public class DriveAuto {
 			e.printStackTrace();
 		}
 		
-
 		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * turnSpeedFactor));
 
 		DriveTrain.addToAllDrivePositions(convertToTicks(degreesToInches(degrees)));
@@ -240,72 +239,72 @@ public class DriveAuto {
 		isTurning = false;
 		setRotationalPowerOutput(maxPower);
 
-		DriveTrain.setTurnOrientation(DriveTrain.angleToLoc(0), DriveTrain.angleToLoc(0), DriveTrain.angleToLoc(0),
-				DriveTrain.angleToLoc(0));
+		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0),
+				DriveTrain.angleToPosition(0));
 		rotDrivePID.disable();
 	}
 
 	public static void tick() {
 		// this is called roughly 50 times per second
 
-		double cyclesToDecelerate = maxTurnSpeed / maxTurnAccel;
-		double cyclesLeft = Math.abs(finalTurnSetpoint - interimTurnSetpoint) / maxTurnSpeed;
-		double angleAdjust = 0;
+		// double cyclesToDecelerate = maxTurnSpeed / maxTurnAccel;
+		// double cyclesLeft = Math.abs(finalTurnSetpoint - interimTurnSetpoint) / maxTurnSpeed;
 
-		maxTurnSpeed = SmartDashboard.getNumber("ROT Max Deg/Cycle", maxTurnSpeed);
-		maxTurnAccel = SmartDashboard.getNumber("ROT Max Acc/Cycle", maxTurnAccel);
+		// maxTurnSpeed = SmartDashboard.getNumber("ROT Max Deg/Cycle", maxTurnSpeed);
+		// maxTurnAccel = SmartDashboard.getNumber("ROT Max Acc/Cycle", maxTurnAccel);
 
 		// try to keep target in center by adjusting module angles
+		double angleAdjust = 0;
 		if (isDriving && followingTarget) {
 			angleAdjust = - Vision.offsetFromTarget();
 			if (Math.abs(angleAdjust) > 5) 
 				angleAdjust = 5 * Math.signum(angleAdjust);
 
-			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToLoc(strafeAngle + angleAdjust));
+			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle + angleAdjust));
 			SmartDashboard.putNumber("DA Ang Adj", angleAdjust);
 		}
 
-		if (isTurning) {
-			if (cyclesLeft > cyclesToDecelerate) {
-				// accelerate
-				if (currentTurnSpeed < maxTurnSpeed) {
-					currentTurnSpeed += maxTurnAccel;
-					if (currentTurnSpeed > maxTurnSpeed)
-						currentTurnSpeed = maxTurnSpeed;
-				}
-			} else {
-				// decelerate, but no slower than the acceleration factor
-				if (currentTurnSpeed > maxTurnAccel) {
-					currentTurnSpeed -= maxTurnAccel;
-					if (currentTurnSpeed < maxTurnAccel)
-						currentTurnSpeed = maxTurnAccel;
-				}
-			}
+		// if (isTurning) {
+		// 	if (cyclesLeft > cyclesToDecelerate) {
+		// 		// accelerate
+		// 		if (currentTurnSpeed < maxTurnSpeed) {
+		// 			currentTurnSpeed += maxTurnAccel;
+		// 			if (currentTurnSpeed > maxTurnSpeed)
+		// 				currentTurnSpeed = maxTurnSpeed;
+		// 		}
+		// 	} else {
+		// 		// decelerate, but no slower than the acceleration factor
+		// 		if (currentTurnSpeed > maxTurnAccel) {
+		// 			currentTurnSpeed -= maxTurnAccel;
+		// 			if (currentTurnSpeed < maxTurnAccel)
+		// 				currentTurnSpeed = maxTurnAccel;
+		// 		}
+		// 	}
 
-			if (interimTurnSetpoint < finalTurnSetpoint) {
-				// we're increasing towards the final point
+		// 	if (interimTurnSetpoint < finalTurnSetpoint) {
+		// 		// we're increasing towards the final point
 
-				interimTurnSetpoint += currentTurnSpeed;
+		// 		interimTurnSetpoint += currentTurnSpeed;
 
-				// if we set the interim past the final, adjust it to final
-				if (interimTurnSetpoint > finalTurnSetpoint)
-					interimTurnSetpoint = finalTurnSetpoint;
-			} else {
-				// we're reversing towards the final point
-				interimTurnSetpoint -= currentTurnSpeed;
+		// 		// if we set the interim past the final, adjust it to final
+		// 		if (interimTurnSetpoint > finalTurnSetpoint)
+		// 			interimTurnSetpoint = finalTurnSetpoint;
+		// 	} else {
+		// 		// we're reversing towards the final point
+		// 		interimTurnSetpoint -= currentTurnSpeed;
 
-				// if we set the interim past the final, adjust it to final
-				if (interimTurnSetpoint < finalTurnSetpoint)
-					interimTurnSetpoint = finalTurnSetpoint;
-			}
+		// 		// if we set the interim past the final, adjust it to final
+		// 		if (interimTurnSetpoint < finalTurnSetpoint)
+		// 			interimTurnSetpoint = finalTurnSetpoint;
+		// 	}
 
-			rotDrivePID.setSetpoint(interimTurnSetpoint);
-		}
+		// 	rotDrivePID.setSetpoint(interimTurnSetpoint);
+		// }
 
-		SmartDashboard.putNumber("Cur Turn Speed", currentTurnSpeed);
-		SmartDashboard.putNumber("Decel cycles", cyclesToDecelerate);
-		SmartDashboard.putNumber("Cycles left", cyclesLeft);
-		SmartDashboard.putNumber("Int Setpoint", interimTurnSetpoint);
+		// SmartDashboard.putNumber("Cur Turn Speed", currentTurnSpeed);
+		// SmartDashboard.putNumber("Decel cycles", cyclesToDecelerate);
+		// SmartDashboard.putNumber("Cycles left", cyclesLeft);
+		// SmartDashboard.putNumber("Int Setpoint", interimTurnSetpoint);
 		SmartDashboard.putNumber("ROT PID ERROR", rotDrivePID.getError());
 		SmartDashboard.putNumber("Drive Train Velocity", DriveTrain.getDriveVelocity());
 		SmartDashboard.putBoolean("HasArrived", hasArrived());

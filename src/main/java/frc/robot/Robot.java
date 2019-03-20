@@ -68,8 +68,7 @@ public class Robot extends TimedRobot {
 		mAutoProgram.stop();
 		Climber.stop();
 
-		DriveTrain.unReverseModules(); // resets the reversal flag only
-		DriveTrain.setAllTurnOrientation(0); // sets them back to calibrated zero position
+		DriveTrain.setAllTurnOrientation(0, false); // sets them back to calibrated zero position
 
 		Vision.setDriverMode();
 	}
@@ -304,8 +303,7 @@ public class Robot extends TimedRobot {
 		mAutoProgram.stop();
 		Climber.stop();
 		Vision.setDriverMode();
-		DriveTrain.unReverseModules();
-		DriveTrain.setAllTurnOrientation(0);
+		DriveTrain.setAllTurnOrientation(0, false);
 
 		Lift.resetLift();
 		Manipulator.resetLinkage();
