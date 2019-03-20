@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
  * @author Austin
  * @deprecated replaced with PIDDerivativeCalculator
  */
+@Deprecated
 public class SpeedEncoderShell implements PIDSource {
 
     Encoder encoder = null;
