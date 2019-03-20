@@ -260,7 +260,7 @@ public class Robot extends TimedRobot {
 			mAutoProgram.stop();
 		}
 
-		SmartDashboard.putBoolean("Auto Running", mAutoProgram.isRunning());
+		SmartDashboard.putBoolean("Auto Mode", mAutoProgram.isRunning());
 
 		// DRIVE
 		if (mAutoProgram.isRunning()) {
@@ -397,9 +397,9 @@ public class Robot extends TimedRobot {
 			adjustedAmt = 0;
 		} else {
 			if (Math.abs(rotateAmt) < .4) {
-				adjustedAmt = .1 * Math.signum(rotateAmt);
+				adjustedAmt = .15 * Math.signum(rotateAmt);
 			} else {
-				if (Math.abs(rotateAmt) < .7) {
+				if (Math.abs(rotateAmt) < .6) {
 					adjustedAmt = .25 * Math.signum(rotateAmt);
 				} else {
 					if (Math.abs(rotateAmt) < .95) {
