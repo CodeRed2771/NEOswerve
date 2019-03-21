@@ -60,6 +60,8 @@ public class Robot extends TimedRobot {
 
 		RobotGyro.reset();
 
+		DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
+
 		SmartDashboard.putBoolean("Show Encoders", false);
 	}
 
@@ -90,6 +92,8 @@ public class Robot extends TimedRobot {
 			Lift.resetLift();
 			Manipulator.bringFlipperUp();
 			Manipulator.resetLinkage();
+			DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
+			DriveTrain.setAllTurnOrientation(0);
 		}
 
 		// --------------------------------------------------
@@ -441,7 +445,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void disabledInit() {
-		DriveTrain.allowTurnEncoderReset(); // allows the turn encoders to be
+		// DriveTrain.allowTurnEncoderReset(); // allows the turn encoders to be
 											// reset once during disabled
 											// periodic
 		DriveTrain.resetDriveEncoders();
@@ -449,7 +453,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void disabledPeriodic() {
-		DriveTrain.resetTurnEncoders(); // happens only once because a flag
+		// DriveTrain.resetTurnEncoders(); // happens only once because a flag
 										// prevents multiple calls
 		DriveTrain.disablePID();
 

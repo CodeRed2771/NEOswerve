@@ -14,6 +14,7 @@ public class Module {
 	private double mTurnZeroPos = 0;
 	private double mCurrentDriveSetpoint = 0;
 	private boolean mIsReversed = false;
+	private char mModuleID;
 
 	/**
 	 * Make a swerve module
@@ -26,8 +27,9 @@ public class Module {
 	 * @param tIZone       I Zone value for the turning PID
 	 */
 	public Module(int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI,
-			double tD, int tIZone, double tZeroPos) {
+			double tD, int tIZone, double tZeroPos, char moduleID) {
 
+		mModuleID = moduleID;
 		driveMotor = new WPI_TalonSRX(driveTalonID);
 
 		driveMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
@@ -117,15 +119,19 @@ public class Module {
 	public double getTurnRelativePosition() {
 		// returns the 0 to 1 value of the turn position
 		// relative to the calibrated zero position.
-		// if our current reading is .600 and calibration is .200
-		// then our relative position is .400
+		// uses encoder ticks to figure out where we are
 
-		double currentPos = getTurnAbsolutePosition();
-		if (currentPos - getTurnZeroPosition() > 0) { // turnZeroPos is calibrated zero position
-			return currentPos - getTurnZeroPosition();
-		} else {
-			return (1 - getTurnZeroPosition()) + currentPos;
+		double currentPos = (getTurnEncoderValue() % 4096d) / 4096d;
+		if (currentPos < 0) {
+			currentPos = 1 + currentPos;
 		}
+		return currentPos;
+		// if (currentPos - getTurnZeroPosition() > 0) { // turnZeroPos is calibrated
+		// zero position
+		// return currentPos - getTurnZeroPosition();
+		// } else {
+		// return (1 - getTurnZeroPosition()) + currentPos;
+		// }
 	}
 
 	public double getTurnAngle() {
@@ -233,57 +239,107 @@ public class Module {
 		double currentTurnPosition = getTurnRelativePosition(); // 0 to 1 of our current position
 		double oppositeTurnPosition = (requestedTurnPosition + 0.5) % 1.0;
 
-		if (optimizeTurn) {
-			if (Math.abs(currentTurnPosition - requestedTurnPosition) > .5)
-				distanceToRequestedPosition = 1 - (Math.abs(currentTurnPosition - requestedTurnPosition));
-			else
-				distanceToRequestedPosition = Math.abs(currentTurnPosition - requestedTurnPosition);
+		optimizeTurn = false;
+		boolean useOldCode = true;
 
-			if (Math.abs(currentTurnPosition - oppositeTurnPosition) > .5)
-				distanceToOppositePosition = 1 - (Math.abs(currentTurnPosition - oppositeTurnPosition));
-			else
-				distanceToOppositePosition = Math.abs(currentTurnPosition - oppositeTurnPosition);
+		if (useOldCode) {
+			double base = getTurnRotations() * FULL_ROTATION_TICKS;
+			if (getTurnEncoderValue() >= 0) {
+				if ((base + (requestedTurnPosition * FULL_ROTATION_TICKS))
+						- getTurnRelativePosition() < -FULL_ROTATION_TICKS / 2) {
+					base += FULL_ROTATION_TICKS;
+				} else if ((base + (requestedTurnPosition * FULL_ROTATION_TICKS))
+						- getTurnRelativePosition() > FULL_ROTATION_TICKS / 2) {
+					base -= FULL_ROTATION_TICKS;
+				}
+				turnMotor.set(ControlMode.Position, (((requestedTurnPosition * FULL_ROTATION_TICKS) + (base))));
+			} else {
+				if ((base - ((1 - requestedTurnPosition) * FULL_ROTATION_TICKS))
+						- getTurnRelativePosition() < -FULL_ROTATION_TICKS / 2) {
+					base += FULL_ROTATION_TICKS;
+				} else if ((base - ((1 - requestedTurnPosition) * FULL_ROTATION_TICKS))
+						- getTurnRelativePosition() > FULL_ROTATION_TICKS / 2) {
+					base -= FULL_ROTATION_TICKS;
+				}
+				turnMotor.set(ControlMode.Position, (base - (((1 - requestedTurnPosition) * FULL_ROTATION_TICKS))));
+				if (mModuleID == 'B') {
+					SmartDashboard.putBoolean("MOD New Code", !useOldCode);
+				}
 
-			// see which turn position is closest to where we are.
-			closestTurnPosition = distanceToOppositePosition < distanceToRequestedPosition ? oppositeTurnPosition
-					: requestedTurnPosition;
+			}
 		} else {
-			closestTurnPosition = requestedTurnPosition;
+			if (optimizeTurn) {
+				if (Math.abs(currentTurnPosition - requestedTurnPosition) > .5)
+					distanceToRequestedPosition = 1 - (Math.abs(currentTurnPosition - requestedTurnPosition));
+				else
+					distanceToRequestedPosition = Math.abs(currentTurnPosition - requestedTurnPosition);
+
+				if (Math.abs(currentTurnPosition - oppositeTurnPosition) > .5)
+					distanceToOppositePosition = 1 - (Math.abs(currentTurnPosition - oppositeTurnPosition));
+				else
+					distanceToOppositePosition = Math.abs(currentTurnPosition - oppositeTurnPosition);
+
+				// see which turn position is closest to where we are.
+				closestTurnPosition = distanceToOppositePosition < distanceToRequestedPosition ? oppositeTurnPosition
+						: requestedTurnPosition;
+			} else {
+				closestTurnPosition = requestedTurnPosition;
+			}
+
+			// if the closestTurnPosition is not the requested turn position, then we need
+			// the drive code to know to reverse itself when driving, so set the class level
+			// flag isReversed.
+			mIsReversed = closestTurnPosition != requestedTurnPosition;
+
+			// Now we need to take that "closest turn position", which indicates how far
+			// into one revolution we need to be, and figure out the relative encoder
+			// value to get there.
+			// The relative encoder value will have a value that could indicate many
+			// revolutions and therefore we need to figure out which revolution we're on,
+			// then add in the appropriate ticks to get to our desired position within that
+			// revolution. In some cases it will be shorter to unwind to the previous
+			// revolution. e.g. We're at rotation 3.1 and need to be at a .9 position,
+			// then it's better to go to 2.9 then 3.9.
+
+			// turnTicks will be the amount of ticks relative to our current position
+			// turnTicks is not optimized for direction yet. That's in the next part.
+			int turnTicks = (int) ((closestTurnPosition - currentTurnPosition) * FULL_ROTATION_TICKS);
+
+			// now see if we're better off rotating forward or backward to get to our
+			// desired position.
+			// newEncoderSetpoint = currentTurnEncoderTicks + turnTicks;
+			if (Math.abs(turnTicks) <= (FULL_ROTATION_TICKS / 2)) {
+				// we're within a half rotation, so we can simply add the ticks
+				// (which may also be negative) to the current encoder position
+				if (currentTurnEncoderTicks >= 0)
+					newEncoderSetpoint = currentTurnEncoderTicks + turnTicks;
+				else
+					newEncoderSetpoint = currentTurnEncoderTicks - turnTicks;
+			} else {
+				// we're turning more than half a rotation
+				// so we'll go back the other way instead
+				if (currentTurnEncoderTicks >= 0)
+					newEncoderSetpoint = currentTurnEncoderTicks - (FULL_ROTATION_TICKS - Math.abs(turnTicks));
+				else
+					newEncoderSetpoint = currentTurnEncoderTicks + (FULL_ROTATION_TICKS - Math.abs(turnTicks));
+			}
+
+			if (mModuleID == 'C') {
+				SmartDashboard.putNumber("MOD ABS", getTurnAbsolutePosition());
+				SmartDashboard.putNumber("MOD Cur Ticks", currentTurnEncoderTicks);
+				SmartDashboard.putNumber("MOD Cur TurnPos", currentTurnPosition);
+				SmartDashboard.putNumber("MOD ClosTurnPos", closestTurnPosition);
+				SmartDashboard.putNumber("MOD TurnTicks", turnTicks);
+				SmartDashboard.putNumber("MOD New Ticks", newEncoderSetpoint);
+				SmartDashboard.putBoolean("MOD Optimized", optimizeTurn);
+				SmartDashboard.putBoolean("MOD IsReversed", mIsReversed);
+				SmartDashboard.putBoolean("MOD New Code", !useOldCode);
+			}
+
+			// now send the new setpoint to the motor
+			turnMotor.set(ControlMode.Position, newEncoderSetpoint);
 		}
 
-		// if the closestTurnPosition is not the requested turn position, then we need
-		// the drive code to know to reverse itself when driving, so set the class level
-		// flag isReversed.
-		mIsReversed = closestTurnPosition != requestedTurnPosition;
-
-		// Now we need to take that "closest turn position", which indicates how far
-		// into one revolution we need to be, and figure out the relative encoder
-		// value to get there.
-		// The relative encoder value will have a value that could indicate many
-		// revolutions and therefore we need to figure out which revolution we're on,
-		// then add in the appropriate ticks to get to our desired position within that
-		// revolution.  In some cases it will be shorter to unwind to the previous
-		// revolution.  e.g. We're at rotation 3.1 and need to be at a .9 position, 
-		// then it's better to go to 2.9 then 3.9.
-
-		// turnTicks will be the amount of ticks relative to our current position
-		// turnTicks is not optimized for direction yet. That's in the next part. 
-		int turnTicks = (int)((closestTurnPosition - currentTurnPosition) * FULL_ROTATION_TICKS);
-	
-		// now see if we're better off rotating forward or backward to get to our
-		// desired position.
-		if (Math.abs(turnTicks) <= (FULL_ROTATION_TICKS / 2)) {
-			// we're within a half rotation, so we can simply add the ticks 
-			// (which may also be negative) to the current encoder position
-			newEncoderSetpoint = currentTurnEncoderTicks + turnTicks;
-		} else {
-			// we're turning more than half a rotation
-			// so we'll go back the other way instead
-			newEncoderSetpoint = currentTurnEncoderTicks - (FULL_ROTATION_TICKS - turnTicks);
-		}
-
-		// now send the new setpoint to the motor
-		turnMotor.set(ControlMode.Position, newEncoderSetpoint);
 	}
 
 	public double getTurnError() {
