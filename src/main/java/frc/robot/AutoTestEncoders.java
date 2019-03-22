@@ -21,10 +21,10 @@ public class AutoTestEncoders extends AutoBaseClass {
     public void start() {
         super.start(); 
 
-        moduleADriveInitial = DriveTrain.moduleA.getDriveEncoder();
-        moduleBDriveInitial = DriveTrain.moduleB.getDriveEncoder();
-        moduleCDriveInitial = DriveTrain.moduleC.getDriveEncoder();
-        moduleDDriveInitial = DriveTrain.moduleD.getDriveEncoder();
+        moduleADriveInitial = DriveTrain.moduleA.getDriveEnc();
+        moduleBDriveInitial = DriveTrain.moduleB.getDriveEnc();
+        moduleCDriveInitial = DriveTrain.moduleC.getDriveEnc();
+        moduleDDriveInitial = DriveTrain.moduleD.getDriveEnc();
         
         // Shuffleboard.getTab("Encoders").
         SmartDashboard.putBoolean("Encoders/moduleADrive", true);
@@ -49,19 +49,19 @@ public class AutoTestEncoders extends AutoBaseClass {
 	public void tick() {
 		if (isRunning()) {
             if (System.currentTimeMillis() > startTime + 2000) {
-                if (isAboutTheSame(DriveTrain.moduleA.getDriveEncoder(), moduleADriveInitial)) {
+                if (isAboutTheSame(DriveTrain.moduleA.getDriveEnc(), moduleADriveInitial)) {
                     SmartDashboard.putBoolean("Encoders/moduleADrive", false);
                     System.err.println("There may be an issue with the module A drive encoder.");
                 }
-                if (isAboutTheSame(DriveTrain.moduleB.getDriveEncoder(), moduleBDriveInitial)) {
+                if (isAboutTheSame(DriveTrain.moduleB.getDriveEnc(), moduleBDriveInitial)) {
                     SmartDashboard.putBoolean("Encoders/moduleBDrive", false);
                     System.err.println("There may be an issue with the module B drive encoder.");
                 }
-                if (isAboutTheSame(DriveTrain.moduleA.getDriveEncoder(), moduleCDriveInitial)) {
+                if (isAboutTheSame(DriveTrain.moduleA.getDriveEnc(), moduleCDriveInitial)) {
                     SmartDashboard.putBoolean("Encoders/moduleCDrive", false);
                     System.err.println("There may be an issue with the module C drive encoder.");
                 }
-                if (isAboutTheSame(DriveTrain.moduleA.getDriveEncoder(), moduleDDriveInitial)) {
+                if (isAboutTheSame(DriveTrain.moduleA.getDriveEnc(), moduleDDriveInitial)) {
                     SmartDashboard.putBoolean("Encoders/moduleDDrive", false);
                     System.err.println("There may be an issue with the module D drive encoder.");
                 }
