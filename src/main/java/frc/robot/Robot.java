@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
 			Manipulator.resetLinkage();
 			DriveTrain.allowTurnEncoderReset();
 			DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
-			DriveTrain.setAllTurnOrientation(0);
+			DriveTrain.setAllTurnOrientation(0, false);
 		}
 
 		// --------------------------------------------------
@@ -278,6 +278,9 @@ public class Robot extends TimedRobot {
 			double driveStrafeAxisAmount = -gamepad.getSwerveXAxis();
 			if (Math.abs(driveYAxisAmount) <= .2) // starfe adjust if not driving forward
 				driveStrafeAxisAmount = strafeAdjust(driveStrafeAxisAmount);
+			else
+				driveStrafeAxisAmount = driveStrafeAxisAmount * .75;
+				
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
 			if (gamepad.getRobotCentricModifier())

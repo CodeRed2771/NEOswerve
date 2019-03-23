@@ -340,7 +340,7 @@ public class DriveTrain implements PIDOutput {
 		if (getInstance() == null)
 			return;
 
-		if (!allowTurnEncoderReset) {
+		if (allowTurnEncoderReset) {
 			double modAOff = 0, modBOff = 0, modCOff = 0, modDOff = 0;
 
 			moduleA.setTurnPower(0);
@@ -365,7 +365,7 @@ public class DriveTrain implements PIDOutput {
 			moduleC.setEncPos((int) (calculatePositionDifference(modCOff, Calibration.GET_DT_C_ABS_ZERO()) * 4096d));
 			moduleD.setEncPos((int) (calculatePositionDifference(modDOff, Calibration.GET_DT_D_ABS_ZERO()) * 4096d));
 
-			allowTurnEncoderReset = true;
+			allowTurnEncoderReset = false;
 		}
 	}
 
