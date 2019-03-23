@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Module {
 	public WPI_TalonSRX drive, turn;
+	private char mModuleID;
 	private final double FULL_ROTATION = 4096d, TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
 	private final int TURN_IZONE, DRIVE_IZONE;
 	private double turnZeroPos = 0;
@@ -25,8 +26,9 @@ public class Module {
 	 * @param tD I probably need to know the D constant for the turning PID
 	 * @param tIZone I might not need to know the I Zone value for the turning PID
 	 */
-	public Module (int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos) {
+	public Module (int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos, char moduleID) {
 		drive = new WPI_TalonSRX(driveTalonID);
+		mModuleID = moduleID;
 		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
 		DRIVE_P = dP;
 		DRIVE_I = dI;

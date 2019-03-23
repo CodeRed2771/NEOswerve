@@ -90,7 +90,6 @@ public class Robot extends TimedRobot {
 		if (gamepad.getZeroGyro()) {
 			RobotGyro.reset();
 			Lift.resetLift();
-			Manipulator.bringFlipperUp();
 			Manipulator.resetLinkage();
 			DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
 			DriveTrain.setAllTurnOrientation(0);
@@ -274,7 +273,9 @@ public class Robot extends TimedRobot {
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
 			double driveYAxisAmount = gamepad.getSwerveYAxis();
-			double driveStrafeAxisAmount = strafeAdjust(-gamepad.getSwerveXAxis());
+			double driveStrafeAxisAmount = -gamepad.getSwerveXAxis();
+			if (Math.abs(driveYAxisAmount) <= .2) // starfe adjust if not driving forward
+				driveStrafeAxisAmount = strafeAdjust(driveStrafeAxisAmount);
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
 			if (gamepad.getRobotCentricModifier())
@@ -423,11 +424,11 @@ public class Robot extends TimedRobot {
 		if (Math.abs(strafeAmt) < .1) {
 			adjustedAmt = 0;
 		} else {
-			if (Math.abs(strafeAmt) < .4) {
-				adjustedAmt = .2 * Math.signum(strafeAmt);
+			if (Math.abs(strafeAmt) < .7) {
+				adjustedAmt = .5 * strafeAmt; // .2 * Math.signum(strafeAmt);
 			} else {
-				if (Math.abs(strafeAmt) < .95) {
-					adjustedAmt = .5 * Math.signum(strafeAmt);
+				if (Math.abs(strafeAmt) < .98) {
+					adjustedAmt = .75 * strafeAmt; // .4 * Math.signum(strafeAmt);
 				} else {
 					adjustedAmt = strafeAmt;
 				}
