@@ -445,7 +445,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void disabledInit() {
-		// DriveTrain.allowTurnEncoderReset(); // allows the turn encoders to be
+		DriveTrain.allowTurnEncoderReset(); // allows the turn encoders to be
 											// reset once during disabled
 											// periodic
 		DriveTrain.resetDriveEncoders();
@@ -453,7 +453,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void disabledPeriodic() {
-		// DriveTrain.resetTurnEncoders(); // happens only once because a flag
+		DriveTrain.resetTurnEncoders(); // happens only once because a flag
 										// prevents multiple calls
 		DriveTrain.disablePID();
 
