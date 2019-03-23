@@ -123,15 +123,15 @@ public class DriveTrain implements PIDOutput {
 		// where in the rotation of the module the wheel should be set.
 		// e.g. a value of .5 indicates a half turn from the zero position
 
-		// moduleA.setTurnOrientation(modAPosition, optimizeTurn);
-		// moduleB.setTurnOrientation(modBPosition, optimizeTurn);
-		// moduleC.setTurnOrientation(modCPosition, optimizeTurn);
-		// moduleD.setTurnOrientation(modDPosition, optimizeTurn);
+		moduleA.setTurnOrientation(modAPosition, optimizeTurn);
+		moduleB.setTurnOrientation(modBPosition, optimizeTurn);
+		moduleC.setTurnOrientation(modCPosition, optimizeTurn);
+		moduleD.setTurnOrientation(modDPosition, optimizeTurn);
 
-		moduleA.setTurnOrientation(modAPosition);
-		moduleB.setTurnOrientation(modBPosition);
-		moduleC.setTurnOrientation(modCPosition);
-		moduleD.setTurnOrientation(modDPosition);
+		// moduleA.setTurnOrientation(modAPosition);
+		// moduleB.setTurnOrientation(modBPosition);
+		// moduleC.setTurnOrientation(modCPosition);
+		// moduleD.setTurnOrientation(modDPosition);
 
 	}
 
@@ -347,7 +347,7 @@ public class DriveTrain implements PIDOutput {
 			moduleC.setTurnPower(0);
 			moduleB.setTurnPower(0);
 			moduleD.setTurnPower(0);
-
+			Timer.delay(.1);
 			// first find the current absolute position of the turn encoders
 			modAOff = DriveTrain.moduleA.getTurnAbsolutePosition();
 			modBOff = DriveTrain.moduleB.getTurnAbsolutePosition();
@@ -456,7 +456,7 @@ public class DriveTrain implements PIDOutput {
 		// SmartDashboard.putNumber("swerve fwd", fwd);
 		// SmartDashboard.putNumber("ws1", ws1);
 
-		DriveTrain.setTurnOrientation(angleToPosition(wa4), angleToPosition(wa2), angleToPosition(wa1), angleToPosition(wa3), false);
+		DriveTrain.setTurnOrientation(angleToPosition(wa4), angleToPosition(wa2), angleToPosition(wa1), angleToPosition(wa3), true);
 		DriveTrain.setDrivePower(ws4, ws2, ws1, ws3);
 	}
 
@@ -473,6 +473,11 @@ public class DriveTrain implements PIDOutput {
 		SmartDashboard.putNumber("TURN B RAW", round(moduleB.getTurnAbsolutePosition(), 3));
 		SmartDashboard.putNumber("TURN C RAW", round(moduleC.getTurnAbsolutePosition(), 3));
 		SmartDashboard.putNumber("TURN D RAW", round(moduleD.getTurnAbsolutePosition(), 3));
+
+		SmartDashboard.putNumber("TURN A ENC", round(moduleA.getTurnRelativePosition(), 3));
+		SmartDashboard.putNumber("TURN B ENC", round(moduleB.getTurnRelativePosition(), 3));
+		SmartDashboard.putNumber("TURN C ENC", round(moduleC.getTurnRelativePosition(), 3));
+		SmartDashboard.putNumber("TURN D ENC", round(moduleD.getTurnRelativePosition(), 3));
 
 		SmartDashboard.putNumber("TURN A POS", round(moduleA.getTurnPosition(), 2));
 		SmartDashboard.putNumber("TURN B POS", round(moduleB.getTurnPosition(), 2));

@@ -11,18 +11,10 @@ public class DriveAuto {
 	private static PIDController rotDrivePID;
 
 	private static boolean isDriving = false;
-	private static boolean isTurning = false;
 	private static boolean followingTarget = false;
 
 	private static double heading = 0; // keeps track of intended heading - used for driving "straight"
 	private static double strafeAngle = 0;
-
-	// variable to handle controlled turns
-	// private static double interimTurnSetpoint = 0;
-	// private static double finalTurnSetpoint = 0;
-	// private static double currentTurnSpeed = 0;
-	// private static double maxTurnSpeed = 4; // max degrees per cycle (per 20ms)
-	// private static double maxTurnAccel = .04; // max increase in degrees per cycle
 
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
@@ -114,7 +106,6 @@ public class DriveAuto {
 		rotDrivePID.reset();
 		rotDrivePID.setSetpoint(0);
 		heading = RobotGyro.getAngle();
-		isTurning = false;
 		isDriving = false;
 	}
 
@@ -131,7 +122,6 @@ public class DriveAuto {
 	public static void stopTurning() {
 		rotDrivePID.setSetpoint(rotDrivePID.get());
 		rotDrivePID.disable();
-		isTurning = false;
 		DriveTrain.stopDriveAndTurnMotors();
 	}
 
@@ -140,58 +130,6 @@ public class DriveAuto {
 		// position. Otherwise they'd always be relative to 0
 		rotDrivePID.setSetpoint(RobotGyro.getAngle());
 	}
-
-	// public static void turnDegreesOLD(double degrees, double turnSpeedFactor) {
-	// // Turns using the Gyro, relative to the current position
-	// // Use "turnCompleted" method to determine when the turn is done
-	// // The PID controller for this sends a rotational value to the
-	// // standard swerve drive method to make the bot rotate
-
-	// isDriving = false;
-	// heading += degrees; // this is used later to help us drive straight
-	// // after rotating
-
-	// SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
-	// SmartDashboard.putNumber("ROT SETPOINT", rotDrivePID.getSetpoint() +
-	// degrees);
-
-	// rotDrivePID.setSetpoint(rotDrivePID.getSetpoint() + degrees);
-	// rotDrivePID.enable();
-	// setRotationalPowerOutput(turnSpeedFactor);
-
-	// try {
-	// Thread.sleep(100);
-	// } catch (InterruptedException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-
-	// OLD(Changed 2/16/2019 by CS and DVV)
-	// public static void turnDegrees(double degrees, double turnSpeedFactor) {
-	// // Turns using the Gyro, relative to the current position
-	// // Use "turnCompleted" method to determine when the turn is done
-	// // The PID controller for this sends a rotational value to the
-	// // standard swerve drive method to make the bot rotate
-
-	// stopDriving();
-
-	// isTurning = true;
-
-	// interimTurnSetpoint = heading; // should be our current position
-	// heading += degrees; // this is used later to help us drive straight
-	// // after rotating
-	// finalTurnSetpoint = heading;
-	// currentTurnSpeed = 0;
-
-	// SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
-	// SmartDashboard.putNumber("ROT SETPOINT", finalTurnSetpoint);
-
-	// setRotationalPowerOutput(turnSpeedFactor);
-	// rotDrivePID.setSetpoint(interimTurnSetpoint);
-
-	// rotDrivePID.enable(); // the setpoint will be updated in the tick() method
-	// }
 
 	public static double degreesToInches(double degrees) {
 		double inches = degrees / 3.47; 
@@ -206,9 +144,6 @@ public class DriveAuto {
 
 		stopDriving();
 
-		isTurning = true;
-
-		// interimTurnSetpoint = heading; // should be our current position
 		heading += degrees; // this is used later to help us drive straight after rotating
 
 		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
@@ -236,7 +171,6 @@ public class DriveAuto {
 	// }
 	//
 	public static void continuousDrive(double inches, double maxPower) {
-		isTurning = false;
 		setRotationalPowerOutput(maxPower);
 
 		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0),
@@ -246,12 +180,6 @@ public class DriveAuto {
 
 	public static void tick() {
 		// this is called roughly 50 times per second
-
-		// double cyclesToDecelerate = maxTurnSpeed / maxTurnAccel;
-		// double cyclesLeft = Math.abs(finalTurnSetpoint - interimTurnSetpoint) / maxTurnSpeed;
-
-		// maxTurnSpeed = SmartDashboard.getNumber("ROT Max Deg/Cycle", maxTurnSpeed);
-		// maxTurnAccel = SmartDashboard.getNumber("ROT Max Acc/Cycle", maxTurnAccel);
 
 		// try to keep target in center by adjusting module angles
 		double angleAdjust = 0;
@@ -263,43 +191,6 @@ public class DriveAuto {
 			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle + angleAdjust));
 			SmartDashboard.putNumber("DA Ang Adj", angleAdjust);
 		}
-
-		// if (isTurning) {
-		// 	if (cyclesLeft > cyclesToDecelerate) {
-		// 		// accelerate
-		// 		if (currentTurnSpeed < maxTurnSpeed) {
-		// 			currentTurnSpeed += maxTurnAccel;
-		// 			if (currentTurnSpeed > maxTurnSpeed)
-		// 				currentTurnSpeed = maxTurnSpeed;
-		// 		}
-		// 	} else {
-		// 		// decelerate, but no slower than the acceleration factor
-		// 		if (currentTurnSpeed > maxTurnAccel) {
-		// 			currentTurnSpeed -= maxTurnAccel;
-		// 			if (currentTurnSpeed < maxTurnAccel)
-		// 				currentTurnSpeed = maxTurnAccel;
-		// 		}
-		// 	}
-
-		// 	if (interimTurnSetpoint < finalTurnSetpoint) {
-		// 		// we're increasing towards the final point
-
-		// 		interimTurnSetpoint += currentTurnSpeed;
-
-		// 		// if we set the interim past the final, adjust it to final
-		// 		if (interimTurnSetpoint > finalTurnSetpoint)
-		// 			interimTurnSetpoint = finalTurnSetpoint;
-		// 	} else {
-		// 		// we're reversing towards the final point
-		// 		interimTurnSetpoint -= currentTurnSpeed;
-
-		// 		// if we set the interim past the final, adjust it to final
-		// 		if (interimTurnSetpoint < finalTurnSetpoint)
-		// 			interimTurnSetpoint = finalTurnSetpoint;
-		// 	}
-
-		// 	rotDrivePID.setSetpoint(interimTurnSetpoint);
-		// }
 
 		// SmartDashboard.putNumber("Cur Turn Speed", currentTurnSpeed);
 		// SmartDashboard.putNumber("Decel cycles", cyclesToDecelerate);

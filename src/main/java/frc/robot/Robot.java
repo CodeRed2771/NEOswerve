@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -62,7 +63,7 @@ public class Robot extends TimedRobot {
 
 		DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
 
-		SmartDashboard.putBoolean("Show Encoders", false);
+		SmartDashboard.putBoolean("Show Encoders", true);
 	}
 
 	@Override
@@ -91,6 +92,7 @@ public class Robot extends TimedRobot {
 			RobotGyro.reset();
 			Lift.resetLift();
 			Manipulator.resetLinkage();
+			DriveTrain.allowTurnEncoderReset();
 			DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
 			DriveTrain.setAllTurnOrientation(0);
 		}
@@ -380,7 +382,7 @@ public class Robot extends TimedRobot {
 		// SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		// SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
-		SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
+		// SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
 		SmartDashboard.putNumber("Gyro", round2(RobotGyro.getAngle()));
 
@@ -451,13 +453,12 @@ public class Robot extends TimedRobot {
 											// periodic
 		DriveTrain.resetDriveEncoders();
 
+		DriveTrain.disablePID();
 	}
 
 	public void disabledPeriodic() {
 		DriveTrain.resetTurnEncoders(); // happens only once because a flag
 										// prevents multiple calls
-		DriveTrain.disablePID();
-
 		showDashboardInfo();
 	}
 
