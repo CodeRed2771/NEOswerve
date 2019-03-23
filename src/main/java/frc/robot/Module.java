@@ -28,6 +28,7 @@ public class Module {
 	 */
 	public Module (int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI, double tD, int tIZone, double tZeroPos, char moduleID) {
 		drive = new WPI_TalonSRX(driveTalonID);
+		drive.configFactoryDefault(10);
 		mModuleID = moduleID;
 		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
 		DRIVE_P = dP;
@@ -49,6 +50,8 @@ public class Module {
 		drive.setSensorPhase(true);
 		
 		turn = new WPI_TalonSRX(turnTalonID);
+		turn.configFactoryDefault(10);
+
 		turnZeroPos = tZeroPos;
 		
 		turn.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,0,0); // ?? don't know if zeros are right
@@ -115,7 +118,7 @@ public class Module {
 	 * @return turn encoder absolute position
 	 */
 	public double getTurnAbsolutePosition() {
-		return (turn.getSensorCollection().getPulseWidthPosition() & 0xFFF)/4095d;
+		return (turn.getSensorCollection().getPulseWidthPosition() & 0xFFF)/4096d;
 	}
 	
 	public double getTurnPosition() {
