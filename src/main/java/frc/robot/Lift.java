@@ -29,9 +29,11 @@ public class Lift {
 
 	public Lift() {
 		liftMotor = new TalonSRX(Wiring.LIFT_MASTER);
+		liftMotor.configFactoryDefault(10);
 		liftMotor.setInverted(false);
 
 		liftFollowMotor = new TalonSRX(Wiring.LIFT_FOLLLOWER);
+		liftFollowMotor.configFactoryDefault(10);
 		liftFollowMotor.follow(liftMotor);
 		liftFollowMotor.setInverted(false);
 

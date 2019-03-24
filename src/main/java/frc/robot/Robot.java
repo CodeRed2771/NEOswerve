@@ -127,9 +127,6 @@ public class Robot extends TimedRobot {
 		if (gamepad.activateHatchIntake()) {
 			Manipulator.intakeHatch();
 		}
-		if (gamepad.activateHatchFloorIntake()) {
-			Manipulator.intakeHatchFloor();
-		}
 		if (gamepad.ejectGamePiece()) {
 			Manipulator.ejectGamePiece();
 		}
@@ -150,7 +147,7 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
-			Manipulator.lowerFlipper();
+			Manipulator.fingerUp();
 		}
 		if (gamepad.goToLvl1()) {
 			Manipulator.setLinkageForPlacement();

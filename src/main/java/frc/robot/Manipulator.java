@@ -18,7 +18,7 @@ public class Manipulator { // Should be changed to Manipulator.
     private static CurrentBreaker currentBreaker;
     private static CurrentBreaker linkageCurrentBreaker;
     private static TalonSRX linkage;
-    private static DoubleSolenoid flipper; // I know this is a dumb name. Sorry :)
+    private static DoubleSolenoid finger; 
     private static DigitalInput limitSwitch;
 
     private static boolean linkageEncoderSet = false;
@@ -62,7 +62,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
         manipulator.setNeutralMode(NeutralMode.Brake);
 
-        flipper = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
+        finger = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
 
         currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 1000);
         
@@ -144,8 +144,6 @@ public class Manipulator { // Should be changed to Manipulator.
             holdCargo();
         } else if (!limitSwitch.get() && manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
-        } else if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_HATCH_FLOOR) {
-            holdHatchFloor();
         }
 
         // this turns off the intake a little while after starting an eject
@@ -184,11 +182,10 @@ public class Manipulator { // Should be changed to Manipulator.
             linkageIsDown = true;
             // linkage.set(ControlMode.MotionMagic, -900);
         }
-        lowerFlipper();
     }
 
     public static void linkageUp(){
-        bringFlipperUp();
+        fingerUp();
         if (linkageIsDown) {
             linkage.set(ControlMode.Position, 0);
             linkageIsDown = false;
@@ -204,7 +201,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void intakeCargo() {
         linkageDown();
-        lowerFlipper();
+        fingerUp();
         Lift.goToStart();
 
         manipulatorState = ManipulatorState.GETTING_CARGO;
@@ -217,47 +214,35 @@ public class Manipulator { // Should be changed to Manipulator.
     public static void prepareToGetHatchFromFeeder() {
         linkageDown();
         manipulator.set(ControlMode.PercentOutput, -1);
-        lowerFlipper();
+        fingerDown();
         Lift.goHatchLvl1();
     }
 
     public static void intakeHatch() {
         Lift.getHatchPanel();
-        
+        fingerDown();
         manipulatorState = ManipulatorState.GETTING_HATCH;
     }
 
-    public static void intakeHatchFloor() {
-        linkageDown();
-        lowerFlipper();
-        Lift.goToStart();
-
-        manipulatorState = ManipulatorState.GETTING_HATCH_FLOOR;
-        manipulator.set(ControlMode.PercentOutput, 1);
-
-        resetIntakeStallDetector();
-        ejectEndTime = aDistantFutureTime();
+    public static void fingerUp() {
+        finger.set(Value.kReverse);
     }
 
-    public static void lowerFlipper() {
-        flipper.set(Value.kForward);
-    }
-
-    public static void bringFlipperUp() {
-        flipper.set(Value.kReverse);
+    public static void fingerDown() {
+        finger.set(Value.kForward);
     }
 
     private static void holdCargo() {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         resetIntakeStallDetector();
         // linkageUp();
-        manipulator.set(ControlMode.PercentOutput, -.30); // was .25 3-16 3:40pm
+        manipulator.set(ControlMode.PercentOutput, -.30);
     }
 
     private static void holdHatch() {
         manipulatorState = ManipulatorState.HOLDING_HATCH;
-        manipulator.set(ControlMode.PercentOutput, -.25);
-        // linkageUp();
+        manipulator.set(ControlMode.PercentOutput, 0);
+        fingerUp();
     }
 
     public static boolean isHoldingCargo() {
@@ -270,22 +255,12 @@ public class Manipulator { // Should be changed to Manipulator.
         return manipulatorState == ManipulatorState.HOLDING_HATCH;
     }
 
-    private static void holdHatchFloor() {
-        manipulatorState = ManipulatorState.HOLDING_HATCH_FLOOR;
-        manipulator.set(ControlMode.PercentOutput, .15);
-        resetIntakeStallDetector();
-        Lift.goHatchLvl1();
-        bringFlipperUp();
-    }
-
     public static void holdGamePieceOverride() {
         if (manipulatorState == ManipulatorState.GETTING_CARGO) {
             holdCargo();
         } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
-        } else if (manipulatorState == ManipulatorState.GETTING_HATCH_FLOOR) {
-            holdHatchFloor();
-        }
+        } 
     }
 
     public static void ejectGamePiece() {
@@ -316,7 +291,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void setLinkageForPlacement() {
         linkageDown();
-        lowerFlipper();
+        fingerDown();
     }
 
     public static void stopIntake() {
