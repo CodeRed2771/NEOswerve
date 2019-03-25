@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Module {
 	public WPI_TalonSRX drive, turn;
 	private char mModuleID;
-	private final double FULL_ROTATION = 4096d, TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
+	private final int FULL_ROTATION = 4096;
+	private double TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
 	private final int TURN_IZONE, DRIVE_IZONE;
 	private double turnZeroPos = 0;
 	private double currentDriveSetpoint = 0;
@@ -233,7 +234,7 @@ public class Module {
 	 * @param position orientation to set to
 	 */
 	public void setTurnOrientation(double position, boolean optimize) {
-		double base = getTurnRotations() * FULL_ROTATION;
+		int base = getTurnRotations() * FULL_ROTATION;
 		double currentTurnPosition = getTurnPosition();
 		double reverseTurnPosition = (position + 0.5) % 1.0;
 		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
@@ -263,12 +264,18 @@ public class Module {
 					/ 2) {
 				base -= FULL_ROTATION;
 			}
+			showDetailsOnDash(base, turnRelativePosition, position, closestTurnPosition, optimize, (int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 			turn.set(ControlMode.Position, (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 		}
 	}
 
-	private void showDetailsOnDash(double base, int turnRelative) {
-
+	private void showDetailsOnDash(int base, int turnRelative, double requestedPosition, double closestTurn, boolean optimize, int newSetpoint) {
+		SmartDashboard.putNumber("MOD Base", base);
+		SmartDashboard.putNumber("MOD turnRel", turnRelative);
+		SmartDashboard.putNumber("MOD req pos", requestedPosition);
+		SmartDashboard.putNumber("MOD closest", closestTurn);
+		SmartDashboard.putNumber("MOD new set", newSetpoint);
+		SmartDashboard.putBoolean("MOD optimize", optimize);
 	}
 
 	public double getTurnError() {
