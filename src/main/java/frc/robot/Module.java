@@ -117,7 +117,7 @@ public class Module {
 	 * 
 	 * @return turn encoder position
 	 */
-	public double getTurnRelativePosition() {
+	public int getTurnRelativePosition() {
 		return turn.getSelectedSensorPosition(0);
 	}
 
@@ -239,6 +239,8 @@ public class Module {
 		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
 		double disntanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
 		double closestTurnPosition = 0;
+		int turnRelativePosition = getTurnRelativePosition();
+
 		if (optimize) {
 			closestTurnPosition = disntanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
 					: position;
@@ -247,22 +249,26 @@ public class Module {
 
 		isReversed = closestTurnPosition != position;
 
-		if (getTurnRelativePosition() >= 0) {
-			if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION / 2) {
+		if (turnRelativePosition >= 0) {
+			if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
 				base += FULL_ROTATION;
-			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION / 2) {
+			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition > FULL_ROTATION / 2) {
 				base -= FULL_ROTATION;
 			}
 			turn.set(ControlMode.Position, (((closestTurnPosition * FULL_ROTATION) + (base))));
 		} else {
-			if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - getTurnRelativePosition() < -FULL_ROTATION / 2) {
+			if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
 				base += FULL_ROTATION;
-			} else if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - getTurnRelativePosition() > FULL_ROTATION
+			} else if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - turnRelativePosition > FULL_ROTATION
 					/ 2) {
 				base -= FULL_ROTATION;
 			}
 			turn.set(ControlMode.Position, (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 		}
+	}
+
+	private void showDetailsOnDash(double base, int turnRelative) {
+
 	}
 
 	public double getTurnError() {
