@@ -238,12 +238,12 @@ public class Module {
 		double currentTurnPosition = getTurnPosition();
 		double reverseTurnPosition = (position + 0.5) % 1.0;
 		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
-		double disntanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
+		double distanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
 		double closestTurnPosition = 0;
 		int turnRelativePosition = getTurnRelativePosition();
 
 		if (optimize) {
-			closestTurnPosition = disntanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
+			closestTurnPosition = distanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
 					: position;
 		} else
 			closestTurnPosition = position;
@@ -256,6 +256,7 @@ public class Module {
 			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition > FULL_ROTATION / 2) {
 				base -= FULL_ROTATION;
 			}
+			showDetailsOnDash(base, turnRelativePosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (((closestTurnPosition * FULL_ROTATION) + (base))));
 			turn.set(ControlMode.Position, (((closestTurnPosition * FULL_ROTATION) + (base))));
 		} else {
 			if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
@@ -264,18 +265,24 @@ public class Module {
 					/ 2) {
 				base -= FULL_ROTATION;
 			}
-			showDetailsOnDash(base, turnRelativePosition, position, closestTurnPosition, optimize, (int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
+			showDetailsOnDash(base, turnRelativePosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 			turn.set(ControlMode.Position, (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 		}
 	}
 
-	private void showDetailsOnDash(int base, int turnRelative, double requestedPosition, double closestTurn, boolean optimize, int newSetpoint) {
+	private void showDetailsOnDash(int base, int turnRelative, double requestedPosition, double reverseTurnPos, double distNormal, double distReverse, double closestTurn, boolean optimize, int newSetpoint) {
+		if (mModuleID=='B') {
 		SmartDashboard.putNumber("MOD Base", base);
 		SmartDashboard.putNumber("MOD turnRel", turnRelative);
 		SmartDashboard.putNumber("MOD req pos", requestedPosition);
+		SmartDashboard.putNumber("MOD revPos", reverseTurnPos);
+		SmartDashboard.putNumber("MOD distnorm", distNormal);
+		SmartDashboard.putNumber("MOD distrev", distReverse);
+		SmartDashboard.putBoolean("MOD reversed", isReversed);
 		SmartDashboard.putNumber("MOD closest", closestTurn);
 		SmartDashboard.putNumber("MOD new set", newSetpoint);
 		SmartDashboard.putBoolean("MOD optimize", optimize);
+		}
 	}
 
 	public double getTurnError() {
