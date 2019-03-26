@@ -48,6 +48,7 @@ public class KeyMap {
     private final HID.Button intakeHatchFloor = LogitechF310.DPAD_RIGHT;
     private final HID.Button gamePieceOverride = LogitechF310.DPAD_DOWN;
     private final HID.Axis ejectGamePiece = LogitechF310.TRIGGER_RIGHT_AXIS;
+    private final HID.Button fingerUp = LogitechF310.START;
 
     // Hatch Placement
     private final HID.Button goToLvl1 = LogitechF310.A;
@@ -194,6 +195,10 @@ public class KeyMap {
 
     public double getClimbDrive() {
         return getHID(gamepad2).axis(manualClimbDrive);
+    }
+
+    public boolean getFingerUp() {
+        return getHID(gamepad2).button(fingerUp);
     }
 
     // public boolean driveOffPlatform() {

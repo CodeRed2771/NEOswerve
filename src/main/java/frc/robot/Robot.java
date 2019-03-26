@@ -154,8 +154,6 @@ public class Robot extends TimedRobot {
 			Manipulator.setLinkageForPlacement();
 			if (Manipulator.isHoldingCargo())
 				Lift.goCargoLvl1();
-			else if (Manipulator.isHoldingFloorHatch())
-				Lift.goHatchFloorLvl1();
 			else
 				Lift.goHatchLvl1();
 		}
@@ -163,8 +161,6 @@ public class Robot extends TimedRobot {
 			Manipulator.setLinkageForPlacement();
 			if (Manipulator.isHoldingCargo())
 				Lift.goCargoLvl2();
-			else if (Manipulator.isHoldingFloorHatch())
-				Lift.goHatchFloorLvl2();
 			else
 				Lift.goHatchLvl2();
 		}
@@ -172,8 +168,6 @@ public class Robot extends TimedRobot {
 			Manipulator.setLinkageForPlacement();
 			if (Manipulator.isHoldingCargo())
 				Lift.goCargoLvl3();
-			else if (Manipulator.isHoldingFloorHatch())
-				Lift.goHatchFloorLvl3();
 			else
 				Lift.goHatchLvl3();
 		}
@@ -181,6 +175,10 @@ public class Robot extends TimedRobot {
 		if (gamepad.getCargoShipPlacement()) {
 			Manipulator.setLinkageForPlacement();
 			Lift.goCargoShipCargo();
+		}
+
+		if (gamepad.getFingerUp()) {
+			Manipulator.moveFingerUp();
 		}
 
 		// --------------------------------------------------

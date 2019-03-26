@@ -29,10 +29,10 @@ public class Manipulator { // Should be changed to Manipulator.
         INACTIVE,
         GETTING_CARGO,
         GETTING_HATCH,
-        GETTING_HATCH_FLOOR,
+        // GETTING_HATCH_FLOOR,
         HOLDING_CARGO,
         HOLDING_HATCH,
-        HOLDING_HATCH_FLOOR,
+        // HOLDING_HATCH_FLOOR,
     }
 
     private static ManipulatorState manipulatorState;
@@ -264,9 +264,9 @@ public class Manipulator { // Should be changed to Manipulator.
     public static boolean isHoldingCargo() {
         return manipulatorState == ManipulatorState.HOLDING_CARGO;
     }
-    public static boolean isHoldingFloorHatch() {
-        return manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR;
-    }
+    // public static boolean isHoldingFloorHatch() {
+    //     return manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR;
+    // }
     public static boolean isHoldingHatch() {
         return manipulatorState == ManipulatorState.HOLDING_HATCH;
     }
@@ -276,6 +276,7 @@ public class Manipulator { // Should be changed to Manipulator.
             holdCargo();
         } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
+            moveFingerUp();
         } 
     }
 
