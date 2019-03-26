@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
 
 		RobotGyro.reset();
 
+		DriveTrain.allowTurnEncoderReset();
 		DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
 
 		SmartDashboard.putBoolean("Show Encoders", true);
