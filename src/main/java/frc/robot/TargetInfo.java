@@ -37,29 +37,49 @@ public class TargetInfo {
         if (targetType == TargetType.ROCKET_TARGET) {
             if (Manipulator.isHoldingCargo()) {
                 if (currentGyroAngle > -10 && currentGyroAngle < -170) {
+                    System.out.println("Holding Cargo, returning -90, current gyro angle: " + currentGyroAngle);
                     return -90;
                 } else {
+                    System.out.println("Holding Cargo, returning 90, current gyro angle: " + currentGyroAngle);
                     return 90;
                 }
             } else {
-                if (currentGyroAngle > -80 && currentGyroAngle < -10)
+                if (currentGyroAngle > -80 && currentGyroAngle < -10){
+                    System.out.println("Holding Hatch, returning -30, current gyro angle: " + currentGyroAngle);
                     return -30;
-                else if (currentGyroAngle > -170 && currentGyroAngle < -100)
+                } 
+                else if (currentGyroAngle > -170 && currentGyroAngle < -100){
+                    System.out.println("Holding Hatch, returning -150, current gyro angle: " + currentGyroAngle);
                     return -150;
-                else if (currentGyroAngle > 100 && currentGyroAngle < 170)
+                }
+                    
+                else if (currentGyroAngle > 100 && currentGyroAngle < 170){
+                    System.out.println("Holding Hatch, returning 150, current gyro angle: " + currentGyroAngle);
                     return 150;
-                else
+                }
+
+                else {
+                    System.out.println("Holding Hatch, returning 30, current gyro angle: " + currentGyroAngle);
                     return 30;
+                }
             }
         }
         else if (targetType == TargetType.SHIP_TARGET) {
-            if (currentGyroAngle > -30 && currentGyroAngle < -170)
+            if (currentGyroAngle > -30 && currentGyroAngle < -170){
+                System.out.println("Cargo Ship, Returning -90, current gyro angle: " + currentGyroAngle);
                 return -90;
-            else if (currentGyroAngle > 30 && currentGyroAngle < 170) 
+            }
+            else if (currentGyroAngle > 30 && currentGyroAngle < 170) {
+                System.out.println("Cargo Ship, Returning 90, current gyro angle: " + currentGyroAngle);
                 return 90;
-            else 
-                return 0;          
-        } else if (targetType == TargetType.FEEDER_TARGET){
+            }
+            else { 
+                System.out.println("Cargo Ship, Returning 0, current gyro angle: " + currentGyroAngle);
+                return 0;
+            }   
+
+        } else {
+            System.out.println("Feeder Station, Returning 180, current gyro angle: " + currentGyroAngle);
             return 180;
         }
 
