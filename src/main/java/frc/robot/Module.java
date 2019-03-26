@@ -246,15 +246,15 @@ public class Module {
 		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
 		double distanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
 
-		// if (currentTurnPosition - position >= 0)
-		// 	distanceToNormalPosition = currentTurnPosition - position;
-		// else	
-		// 	distanceToNormalPosition = (1 - position) + currentTurnPosition;
+		if (currentTurnPosition - position >= 0)
+			distanceToNormalPosition = currentTurnPosition - position;
+		else	
+			distanceToNormalPosition = (1 - position) + currentTurnPosition;
 		
-		// if (currentTurnPosition - reverseTurnPosition >= 0) 
-		// 	distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
-		// else  
-		// 	distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
+		if (currentTurnPosition - reverseTurnPosition >= 0) 
+			distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
+		else  
+			distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
 
 		if (optimize) {
 			closestTurnPosition = distanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
@@ -286,6 +286,7 @@ public class Module {
 
 	private void showDetailsOnDash(int base, int turnRelative, double currentTurnPosition, double requestedPosition, double reverseTurnPos, double distNormal, double distReverse, double closestTurn, boolean optimize, int newSetpoint) {
 		if (mModuleID=='B') {
+		System.out.println("CurrentTurn: " + currentTurnPosition + " Req Pos: " + requestedPosition + " dist Norm: " + distNormal + " dist Rev: " + distReverse );
 		SmartDashboard.putNumber("AAA Base", base);
 		SmartDashboard.putNumber("AAA turnRel", turnRelative);
 		SmartDashboard.putNumber("AAA req pos", requestedPosition);
