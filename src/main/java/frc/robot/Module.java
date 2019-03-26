@@ -239,20 +239,22 @@ public class Module {
 		int base = getTurnRotations() * FULL_ROTATION;
 		double currentTurnPosition = getTurnPosition();
 		double reverseTurnPosition = (position + 0.5) % 1.0;
-		double distanceToNormalPosition;
-		double distanceToReversePosition;
+		// double distanceToNormalPosition;
+		// double distanceToReversePosition;
 		double closestTurnPosition = 0;
 		int turnRelativePosition = getTurnRelativePosition();
+		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
+		double distanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
+
+		// if (currentTurnPosition - position >= 0)
+		// 	distanceToNormalPosition = currentTurnPosition - position;
+		// else	
+		// 	distanceToNormalPosition = (1 - position) + currentTurnPosition;
 		
-		if (currentTurnPosition - position >= 0)
-			distanceToNormalPosition = currentTurnPosition - position;
-		else	
-			distanceToNormalPosition = (1 - position) + currentTurnPosition;
-		
-		if (currentTurnPosition - reverseTurnPosition >= 0) 
-			distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
-		else  
-			distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
+		// if (currentTurnPosition - reverseTurnPosition >= 0) 
+		// 	distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
+		// else  
+		// 	distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
 
 		if (optimize) {
 			closestTurnPosition = distanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
