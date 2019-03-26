@@ -308,7 +308,6 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void setLinkageForPlacement() {
         linkageDown();
-        moveFingerDown();
     }
 
     public static void stopIntake() {
