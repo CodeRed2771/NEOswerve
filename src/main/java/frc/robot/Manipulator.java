@@ -185,7 +185,7 @@ public class Manipulator { // Should be changed to Manipulator.
     }
 
     public static void linkageUp(){
-        fingerUp();
+        moveFingerUp();
         if (linkageIsDown) {
             linkage.set(ControlMode.Position, 0);
             linkageIsDown = false;
@@ -201,7 +201,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void intakeCargo() {
         linkageDown();
-        fingerUp();
+        moveFingerUp();
         Lift.goToStart();
 
         manipulatorState = ManipulatorState.GETTING_CARGO;
@@ -214,22 +214,38 @@ public class Manipulator { // Should be changed to Manipulator.
     public static void prepareToGetHatchFromFeeder() {
         linkageDown();
         manipulator.set(ControlMode.PercentOutput, -1);
-        fingerDown();
+        moveFingerDown();
         Lift.goHatchLvl1();
     }
 
     public static void intakeHatch() {
         Lift.getHatchPanel();
-        fingerDown();
+        moveFingerDown();
         manipulatorState = ManipulatorState.GETTING_HATCH;
     }
 
-    public static void fingerUp() {
+    public static void moveFingerUp() {
         finger.set(Value.kReverse);
     }
 
-    public static void fingerDown() {
+    public static void moveFingerDown() {
         finger.set(Value.kForward);
+    }
+
+    public static DoubleSolenoid.Value fingerUp() {
+        return Value.kReverse;
+    }
+
+    public static DoubleSolenoid.Value fingerDown() {
+        return Value.kForward;
+    }
+
+    public static void moveFinger() {
+        if (finger.get() == fingerDown()) {
+            moveFingerUp();
+        } else if (finger.get()  == fingerUp()) {
+            moveFingerDown();
+        }
     }
 
     private static void holdCargo() {
@@ -242,7 +258,7 @@ public class Manipulator { // Should be changed to Manipulator.
     private static void holdHatch() {
         manipulatorState = ManipulatorState.HOLDING_HATCH;
         manipulator.set(ControlMode.PercentOutput, 0);
-        fingerUp();
+        moveFingerUp();
     }
 
     public static boolean isHoldingCargo() {
@@ -270,11 +286,11 @@ public class Manipulator { // Should be changed to Manipulator.
         if (state == ManipulatorState.HOLDING_CARGO) {
             manipulator.set(ControlMode.PercentOutput, 1);
         } else if (state == ManipulatorState.HOLDING_HATCH) {
-            Lift.scoreHatchPanel();
-        } else if (state == ManipulatorState.HOLDING_HATCH_FLOOR) {
-            manipulator.set(ControlMode.PercentOutput, -.75);
-            Lift.scoreHatchPanel();
-        }
+            moveFingerDown();
+        } //   else if (state == ManipulatorState.HOLDING_HATCH_FLOOR) {
+        //     manipulator.set(ControlMode.PercentOutput, -.75);
+        //     Lift.scoreHatchPanel();
+        // }
 
         manipulatorState = ManipulatorState.INACTIVE;
         resetIntakeStallDetector();
@@ -291,7 +307,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void setLinkageForPlacement() {
         linkageDown();
-        fingerDown();
+        moveFingerDown();
     }
 
     public static void stopIntake() {
