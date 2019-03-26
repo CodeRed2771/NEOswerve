@@ -59,7 +59,7 @@ public class TargetInfo {
                 return 90;
             else 
                 return 0;          
-        } else {
+        } else if (targetType == TargetType.FEEDER_TARGET){
             return 180;
         }
 
