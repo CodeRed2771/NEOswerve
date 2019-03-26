@@ -3,11 +3,8 @@
 
 package frc.robot;
 
-import javax.lang.model.util.ElementScanner6;
-
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Module {
@@ -233,36 +230,47 @@ public class Module {
 	/**
 	 * Set turn to pos from 0 to 1 using PID
 	 * 
-	 * @param position orientation to set to
+	 * @param reqPosition orientation to set to
 	 */
-	public void setTurnOrientation(double position, boolean optimize) {
+	public void setTurnOrientation(double reqPosition, boolean optimize) {
 		int base = getTurnRotations() * FULL_ROTATION;
 		double currentTurnPosition = getTurnPosition();
-		double reverseTurnPosition = (position + 0.5) % 1.0;
-		// double distanceToNormalPosition;
-		// double distanceToReversePosition;
+		double reverseTurnPosition = (reqPosition + 0.5) % 1.0;
+		double distanceToNormalPosition;
+		double distanceToReversePosition;
 		double closestTurnPosition = 0;
 		int turnRelativePosition = getTurnRelativePosition();
-		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
-		double distanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
+		// double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
+		// double distanceToReversePosition = Math.abs(currentTurnPosition -
+		// reverseTurnPosition);
 
-		if (currentTurnPosition - position >= 0)
-			distanceToNormalPosition = currentTurnPosition - position;
-		else	
-			distanceToNormalPosition = (1 - position) + currentTurnPosition;
-		
-		if (currentTurnPosition - reverseTurnPosition >= 0) 
-			distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
-		else  
+		if (currentTurnPosition - reqPosition >= 0)
+			if (currentTurnPosition - reqPosition > .5)
+				distanceToNormalPosition = (1 - currentTurnPosition) + reqPosition;
+			else
+				distanceToNormalPosition = currentTurnPosition - reqPosition;
+		else if (reqPosition - currentTurnPosition > .5)
+			distanceToNormalPosition = (1 - reqPosition) + currentTurnPosition;
+		else
+			distanceToNormalPosition = reqPosition - currentTurnPosition;
+
+		if (currentTurnPosition - reverseTurnPosition >= 0)
+			if (currentTurnPosition - reverseTurnPosition > .5)
+				distanceToReversePosition = (1 - currentTurnPosition) + reverseTurnPosition;
+			else
+				distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
+		else if (reverseTurnPosition - currentTurnPosition > .5)
 			distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
+		else
+			distanceToReversePosition = reverseTurnPosition - currentTurnPosition;
 
 		if (optimize) {
 			closestTurnPosition = distanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
-					: position;
+					: reqPosition;
 		} else
-			closestTurnPosition = position;
+			closestTurnPosition = reqPosition;
 
-		isReversed = closestTurnPosition != position;
+		isReversed = closestTurnPosition != reqPosition;
 
 		if (turnRelativePosition >= 0) {
 			if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
@@ -270,7 +278,9 @@ public class Module {
 			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition > FULL_ROTATION / 2) {
 				base -= FULL_ROTATION;
 			}
-			showDetailsOnDash(base, turnRelativePosition, currentTurnPosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (((closestTurnPosition * FULL_ROTATION) + (base))));
+			// showDetailsOnDash(base, turnRelativePosition, currentTurnPosition, reqPosition, reverseTurnPosition,
+			// 		distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize,
+			// 		(int) (((closestTurnPosition * FULL_ROTATION) + (base))));
 			turn.set(ControlMode.Position, (((closestTurnPosition * FULL_ROTATION) + (base))));
 		} else {
 			if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
@@ -279,27 +289,32 @@ public class Module {
 					/ 2) {
 				base -= FULL_ROTATION;
 			}
-			showDetailsOnDash(base, turnRelativePosition, currentTurnPosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
+			// showDetailsOnDash(base, turnRelativePosition, currentTurnPosition, reqPosition, reverseTurnPosition,
+			// 		distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize,
+			// 		(int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 			turn.set(ControlMode.Position, (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 		}
 	}
 
-	private void showDetailsOnDash(int base, int turnRelative, double currentTurnPosition, double requestedPosition, double reverseTurnPos, double distNormal, double distReverse, double closestTurn, boolean optimize, int newSetpoint) {
-		if (mModuleID=='B') {
-		System.out.println("CurrentTurn: " + currentTurnPosition + " Req Pos: " + requestedPosition + " dist Norm: " + distNormal + " dist Rev: " + distReverse );
-		SmartDashboard.putNumber("AAA Base", base);
-		SmartDashboard.putNumber("AAA turnRel", turnRelative);
-		SmartDashboard.putNumber("AAA req pos", requestedPosition);
-		SmartDashboard.putNumber("AAA cur pos", currentTurnPosition);
-		SmartDashboard.putNumber("AAA revPos", reverseTurnPos);
-		SmartDashboard.putNumber("AAA distnorm", distNormal);
-		SmartDashboard.putNumber("AAA distrev", distReverse);
-		SmartDashboard.putBoolean("AAA reversed", isReversed);
-		SmartDashboard.putNumber("AAA closest", closestTurn);
-		SmartDashboard.putNumber("AAA new set", newSetpoint);
-		SmartDashboard.putBoolean("AAA optimize", optimize);
-		}
-	}
+	// private void showDetailsOnDash(int base, int turnRelative, double currentTurnPosition, double requestedPosition,
+	// 		double reverseTurnPos, double distNormal, double distReverse, double closestTurn, boolean optimize,
+	// 		int newSetpoint) {
+	// 	if (mModuleID == 'B') {
+	// 		System.out.println("CurrentTurn: " + currentTurnPosition + " Req Pos: " + requestedPosition + " dist Norm: "
+	// 				+ distNormal + " dist Rev: " + distReverse);
+	// 		SmartDashboard.putNumber("AAA Base", base);
+	// 		SmartDashboard.putNumber("AAA turnRel", turnRelative);
+	// 		SmartDashboard.putNumber("AAA req pos", requestedPosition);
+	// 		SmartDashboard.putNumber("AAA cur pos", currentTurnPosition);
+	// 		SmartDashboard.putNumber("AAA revPos", reverseTurnPos);
+	// 		SmartDashboard.putNumber("AAA distnorm", distNormal);
+	// 		SmartDashboard.putNumber("AAA distrev", distReverse);
+	// 		SmartDashboard.putBoolean("AAA reversed", isReversed);
+	// 		SmartDashboard.putNumber("AAA closest", closestTurn);
+	// 		SmartDashboard.putNumber("AAA new set", newSetpoint);
+	// 		SmartDashboard.putBoolean("AAA optimize", optimize);
+	// 	}
+	// }
 
 	public double getTurnError() {
 		return turn.getClosedLoopError(0);
