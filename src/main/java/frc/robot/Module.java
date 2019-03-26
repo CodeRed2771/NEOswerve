@@ -3,6 +3,8 @@
 
 package frc.robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -237,10 +239,20 @@ public class Module {
 		int base = getTurnRotations() * FULL_ROTATION;
 		double currentTurnPosition = getTurnPosition();
 		double reverseTurnPosition = (position + 0.5) % 1.0;
-		double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
-		double distanceToReversePosition = Math.abs(currentTurnPosition - reverseTurnPosition);
+		double distanceToNormalPosition;
+		double distanceToReversePosition;
 		double closestTurnPosition = 0;
 		int turnRelativePosition = getTurnRelativePosition();
+		
+		if (currentTurnPosition - position >= 0)
+			distanceToNormalPosition = currentTurnPosition - position;
+		else	
+			distanceToNormalPosition = (1 - position) + currentTurnPosition;
+		
+		if (currentTurnPosition - reverseTurnPosition >= 0) 
+			distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
+		else  
+			distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
 
 		if (optimize) {
 			closestTurnPosition = distanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
@@ -256,7 +268,7 @@ public class Module {
 			} else if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition > FULL_ROTATION / 2) {
 				base -= FULL_ROTATION;
 			}
-			showDetailsOnDash(base, turnRelativePosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (((closestTurnPosition * FULL_ROTATION) + (base))));
+			showDetailsOnDash(base, turnRelativePosition, currentTurnPosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (((closestTurnPosition * FULL_ROTATION) + (base))));
 			turn.set(ControlMode.Position, (((closestTurnPosition * FULL_ROTATION) + (base))));
 		} else {
 			if ((base - ((1 - closestTurnPosition) * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
@@ -265,23 +277,24 @@ public class Module {
 					/ 2) {
 				base -= FULL_ROTATION;
 			}
-			showDetailsOnDash(base, turnRelativePosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
+			showDetailsOnDash(base, turnRelativePosition, currentTurnPosition, position, reverseTurnPosition, distanceToNormalPosition, distanceToReversePosition, closestTurnPosition, optimize, (int) (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 			turn.set(ControlMode.Position, (base - (((1 - closestTurnPosition) * FULL_ROTATION))));
 		}
 	}
 
-	private void showDetailsOnDash(int base, int turnRelative, double requestedPosition, double reverseTurnPos, double distNormal, double distReverse, double closestTurn, boolean optimize, int newSetpoint) {
+	private void showDetailsOnDash(int base, int turnRelative, double currentTurnPosition, double requestedPosition, double reverseTurnPos, double distNormal, double distReverse, double closestTurn, boolean optimize, int newSetpoint) {
 		if (mModuleID=='B') {
-		SmartDashboard.putNumber("MOD Base", base);
-		SmartDashboard.putNumber("MOD turnRel", turnRelative);
-		SmartDashboard.putNumber("MOD req pos", requestedPosition);
-		SmartDashboard.putNumber("MOD revPos", reverseTurnPos);
-		SmartDashboard.putNumber("MOD distnorm", distNormal);
-		SmartDashboard.putNumber("MOD distrev", distReverse);
-		SmartDashboard.putBoolean("MOD reversed", isReversed);
-		SmartDashboard.putNumber("MOD closest", closestTurn);
-		SmartDashboard.putNumber("MOD new set", newSetpoint);
-		SmartDashboard.putBoolean("MOD optimize", optimize);
+		SmartDashboard.putNumber("AAA Base", base);
+		SmartDashboard.putNumber("AAA turnRel", turnRelative);
+		SmartDashboard.putNumber("AAA req pos", requestedPosition);
+		SmartDashboard.putNumber("AAA cur pos", currentTurnPosition);
+		SmartDashboard.putNumber("AAA revPos", reverseTurnPos);
+		SmartDashboard.putNumber("AAA distnorm", distNormal);
+		SmartDashboard.putNumber("AAA distrev", distReverse);
+		SmartDashboard.putBoolean("AAA reversed", isReversed);
+		SmartDashboard.putNumber("AAA closest", closestTurn);
+		SmartDashboard.putNumber("AAA new set", newSetpoint);
+		SmartDashboard.putBoolean("AAA optimize", optimize);
 		}
 	}
 
