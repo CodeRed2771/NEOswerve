@@ -38,14 +38,28 @@ public class RobotGyro implements PIDSource  {
 		return mGyro;
 	}
 
-	public static double getTiltDegrees() {
-		return mGyro.getYaw();
-	}
-	
+	/***
+	 * 
+	 * @return gyro angle
+	 * This angle can include multiple revolutions so if
+	 * the robot has rotated 3 1/2 times, it will return a 
+	 * value of 1260.
+	 * This is useful for turning but not as useful for 
+	 * figuring out which direction you're facing.
+	 * Use getRelativeAngle for that.
+	 */
 	public static double getAngle() {
 		if (getInstance() == null) return 0.0;
 		
 		return mGyro.getAngle();	
+	}
+
+	/***
+	 * 
+	 * @return gyro angle 0 to 360
+	 */
+	public static double getRelativeAngle() {
+		return getAngle() % 360;
 	}
 	
 	public static void reset() {
