@@ -284,10 +284,10 @@ public class Robot extends TimedRobot {
 			else
 				DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
 
-			// if (isTippingOver()) {
-			// System.out.print("ANTI-TIP CODE ACTIVATED");
+			if (isTippingOver()) {
+			System.out.print("ANTI-TIP CODE ACTIVATED - NO ACTION TAKEN THOUGH");
 			// Lift.goToStart(); // if we start tipping, bring the lift down
-			// }
+			}
 		}
 
 		// --------------------------------------------------
@@ -383,7 +383,8 @@ public class Robot extends TimedRobot {
 
 		// SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
 
-		SmartDashboard.putNumber("Gyro", round2(RobotGyro.getAngle()));
+		SmartDashboard.putNumber("Gyro Relative", round2(RobotGyro.getRelativeAngle()));
+		SmartDashboard.putNumber("Gyro Raw", round2(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Encoders", false)) {
 			DriveTrain.showTurnEncodersOnDash();
@@ -484,7 +485,7 @@ public class Robot extends TimedRobot {
 	}
 
 	private boolean isTippingOver() {
-		return RobotGyro.getTiltDegrees() > 5;
+		return Math.abs(RobotGyro.getGyro().getPitch()) > 10 || Math.abs(RobotGyro.getGyro().getRoll()) > 10;
 	}
 
 	// Is this used?
