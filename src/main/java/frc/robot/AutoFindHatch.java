@@ -18,7 +18,7 @@ public class AutoFindHatch extends AutoBaseClass {
     private double angleDiff;
     private double distToStayBack = 30;
     private double targetAngle = 0;
-    private boolean drivingAllowed = false;
+    private boolean drivingAllowed = true;
 
     public void start() {
         super.start();

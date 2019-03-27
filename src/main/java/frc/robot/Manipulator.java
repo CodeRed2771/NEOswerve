@@ -66,7 +66,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
         currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 750);
         
-        linkageCurrentBreaker = new CurrentBreaker(Wiring.LINKAGE_PDP_PORT, 20, 4000);
+        linkageCurrentBreaker = new CurrentBreaker(Wiring.LINKAGE_PDP_PORT, 20, 2000);
 
         resetIntakeStallDetector();
 
