@@ -111,12 +111,13 @@ public class Manipulator { // Should be changed to Manipulator.
 
     public static void tick() {
 
-        SmartDashboard.putNumber("Link Enc", linkage.getSensorCollection().getQuadraturePosition());
-        SmartDashboard.putNumber("Link Err", linkage.getClosedLoopError());
         SmartDashboard.putString("Man State", manipulatorState.toString());
 
         if (SmartDashboard.getBoolean("Link TUNE", false)) {
-			linkage.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Link Vel", 0), 10);
+            SmartDashboard.putNumber("Link Enc", linkage.getSensorCollection().getQuadraturePosition());
+            SmartDashboard.putNumber("Link Err", linkage.getClosedLoopError());
+   
+            linkage.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Link Vel", 0), 10);
 			linkage.configMotionAcceleration((int) SmartDashboard.getNumber("Link Accel", 0), 10);
 			linkage.config_kF(0, SmartDashboard.getNumber("Link F", 1.0), 10);
 			linkage.config_kP(0, SmartDashboard.getNumber("Link P", 1.0), 10);
@@ -133,7 +134,7 @@ public class Manipulator { // Should be changed to Manipulator.
 
 		if (linkageEncoderSetting && (System.currentTimeMillis() >= (linkageEncoderSettingStartTime + 1000))) {
 			linkage.getSensorCollection().setQuadraturePosition(0, 10);
-			linkage.set(ControlMode.PercentOutput, 10);
+			linkage.set(ControlMode.PercentOutput, 0);
 			linkageEncoderSetting = false;
             linkageEncoderSet = true;
             linkageIsDown = false;
