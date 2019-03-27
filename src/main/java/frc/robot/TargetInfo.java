@@ -32,7 +32,7 @@ public class TargetInfo {
     }
 
     public static double targetAngle(TargetType targetType) {
-        double currentGyroAngle = RobotGyro.getAngle();
+        double currentGyroAngle = RobotGyro.getRelativeAngle();
 
         if (targetType == TargetType.ROCKET_TARGET) {
             if (Manipulator.isHoldingCargo()) {
