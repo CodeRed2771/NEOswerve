@@ -99,32 +99,16 @@ public class Robot extends TimedRobot {
 		}
 
 		// --------------------------------------------------
-		// CLIMB
-		// --------------------------------------------------
-		// Manual controls
-		// if (gamepad.getSingleClimbRevolution()) {
-		// Climber.moveSetpoint(1);
-		// }
-		// if (gamepad.getSingleClimbReverseRevolution()) {
-		// Climber.moveSetpoint(-1);
-		// }
-		// Climber.setClimbDriveSpeed(gamepad.getClimbDrive());
-		// SmartDashboard.putNumber("Climber/driveSpeed", gamepad.getClimbDrive());
-		// --------------------------------------------------
 		// GAME PIECES
 		// --------------------------------------------------
 		if (gamepad.activateCargoIntake()) {
 			Manipulator.intakeCargo();
 		}
 
-		// Manipulator.linkageMove(gamepad.getRightStickY(2));
+		if (gamepad.turnIntakeOff()) {
+			Manipulator.stopIntake();
+		}
 
-		// if (gamepad.getButtonX(2)) {
-		// 	Manipulator.linkageDown();
-		// }
-		// if (gamepad.getButtonY(2)) {
-		// 	Manipulator.linkageUp();
-		// }
 		if (gamepad.activateHatchIntake()) {
 			Manipulator.intakeHatch();
 		}
@@ -191,12 +175,6 @@ public class Robot extends TimedRobot {
 			mAutoProgram.start();
 		}
 
-		// // DRIVE OFF PLATFORM
-		// if (gamepad.driveOffPlatform() && !mAutoProgram.isRunning()) {
-		// 	mAutoProgram = new AutoDriveOffPlatform();
-		// 	mAutoProgram.start(positionChooser.getSelected().toCharArray()[0]);
-		// }
-
 		// AUTO CLIMB
 		if (gamepad.getClimb()) {
 			mAutoProgram.stop();
@@ -237,24 +215,6 @@ public class Robot extends TimedRobot {
 			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
-
-		// TODO: MAKE FUNCTIONS FOR FIND SHIP AND FIND FEEDER STATION.
-
-		// temporary manual climb drive motor
-		// Controller 3 - Left Bumper, Left stick Y
-		// if (gamepad.getBumperLeft(2)) {
-		// Climber.manualDrive(gamepad.manualClimb());
-		// }
-		// if (gamepad.getButtonX(2)) {
-		// Manipulator.lowerFlipper();
-		// }
-		// if (gamepad.getButtonY(2)) {
-		// Manipulator.bringFlipperUp();
-		// }
-		//
-		// AUTO ABORT
-		// If driver hits any drive sticks, any running auto will ABORT
-		//
 		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1
 				|| Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1)) {
 			mAutoProgram.stop();

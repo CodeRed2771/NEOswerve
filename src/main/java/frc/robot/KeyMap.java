@@ -30,7 +30,6 @@ public class KeyMap {
     // private final HID.Button driveOffPlatform = LogitechF310.BUMPER_LEFT;
 
     // Climbing
-    private final HID.Button prepareToClimb = LogitechF310.DPAD_DOWN;
     private final HID.Button climb = LogitechF310.DPAD_UP;
     private final HID.Button climbControl = LogitechF310.BUMPER_RIGHT;
     private final HID.Button climbLvl2Control = LogitechF310.BUMPER_LEFT;
@@ -45,7 +44,7 @@ public class KeyMap {
     // CONTROLLER 2
     private final HID.Button intakeCargo = LogitechF310.DPAD_LEFT;
     private final HID.Button intakeHatch = LogitechF310.DPAD_UP;
-    private final HID.Button intakeHatchFloor = LogitechF310.DPAD_RIGHT;
+    private final HID.Button stopIntake = LogitechF310.DPAD_RIGHT;
     private final HID.Button gamePieceOverride = LogitechF310.DPAD_DOWN;
     private final HID.Axis ejectGamePiece = LogitechF310.TRIGGER_RIGHT_AXIS;
     private final HID.Button fingerUp = LogitechF310.START;
@@ -59,7 +58,7 @@ public class KeyMap {
     private final HID.Button modifier = LogitechF310.BUMPER_LEFT;
 
     private final Axis manualLift = LogitechF310.STICK_LEFT_Y;
-    private final HID.Axis manualClimbDrive = LogitechF310.STICK_RIGHT_Y;
+    private final HID.Axis manualClimbDrive = LogitechF310.STICK_RIGHT_Y; // Not used in robot Java
     
 
     // TEST CONTROLLER
@@ -120,8 +119,8 @@ public class KeyMap {
         return getHID(gamepad2).button(goToTravelPosition) && getHID(gamepad2).button(modifier);
     }
 
-    public boolean activateHatchFloorIntake() {
-        return getHID(gamepad2).button(intakeHatchFloor);
+    public boolean turnIntakeOff() {
+        return getHID(gamepad2).button(stopIntake);
     }
 
     public boolean gamePieceOverride() {
@@ -152,7 +151,7 @@ public class KeyMap {
         return getHID(gamepad2).axis(manualLift);
     }
     public boolean goToTravelPosition() {
-        return getHID(gamepad2).button(goToTravelPosition) || getHID(gamepad2).button(goToTravelPosition);
+        return getHID(gamepad1).button(goToTravelPosition) || getHID(gamepad2).button(goToTravelPosition);
     }
 
     public boolean findRocketTarget() {
@@ -175,9 +174,6 @@ public class KeyMap {
         return getHID(gamepad1).button(shipMoveRight);
     }
     
-    public boolean getPrepareToClimb() {
-        return getHID(gamepad1).button(prepareToClimb);
-    }
 
     public boolean getClimb() {
         return getHID(gamepad1).button(climbControl) && getHID(gamepad1).button(climb);
