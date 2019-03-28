@@ -94,7 +94,9 @@ public class Manipulator {
 		linkage.config_kP(0, Calibration.LINKAGE_P, 10);
 		linkage.config_kI(0, Calibration.LINKAGE_I, 10);
 		linkage.config_kD(0, Calibration.LINKAGE_D, 10);
-		linkage.config_kF(0, Calibration.LINKAGE_F, 10);
+        linkage.config_kF(0, Calibration.LINKAGE_F, 10);
+        linkage.configMotionCruiseVelocity(Calibration.LINKAGE_VELOCITY, 10);
+        linkage.configMotionAcceleration(Calibration.LINKAGE_ACCEL, 10);
 
 		SmartDashboard.putNumber("Link Vel", Calibration.LINKAGE_VELOCITY);
 		SmartDashboard.putNumber("Link Accel", Calibration.LINKAGE_ACCEL);
@@ -103,14 +105,14 @@ public class Manipulator {
 		SmartDashboard.putNumber("Link D", Calibration.LINKAGE_D);
 		SmartDashboard.putNumber("Link F", Calibration.LINKAGE_F);
 
-		SmartDashboard.putBoolean("Link TUNE", true);
+		SmartDashboard.putBoolean("Link TUNE", false);
     }
 
     public static void tick() {
 
         SmartDashboard.putString("Man State", manipulatorState.toString());
 
-        // if (SmartDashboard.getBoolean("Link TUNE", false)) {
+        if (SmartDashboard.getBoolean("Link TUNE", false)) {
             SmartDashboard.putNumber("Link Enc", linkage.getSensorCollection().getQuadraturePosition());
             SmartDashboard.putNumber("Link Err", linkage.getClosedLoopError());
    
@@ -120,7 +122,7 @@ public class Manipulator {
 			linkage.config_kP(0, SmartDashboard.getNumber("Link P", 1.0), 10);
 			linkage.config_kI(0, SmartDashboard.getNumber("Link I", 0), 10);
 			linkage.config_kD(0, SmartDashboard.getNumber("Link D", 0), 10);
-        // }
+        }
 
         if (!linkageEncoderSet && !linkageEncoderSetting) {
 			linkage.set(ControlMode.PercentOutput, .5);

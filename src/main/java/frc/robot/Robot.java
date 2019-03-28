@@ -181,11 +181,11 @@ public class Robot extends TimedRobot {
 			mAutoProgram = new AutoClimb();
 			mAutoProgram.start();
 		}
-		if (gamepad.getClimbLevel2()) {
-			mAutoProgram.stop();
-			mAutoProgram = new AutoClimbLevel2();
-			mAutoProgram.start();
-		}
+		// if (gamepad.getClimbLevel2()) {
+		// 	mAutoProgram.stop();
+		// 	mAutoProgram = new AutoClimbLevel2();
+		// 	mAutoProgram.start();
+		// }
 
 		// SLIDE LEFT
 		if (gamepad.shipMoveLeft() && !mAutoProgram.isRunning()) {
