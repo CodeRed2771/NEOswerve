@@ -3,14 +3,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
-	Program that climbs onto HAB
+	NOT USED
  */
 
 public class AutoClimbLevel2 extends AutoBaseClass {
-    // Run climb motor to full height position
-    // Rotate rear drive modules (B & C) to 90 degrees
-
-    
+        
 	public AutoClimbLevel2() {
 		super();
 	}
