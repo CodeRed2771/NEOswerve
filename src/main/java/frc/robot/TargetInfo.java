@@ -36,21 +36,21 @@ public class TargetInfo {
 
         if (targetType == TargetType.ROCKET_TARGET) {
             if (Manipulator.isHoldingCargo()) {
-                if (currentGyroAngle > -10 && currentGyroAngle < -170) {
+                if (currentGyroAngle > 200 && currentGyroAngle < -340) {
                     System.out.println("Holding Cargo, returning -90, current gyro angle: " + currentGyroAngle);
-                    return -90;
+                    return 270;
                 } else {
                     System.out.println("Holding Cargo, returning 90, current gyro angle: " + currentGyroAngle);
                     return 90;
                 }
             } else {
-                if (currentGyroAngle > -80 && currentGyroAngle < -10){
+                if (currentGyroAngle > 275 && currentGyroAngle < 360){
                     System.out.println("Holding Hatch, returning -30, current gyro angle: " + currentGyroAngle);
-                    return -30;
+                    return 330;
                 } 
-                else if (currentGyroAngle > -170 && currentGyroAngle < -100){
+                else if (currentGyroAngle > 170  && currentGyroAngle < 265){
                     System.out.println("Holding Hatch, returning -150, current gyro angle: " + currentGyroAngle);
-                    return -150;
+                    return 210;
                 }
                     
                 else if (currentGyroAngle > 100 && currentGyroAngle < 170){
@@ -65,11 +65,11 @@ public class TargetInfo {
             }
         }
         else if (targetType == TargetType.SHIP_TARGET) {
-            if (currentGyroAngle > -30 && currentGyroAngle < -170){
+            if (currentGyroAngle < 330 && currentGyroAngle > 200){
                 System.out.println("Cargo Ship, Returning -90, current gyro angle: " + currentGyroAngle);
-                return -90;
+                return 270;
             }
-            else if (currentGyroAngle > 30 && currentGyroAngle < 170) {
+            else if (currentGyroAngle > 30 && currentGyroAngle < 150) {
                 System.out.println("Cargo Ship, Returning 90, current gyro angle: " + currentGyroAngle);
                 return 90;
             }

@@ -224,17 +224,17 @@ public class Robot extends TimedRobot {
 		// FIND HATCH TARGET
 		if (gamepad.findRocketTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
 			mAutoProgram.start(TargetInfo.TargetType.ROCKET_TARGET);
 		}
 		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
 			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
 		}
 		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 

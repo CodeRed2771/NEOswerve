@@ -51,6 +51,8 @@ public class Manipulator { // Should be changed to Manipulator.
     public Manipulator() {
         manipulator = new TalonSRX(Wiring.MANIPULATOR_MOTOR);
         linkage = new TalonSRX(Wiring.LINKAGE_MOTOR);
+        linkage.configFactoryDefault();
+        
         limitSwitch = new DigitalInput(0);
 
         manipulatorState = ManipulatorState.HOLDING_HATCH;
@@ -176,13 +178,13 @@ public class Manipulator { // Should be changed to Manipulator.
     }
     
     public static void linkageDown() {
-        if (linkageIsDown) {
-            linkage.set(ControlMode.PercentOutput, 0);
-        } else {
+        // if (linkageIsDown) {
+        //     linkage.set(ControlMode.PercentOutput, 0);
+        // } else {
             linkage.set(ControlMode.Position, -800);
             linkageIsDown = true;
             // linkage.set(ControlMode.MotionMagic, -900);
-        }
+        //}
     }
 
     public static void linkageUp(){

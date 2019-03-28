@@ -93,7 +93,7 @@ public class AutoFindHatch extends AutoBaseClass {
 
                 // DriveAuto.reset();
                 if (drivingAllowed) {
-                    DriveAuto.driveInches(newDist, newAngle, .4, true);
+                    DriveAuto.driveInches(newDist, newAngle, .4, false);
 
                     setTimerAndAdvanceStep(3000); 
                 }
@@ -119,7 +119,7 @@ public class AutoFindHatch extends AutoBaseClass {
             case 8:
                 double slideDistance = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget + 1;
                 SmartDashboard.putNumber("Slide Dist", slideDistance);
-                driveInches(slideDistance, 90, .3);
+                driveInches(slideDistance, 90, .3, false);
                 setTimerAndAdvanceStep(3000);
                 break;
             case 9:
@@ -129,7 +129,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 break;
             case 10:
                 if (drivingAllowed) {
-                    driveInches(distanceToTarget - 8, 0, .25, true);
+                    driveInches(distanceToTarget - 8, 0, .25, false);
                     setTimerAndAdvanceStep(1000);    
                 } else {
                     setTimerAndAdvanceStep(20);
