@@ -6,20 +6,18 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.libs.CurrentBreaker;
 
-public class Manipulator { // Should be changed to Manipulator.
+public class Manipulator { 
     private static Manipulator instance;
     private static TalonSRX manipulator;
     private static CurrentBreaker currentBreaker;
     private static CurrentBreaker linkageCurrentBreaker;
     private static TalonSRX linkage;
     private static DoubleSolenoid finger; 
-    private static DigitalInput limitSwitch;
 
     private static boolean linkageEncoderSet = false;
 	private static boolean linkageEncoderSetting = false;
@@ -29,10 +27,8 @@ public class Manipulator { // Should be changed to Manipulator.
         INACTIVE,
         GETTING_CARGO,
         GETTING_HATCH,
-        // GETTING_HATCH_FLOOR,
         HOLDING_CARGO,
         HOLDING_HATCH,
-        // HOLDING_HATCH_FLOOR,
     }
 
     private static ManipulatorState manipulatorState;
@@ -53,7 +49,6 @@ public class Manipulator { // Should be changed to Manipulator.
         linkage = new TalonSRX(Wiring.LINKAGE_MOTOR);
         linkage.configFactoryDefault();
         
-        limitSwitch = new DigitalInput(0);
 
         manipulatorState = ManipulatorState.HOLDING_HATCH;
         previousState = ManipulatorState.HOLDING_HATCH;
@@ -66,9 +61,9 @@ public class Manipulator { // Should be changed to Manipulator.
 
         finger = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
 
-        currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 750);
+        currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 150);
         
-        linkageCurrentBreaker = new CurrentBreaker(Wiring.LINKAGE_PDP_PORT, 20, 2000);
+        linkageCurrentBreaker = new CurrentBreaker(Wiring.LINKAGE_PDP_PORT, 15, 2000);
 
         resetIntakeStallDetector();
 
@@ -108,14 +103,14 @@ public class Manipulator { // Should be changed to Manipulator.
 		SmartDashboard.putNumber("Link D", Calibration.LINKAGE_D);
 		SmartDashboard.putNumber("Link F", Calibration.LINKAGE_F);
 
-		SmartDashboard.putBoolean("Link TUNE", false);
+		SmartDashboard.putBoolean("Link TUNE", true);
     }
 
     public static void tick() {
 
         SmartDashboard.putString("Man State", manipulatorState.toString());
 
-        if (SmartDashboard.getBoolean("Link TUNE", false)) {
+        // if (SmartDashboard.getBoolean("Link TUNE", false)) {
             SmartDashboard.putNumber("Link Enc", linkage.getSensorCollection().getQuadraturePosition());
             SmartDashboard.putNumber("Link Err", linkage.getClosedLoopError());
    
@@ -125,7 +120,7 @@ public class Manipulator { // Should be changed to Manipulator.
 			linkage.config_kP(0, SmartDashboard.getNumber("Link P", 1.0), 10);
 			linkage.config_kI(0, SmartDashboard.getNumber("Link I", 0), 10);
 			linkage.config_kD(0, SmartDashboard.getNumber("Link D", 0), 10);
-        }
+        // }
 
         if (!linkageEncoderSet && !linkageEncoderSetting) {
 			linkage.set(ControlMode.PercentOutput, .5);
@@ -145,11 +140,8 @@ public class Manipulator { // Should be changed to Manipulator.
         
         if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_CARGO) {
             holdCargo();
-        } else if (!limitSwitch.get() && manipulatorState == ManipulatorState.GETTING_HATCH) {
-            holdHatch();
-        }
+        } 
 
-        // this turns off the intake a little while after starting an eject
         if (System.currentTimeMillis() > ejectEndTime) {
             stopIntake();
             ejectEndTime = aDistantFutureTime();
@@ -181,7 +173,7 @@ public class Manipulator { // Should be changed to Manipulator.
         // if (linkageIsDown) {
         //     linkage.set(ControlMode.PercentOutput, 0);
         // } else {
-            linkage.set(ControlMode.Position, -800);
+            linkage.set(ControlMode.Position, -1250);
             linkageIsDown = true;
             // linkage.set(ControlMode.MotionMagic, -900);
         //}
@@ -254,8 +246,7 @@ public class Manipulator { // Should be changed to Manipulator.
     private static void holdCargo() {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         resetIntakeStallDetector();
-        // linkageUp();
-        manipulator.set(ControlMode.PercentOutput, -.10);
+        manipulator.set(ControlMode.PercentOutput, 0);
     }
 
     private static void holdHatch() {
@@ -267,9 +258,6 @@ public class Manipulator { // Should be changed to Manipulator.
     public static boolean isHoldingCargo() {
         return manipulatorState == ManipulatorState.HOLDING_CARGO;
     }
-    // public static boolean isHoldingFloorHatch() {
-    //     return manipulatorState == ManipulatorState.HOLDING_HATCH_FLOOR;
-    // }
     public static boolean isHoldingHatch() {
         return manipulatorState == ManipulatorState.HOLDING_HATCH;
     }
@@ -291,22 +279,11 @@ public class Manipulator { // Should be changed to Manipulator.
             manipulator.set(ControlMode.PercentOutput, 1);
         } else if (state == ManipulatorState.HOLDING_HATCH) {
             moveFingerDown();
-        } //   else if (state == ManipulatorState.HOLDING_HATCH_FLOOR) {
-        //     manipulator.set(ControlMode.PercentOutput, -.75);
-        //     Lift.scoreHatchPanel();
-        // }
+        } 
 
         manipulatorState = ManipulatorState.INACTIVE;
         resetIntakeStallDetector();
         ejectEndTime = System.currentTimeMillis() + 800;
-    }
-
-    public static void goToTravelPositionDONTUSE() {
-        // I THINK THIS HAS MULTIPLE ISSUES
-        // such as erasing the fact that we have a gamepiece
-        manipulatorState = ManipulatorState.INACTIVE;
-        linkageUp();
-        stopIntake();
     }
 
     public static void setLinkageForPlacement() {

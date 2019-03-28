@@ -24,7 +24,7 @@ public class AutoClimbLevel2 extends AutoBaseClass {
 			switch (getCurrentStep()) {
 			case 0:
 				Manipulator.linkageUp();
-				Climber.climberExtendLevel2();
+				Climber.climberExtend();
 				Climber.setClimbDriveSpeed(-.10);
 				setTimerAndAdvanceStep(4000);
 				break;
@@ -40,14 +40,14 @@ public class AutoClimbLevel2 extends AutoBaseClass {
 			case 3:
 				DriveTrain.moduleB.setTurnOrientation(.25);
 				DriveTrain.moduleC.setTurnOrientation(.25);
-				Climber.setClimbDriveSpeed(-.6); // drive forward
+				Climber.setClimbDriveSpeed(.6); // drive forward
 				setTimerAndAdvanceStep(4500);
 				break;
 			case 4:
 				break;
 			case 5:
 				setTimerAndAdvanceStep(75);
-				Climber.setClimbDriveSpeed(.4); // drive back a titch
+				Climber.setClimbDriveSpeed(-.4); // drive back a titch
 				break;
 			case 6:
 				break;

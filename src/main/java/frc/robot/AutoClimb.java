@@ -25,8 +25,8 @@ public class AutoClimb extends AutoBaseClass {
 			case 0:
 				Manipulator.linkageUp();
 				Climber.climberExtend();
-				Climber.setClimbDriveSpeed(-.12);
-				setTimerAndAdvanceStep(5000);
+				// Climber.setClimbDriveSpeed(.12);
+				setTimerAndAdvanceStep(7000);
 				break;
 			case 1:
 				if (Climber.isExtended()) {
@@ -40,20 +40,21 @@ public class AutoClimb extends AutoBaseClass {
 			case 3:
 				DriveTrain.moduleB.setTurnOrientation(.25);
 				DriveTrain.moduleC.setTurnOrientation(.25);
-				Climber.setClimbDriveSpeed(-.6); // drive forward
-				setTimerAndAdvanceStep(4000);
+				Climber.setClimbDriveSpeed(.6); // drive forward
+				setTimerAndAdvanceStep(2500);
+				// setTimerAndAdvanceStep(4000);
 				break;
 			case 4:
 				break;
 			case 5:
-				setTimerAndAdvanceStep(75);
-				Climber.setClimbDriveSpeed(.6); // drive back a titch
+				setTimerAndAdvanceStep(50);
+				Climber.setClimbDriveSpeed(-.6); // drive back a titch
 				break;
 			case 6:
 				break;
 			case 7:
 				Climber.setClimbDriveSpeed(0);
-				Climber.climberRetract();
+				Climber.climberRetractFull();
 				setTimerAndAdvanceStep(3000);
 				break;
 			case 8:

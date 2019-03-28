@@ -164,8 +164,7 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, 0);
 	}
 
-	private static final double HATCH_ACQUIRING = 2000;
-	private static final double HATCH_SCORING = 1000;
+	private static final double HATCH_ACQUIRING = 1500;
 	private static final double HATCH_LEVEL_1 = 2140;
 	private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
 	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 4800;
