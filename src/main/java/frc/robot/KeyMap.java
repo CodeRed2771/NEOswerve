@@ -31,7 +31,8 @@ public class KeyMap {
 
     // Climbing
     private final HID.Button climb = LogitechF310.DPAD_UP;
-    private final HID.Button climbControl = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button driveModifier = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button undoClimb = LogitechF310.DPAD_DOWN;
     
     // Auto Programs
     private final HID.Button shipMoveLeft = LogitechF310.DPAD_LEFT;
@@ -170,16 +171,19 @@ public class KeyMap {
     }
 
     public boolean shipMoveLeft() {
-        return getHID(gamepad1).button(shipMoveLeft);
+        return getHID(gamepad1).button(shipMoveLeft) && !getHID(gamepad1).button(driveModifier);
     }
 
     public boolean shipMoveRight() {
-        return getHID(gamepad1).button(shipMoveRight);
+        return getHID(gamepad1).button(shipMoveRight) && !getHID(gamepad1).button(driveModifier);
     }
     
-
     public boolean getClimb() {
-        return getHID(gamepad1).button(climbControl) && getHID(gamepad1).button(climb);
+        return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(climb);
+    }
+
+    public boolean getUndoClimb() {
+        return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(undoClimb);
     }
 
     public boolean getSingleClimbRevolution() {
@@ -196,6 +200,10 @@ public class KeyMap {
 
     public boolean getFingerUp() {
         return getHID(gamepad2).button(fingerUp);
+    }
+
+    public boolean getDriveModifier() {
+        return getHID(gamepad1).button(driveModifier);
     }
 
     // public boolean driveOffPlatform() {

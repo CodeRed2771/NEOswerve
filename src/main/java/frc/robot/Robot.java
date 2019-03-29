@@ -185,11 +185,11 @@ public class Robot extends TimedRobot {
 			mAutoProgram = new AutoClimb();
 			mAutoProgram.start();
 		}
-		// if (gamepad.getClimbLevel2()) {
-		// mAutoProgram.stop();
-		// mAutoProgram = new AutoClimbLevel2();
-		// mAutoProgram.start();
-		// }
+
+		if (gamepad.getUndoClimb()) {
+			mAutoProgram.stop();
+			Climber.climberRetractFull();
+		}
 
 		// SLIDE LEFT
 		if (gamepad.shipMoveLeft() && !mAutoProgram.isRunning()) {
@@ -236,15 +236,15 @@ public class Robot extends TimedRobot {
 			// above that have been tweaked as needed
 			double driveFWDAmount = gamepad.getSwerveYAxis();
 			double driveStrafeAmount = -gamepad.getSwerveXAxis();
-			boolean isLiftDown = Lift.liftIsDown();
-			if (Math.abs(driveFWDAmount) <= .2 || !isLiftDown) // strafe adjust if not driving forward
-				driveStrafeAmount = strafeAdjust(driveStrafeAmount, isLiftDown);
+			boolean normalDrive = Lift.liftIsDown() && !gamepad.getDriveModifier();
+			if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
+				driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 			else
 				driveStrafeAmount = driveStrafeAmount * .75;
 
 			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
-			driveFWDAmount = forwardAdjust(driveFWDAmount, isLiftDown);
+			driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
 
 			if (gamepad.getRobotCentricModifier())
 				DriveTrain.humanDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
@@ -386,15 +386,15 @@ public class Robot extends TimedRobot {
 		return adjustedAmt;
 	}
 
-	private double forwardAdjust(double fwd, boolean liftIsDown) {
-		if (liftIsDown) {
+	private double forwardAdjust(double fwd, boolean normalDrive) {
+		if (normalDrive) {
 			return fwd;
 		} else {
 			return fwd * .40;
 		}
 	}
 
-	private double strafeAdjust(double strafeAmt, boolean liftIsDown) {
+	private double strafeAdjust(double strafeAmt, boolean normalDrive) {
 		// put some power restrictions in place to make it
 		// more controlled
 		double adjustedAmt = 0;
@@ -402,7 +402,7 @@ public class Robot extends TimedRobot {
 		if (Math.abs(strafeAmt) < .1) {
 			adjustedAmt = 0;
 		} else {
-			if (liftIsDown) { // do normal adjustments
+			if (normalDrive) { // do normal adjustments
 				if (Math.abs(strafeAmt) < .7) {
 					adjustedAmt = .5 * strafeAmt; // .2 * Math.signum(strafeAmt);
 				} else {
