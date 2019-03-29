@@ -269,7 +269,7 @@ public class Manipulator {
             holdCargo();
         } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
-            moveFingerUp();
+            Lift.getHatchOffFeeder();
         } 
     }
 
