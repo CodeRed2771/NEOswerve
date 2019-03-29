@@ -102,7 +102,7 @@ public class Calibration {
 	public static final double AUTO_DRIVE_D = 200.0;  // was 0
 	public static final int AUTO_DRIVE_IZONE = 50;
 	
-	public static final double INTAKE_MAX_CURRENT = 10;
+	public static final double INTAKE_MAX_CURRENT = 14;
 	
 	public static final double LIFT_P = 0.6;
 	public static final double LIFT_I = 0.0;
