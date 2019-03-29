@@ -55,7 +55,7 @@ public class AutoClimb extends AutoBaseClass {
 			case 7:
 				Climber.setClimbDriveSpeed(0);
 				Climber.climberRetractFull();
-				setTimerAndAdvanceStep(3000);
+				setTimerAndAdvanceStep(5000);
 				break;
 			case 8:
 				break;
