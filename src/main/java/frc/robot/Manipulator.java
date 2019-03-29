@@ -208,6 +208,18 @@ public class Manipulator {
         ejectEndTime = aDistantFutureTime();
     }
 
+    public static void intakeCargoFeeder() {
+        linkageDown();
+        moveFingerUp();
+        Lift.getCargoOffFeeder();
+
+        manipulatorState = ManipulatorState.GETTING_CARGO;
+        manipulator.set(ControlMode.PercentOutput, -1);
+
+        resetIntakeStallDetector();
+        ejectEndTime = aDistantFutureTime();
+    }
+
     public static void prepareToGetHatchFromFeeder() {
         linkageDown();
         manipulator.set(ControlMode.PercentOutput, -1);

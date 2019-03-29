@@ -128,6 +128,14 @@ public class Lift {
         return (currentBreaker.tripped());
 	}
 	
+	/**
+	 * LiftIsDown - primary used to decide whether driving speeds should be reduceed.
+	 * @return
+	 */
+	public static boolean liftIsDown() {
+		return liftMotor.getSensorCollection().getQuadraturePosition() < (HATCH_ACQUIRING - 400);
+	}
+
 	public static void move(double speed) {
 		// limit speed
 		if (speed < -.3)
@@ -177,6 +185,7 @@ public class Lift {
 	private static final double HATCH_LEVEL_3 = 21500;
 	private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
 	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5000;
+	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_1 + 2100;
 
 	public static void getHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);
@@ -184,6 +193,10 @@ public class Lift {
 
 	public static void getHatchOffFeeder() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_PICK_OFF_FEEDER);
+	}
+
+	public static void getCargoOffFeeder() {
+		liftMotor.set(ControlMode.MotionMagic, CARGO_PICK_OFF_FEEDER);
 	}
 
 	public static void prepareToGetHatchPanel() {

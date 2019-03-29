@@ -105,6 +105,10 @@ public class Robot extends TimedRobot {
 			Manipulator.intakeCargo();
 		}
 
+		if (gamepad.activateCargoFeedIntake()) {
+			Manipulator.intakeCargoFeeder();
+		}
+
 		if (gamepad.turnIntakeOff()) {
 			Manipulator.stopIntake();
 		}
@@ -232,12 +236,15 @@ public class Robot extends TimedRobot {
 			// above that have been tweaked as needed
 			double driveYAxisAmount = gamepad.getSwerveYAxis();
 			double driveStrafeAxisAmount = -gamepad.getSwerveXAxis();
-			if (Math.abs(driveYAxisAmount) <= .2) // starfe adjust if not driving forward
+			boolean liftisdown = Lift.liftIsDown();
+			if (Math.abs(driveYAxisAmount) <= .2) // strafe adjust if not driving forward
 				driveStrafeAxisAmount = strafeAdjust(driveStrafeAxisAmount);
 			else
 				driveStrafeAxisAmount = driveStrafeAxisAmount * .75;
 				
 			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+
+			// driveYAxisAmount = forwardAdjust(driveYAxisAmount, liftisdown);
 
 			if (gamepad.getRobotCentricModifier())
 				DriveTrain.humanDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
@@ -376,6 +383,15 @@ public class Robot extends TimedRobot {
 			}
 		}
 		return adjustedAmt;
+	}
+
+	private double forwardAdjust(double fwd, boolean liftIsDown) {
+		if (liftIsDown) {
+			return fwd;
+		} else
+		{
+			return fwd / 3;
+		}
 	}
 
 	private double strafeAdjust(double strafeAmt) {
