@@ -32,7 +32,6 @@ public class KeyMap {
     // Climbing
     private final HID.Button climb = LogitechF310.DPAD_UP;
     private final HID.Button climbControl = LogitechF310.BUMPER_RIGHT;
-    private final HID.Button climbLvl2Control = LogitechF310.BUMPER_LEFT;
     
     // Auto Programs
     private final HID.Button shipMoveLeft = LogitechF310.DPAD_LEFT;
@@ -182,9 +181,7 @@ public class KeyMap {
     public boolean getClimb() {
         return getHID(gamepad1).button(climbControl) && getHID(gamepad1).button(climb);
     }
-    public boolean getClimbLevel2() {
-        return getHID(gamepad1).button(climbLvl2Control) && getHID(gamepad1).button(climb);
-    }
+
     public boolean getSingleClimbRevolution() {
         return getHID(gamepad3).button(singleClimbRevolutionButton);
     }
