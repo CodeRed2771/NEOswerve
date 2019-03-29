@@ -185,7 +185,7 @@ public class Lift {
 	private static final double HATCH_LEVEL_3 = 21500;
 	private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
 	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5000;
-	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_1 + 2100;
+	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_2 + 2100;
 
 	public static void getHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);
