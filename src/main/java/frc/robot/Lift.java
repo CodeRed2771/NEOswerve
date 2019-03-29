@@ -133,7 +133,7 @@ public class Lift {
 	 * @return
 	 */
 	public static boolean liftIsDown() {
-		return liftMotor.getSensorCollection().getQuadraturePosition() < (HATCH_ACQUIRING - 400);
+		return  liftMotor.getSensorCollection().getQuadraturePosition() < (HATCH_LEVEL_2 - 200);
 	}
 
 	public static void move(double speed) {

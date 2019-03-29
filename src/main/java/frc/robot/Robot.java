@@ -186,9 +186,9 @@ public class Robot extends TimedRobot {
 			mAutoProgram.start();
 		}
 		// if (gamepad.getClimbLevel2()) {
-		// 	mAutoProgram.stop();
-		// 	mAutoProgram = new AutoClimbLevel2();
-		// 	mAutoProgram.start();
+		// mAutoProgram.stop();
+		// mAutoProgram = new AutoClimbLevel2();
+		// mAutoProgram.start();
 		// }
 
 		// SLIDE LEFT
@@ -234,26 +234,26 @@ public class Robot extends TimedRobot {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
-			double driveYAxisAmount = gamepad.getSwerveYAxis();
-			double driveStrafeAxisAmount = -gamepad.getSwerveXAxis();
-			boolean liftisdown = Lift.liftIsDown();
-			if (Math.abs(driveYAxisAmount) <= .2) // strafe adjust if not driving forward
-				driveStrafeAxisAmount = strafeAdjust(driveStrafeAxisAmount);
+			double driveFWDAmount = gamepad.getSwerveYAxis();
+			double driveStrafeAmount = -gamepad.getSwerveXAxis();
+			boolean isLiftDown = Lift.liftIsDown();
+			if (Math.abs(driveFWDAmount) <= .2 || !isLiftDown) // strafe adjust if not driving forward
+				driveStrafeAmount = strafeAdjust(driveStrafeAmount, isLiftDown);
 			else
-				driveStrafeAxisAmount = driveStrafeAxisAmount * .75;
-				
-			double driveRotAxisAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+				driveStrafeAmount = driveStrafeAmount * .75;
 
-			// driveYAxisAmount = forwardAdjust(driveYAxisAmount, liftisdown);
+			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+
+			driveFWDAmount = forwardAdjust(driveFWDAmount, isLiftDown);
 
 			if (gamepad.getRobotCentricModifier())
-				DriveTrain.humanDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
+				DriveTrain.humanDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
 			else
-				DriveTrain.fieldCentricDrive(driveYAxisAmount, driveStrafeAxisAmount, driveRotAxisAmount);
+				DriveTrain.fieldCentricDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
 
 			if (isTippingOver()) {
-			System.out.print("ANTI-TIP CODE ACTIVATED - NO ACTION TAKEN THOUGH");
-			// Lift.goToStart(); // if we start tipping, bring the lift down
+				System.out.print("ANTI-TIP CODE ACTIVATED - NO ACTION TAKEN THOUGH");
+				// Lift.goToStart(); // if we start tipping, bring the lift down
 			}
 		}
 
@@ -348,7 +348,8 @@ public class Robot extends TimedRobot {
 		// SmartDashboard.putNumber("Vision Skew", Vision.getTargetSkew());
 		// SmartDashboard.putNumber("line sensor", line.getAverageValue());
 
-		// SmartDashboard.putNumber("Match Time", DriverStation.getInstance().getMatchTime());
+		// SmartDashboard.putNumber("Match Time",
+		// DriverStation.getInstance().getMatchTime());
 
 		SmartDashboard.putNumber("Gyro Relative", round2(RobotGyro.getRelativeAngle()));
 		SmartDashboard.putNumber("Gyro Raw", round2(RobotGyro.getAngle()));
@@ -388,13 +389,12 @@ public class Robot extends TimedRobot {
 	private double forwardAdjust(double fwd, boolean liftIsDown) {
 		if (liftIsDown) {
 			return fwd;
-		} else
-		{
-			return fwd / 3;
+		} else {
+			return fwd * .40;
 		}
 	}
 
-	private double strafeAdjust(double strafeAmt) {
+	private double strafeAdjust(double strafeAmt, boolean liftIsDown) {
 		// put some power restrictions in place to make it
 		// more controlled
 		double adjustedAmt = 0;
@@ -402,14 +402,18 @@ public class Robot extends TimedRobot {
 		if (Math.abs(strafeAmt) < .1) {
 			adjustedAmt = 0;
 		} else {
-			if (Math.abs(strafeAmt) < .7) {
-				adjustedAmt = .5 * strafeAmt; // .2 * Math.signum(strafeAmt);
-			} else {
-				if (Math.abs(strafeAmt) < .98) {
-					adjustedAmt = .75 * strafeAmt; // .4 * Math.signum(strafeAmt);
+			if (liftIsDown) { // do normal adjustments
+				if (Math.abs(strafeAmt) < .7) {
+					adjustedAmt = .5 * strafeAmt; // .2 * Math.signum(strafeAmt);
 				} else {
-					adjustedAmt = strafeAmt;
+					if (Math.abs(strafeAmt) < .98) {
+						adjustedAmt = .75 * strafeAmt; // .4 * Math.signum(strafeAmt);
+					} else {
+						adjustedAmt = strafeAmt;
+					}
 				}
+			} else { // lift is up, so do more drastic adjustments
+				adjustedAmt = strafeAmt * .40;
 			}
 		}
 		return adjustedAmt;
