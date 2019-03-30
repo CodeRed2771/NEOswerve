@@ -115,9 +115,9 @@ public class KeyMap {
         return getHID(gamepad2).button(intakeHatch);
     }
 
-    public boolean activateHatchIntakeAuto() {
-        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).button(modifier);
-    }
+    // public boolean activateHatchIntakeAuto() {
+    //     return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).button(modifier);
+    // }
 
     public boolean linkageUp() {
         return getHID(gamepad2).button(goToTravelPosition) && getHID(gamepad2).button(modifier);
@@ -200,6 +200,10 @@ public class KeyMap {
 
     public boolean getFingerUp() {
         return getHID(gamepad2).button(fingerUp);
+    }
+
+    public boolean getHatchOverride() {
+        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).button(modifier);
     }
 
     public boolean getDriveModifier() {

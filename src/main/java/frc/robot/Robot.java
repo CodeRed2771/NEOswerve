@@ -169,15 +169,19 @@ public class Robot extends TimedRobot {
 			Manipulator.moveFingerUp();
 		}
 
+		if (gamepad.getHatchOverride()) {
+			Manipulator.intakeHatchOverride();
+		}
+
 		// --------------------------------------------------
 		// AUTO SUB ROUTINES
 		// --------------------------------------------------
 
 		// AUTO GET HATCH
-		if (gamepad.activateHatchIntakeAuto() && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoGrabHatchFromFeeder();
-			mAutoProgram.start();
-		}
+		// if (gamepad.activateHatchIntakeAuto() && !mAutoProgram.isRunning()) {
+		// 	mAutoProgram = new AutoGrabHatchFromFeeder();
+		// 	mAutoProgram.start();
+		// }
 
 		// AUTO CLIMB
 		if (gamepad.getClimb()) {

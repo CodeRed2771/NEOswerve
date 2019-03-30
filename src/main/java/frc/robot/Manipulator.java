@@ -233,6 +233,10 @@ public class Manipulator {
         manipulatorState = ManipulatorState.GETTING_HATCH;
     }
 
+    public static void intakeHatchOverride() {
+        manipulatorState = ManipulatorState.GETTING_HATCH;  
+    }
+
     public static void moveFingerUp() {
         finger.set(Value.kReverse);
     }

@@ -19,7 +19,7 @@ public class Climber {
     public Climber() {
         climbDrive.setNeutralMode(NeutralMode.Brake);
 
-        climbMotor.getPIDController().setOutputRange(-0.65, 0.65);
+        climbMotor.getPIDController().setOutputRange(-1, 1);
         climbMotor.getPIDController().setP(1);
     }
 
