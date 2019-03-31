@@ -56,9 +56,10 @@ public class RobotGyro implements PIDSource {
 	/***
 	 * 
 	 * @return gyro angle 0 to 360
+	 * unless you allow negatives, then it's -360 to +360
 	 */
-	public static double getRelativeAngle() {
-		if (getAngle() < 0)
+	public static double getRelativeAngle(boolean allowNegatives) {
+		if (getAngle() < 0 && !allowNegatives)
 			return 360 + (getAngle() % 360);
 		else
 			return getAngle() % 360;

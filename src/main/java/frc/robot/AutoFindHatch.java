@@ -62,7 +62,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 }
                 break;
             case 3:
-                angleDiff = targetAngle - RobotGyro.getRelativeAngle();
+                angleDiff = targetAngle - RobotGyro.getRelativeAngle(true);
                 System.out.println("anglediff " + angleDiff);
                 DriveAuto.turnDegrees(angleDiff, .25); // Square up?
                 setTimerAndAdvanceStep(1000);

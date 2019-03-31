@@ -105,7 +105,7 @@ public class DriveAuto {
 		DriveTrain.resetDriveEncoders();
 		rotDrivePID.reset();
 		rotDrivePID.setSetpoint(0);
-		heading = RobotGyro.getRelativeAngle();
+		heading = RobotGyro.getRelativeAngle(false);
 		isDriving = false;
 	}
 
