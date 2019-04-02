@@ -80,7 +80,7 @@ public class DriveAuto {
 		// angle at which the wheel modules should be turned
 		
 		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags are reset.
-		DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle));
+		DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle), true);
 
 		// give it just a little time to get the modules turned to position
 		// before starting the drive
@@ -151,7 +151,7 @@ public class DriveAuto {
 		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
 
 		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(-133.6677), DriveTrain.angleToPosition(46.3322), DriveTrain.angleToPosition(133.6677),
-				DriveTrain.angleToPosition(-46.3322));
+				DriveTrain.angleToPosition(-46.3322), true);
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
@@ -176,7 +176,7 @@ public class DriveAuto {
 		setRotationalPowerOutput(maxPower);
 
 		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0),
-				DriveTrain.angleToPosition(0));
+				DriveTrain.angleToPosition(0), true);
 		rotDrivePID.disable();
 	}
 
@@ -192,7 +192,7 @@ public class DriveAuto {
 			} else
 				strafeAngle = strafeAngleOriginal;
 					
-			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle));
+			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle), true);
 						
 			SmartDashboard.putNumber("DA Ang Adj", strafeAngle);
 		}

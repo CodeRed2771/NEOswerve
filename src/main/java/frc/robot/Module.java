@@ -256,6 +256,9 @@ public class Module {
 
 			// note - this part could be eliminated because the distance to reverse
 			// is a simple calculation based on the distance of the normal way.
+			// I believe it would be just 1 - distance to Normal
+			// if normal is .7, reverse would be .3  (1 - .7)
+			// if normal is .3, reverse would be .7  (1 - .3)
 		if (currentTurnPosition - reverseTurnPosition >= 0)
 			if (currentTurnPosition - reverseTurnPosition > .5)
 				distanceToReversePosition = (1 - currentTurnPosition) + reverseTurnPosition;
