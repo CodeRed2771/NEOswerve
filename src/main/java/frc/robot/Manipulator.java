@@ -151,6 +151,7 @@ public class Manipulator {
 
         if (System.currentTimeMillis() > ejectEndTime) {
             stopIntake();
+            Lift.goCargoLvl1();
             ejectEndTime = aDistantFutureTime();
         }
 
@@ -257,6 +258,7 @@ public class Manipulator {
     private static void holdCargo() {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         resetIntakeStallDetector();
+        Lift.goCargoLvl1();
         manipulator.set(ControlMode.PercentOutput, 0);
     }
 
