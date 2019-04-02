@@ -291,13 +291,13 @@ public class Manipulator {
 
         if (state == ManipulatorState.HOLDING_CARGO) {
             manipulator.set(ControlMode.PercentOutput, 1);
+            ejectEndTime = System.currentTimeMillis() + 800;
+            resetIntakeStallDetector();
         } else if (state == ManipulatorState.HOLDING_HATCH) {
             moveFingerDown();
         }
-
         manipulatorState = ManipulatorState.INACTIVE;
-        resetIntakeStallDetector();
-        ejectEndTime = System.currentTimeMillis() + 800;
+    
     }
 
     public static void setLinkageForPlacement() {
