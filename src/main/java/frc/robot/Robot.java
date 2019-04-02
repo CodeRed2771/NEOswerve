@@ -70,7 +70,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		mAutoProgram.stop();
+		DriveTrain.stopDriveAndTurnMotors();
 		Climber.stop();
+		Lift.stop();
+		Manipulator.stopLinkage();
+		Manipulator.stopIntake();
 
 		DriveTrain.setAllTurnOrientation(0, false); // sets them back to calibrated zero position
 
@@ -87,7 +91,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 
 		// --------------------------------------------------
-		// GYRO - allow manual gyro reset by pressing Start
+		// RESST - allow manual reset of systems by pressing Start
 		// --------------------------------------------------
 		if (gamepad.getZeroGyro()) {
 			RobotGyro.reset();
@@ -279,7 +283,10 @@ public class Robot extends TimedRobot {
 
 		mAutoProgram.stop();
 		Climber.stop();
+		Lift.stop();
+		Manipulator.stopIntake();
 		Vision.setDriverMode();
+		DriveTrain.stopDriveAndTurnMotors();
 		DriveTrain.setAllTurnOrientation(0, false);
 
 		Lift.resetLift();
@@ -315,7 +322,6 @@ public class Robot extends TimedRobot {
 			break;
 		}
 
-		DriveTrain.setAllTurnOrientation(0);
 		DriveAuto.reset();
 
 		if (autoSelected == autoTeleop) {
@@ -469,21 +475,18 @@ public class Robot extends TimedRobot {
 	}
 
 	private boolean isTippingOver() {
-		return Math.abs(RobotGyro.getGyro().getPitch()) > 10 || Math.abs(RobotGyro.getGyro().getRoll()) > 10;
+		return Math.abs(RobotGyro.getGyro().getPitch()) > 15 || Math.abs(RobotGyro.getGyro().getRoll()) > 15;
 	}
 
-	// Is this used?
 	private double powerOf2PreserveSign(double v) {
 		return (v > 0) ? Math.pow(v, 2) : -Math.pow(v, 2);
 	}
 
-	// Is this used?
 	private static Double round2(Double val) {
 		// added this back in on 1/15/18
 		return new BigDecimal(val.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
-	// Is this used?
 	private static Double round0(Double val) {
 		// added this back in on 1/15/18
 		return new BigDecimal(val.toString()).setScale(0, RoundingMode.HALF_UP).doubleValue();
