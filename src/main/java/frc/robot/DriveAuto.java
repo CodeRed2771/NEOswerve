@@ -15,6 +15,7 @@ public class DriveAuto {
 
 	private static double heading = 0; // keeps track of intended heading - used for driving "straight"
 	private static double strafeAngle = 0;
+	private static double strafeAngleOriginal = 0;
 
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
@@ -68,6 +69,7 @@ public class DriveAuto {
 		SmartDashboard.putNumber("DRIVE INCHES", inches);
 
 		strafeAngle = angle;
+		strafeAngleOriginal = strafeAngle;
 
 		stopTurning();
 
@@ -105,7 +107,7 @@ public class DriveAuto {
 		DriveTrain.resetDriveEncoders();
 		rotDrivePID.reset();
 		rotDrivePID.setSetpoint(0);
-		heading = RobotGyro.getRelativeAngle(false);
+		heading = RobotGyro.getRelativeAngle();
 		isDriving = false;
 	}
 
@@ -185,11 +187,14 @@ public class DriveAuto {
 		double angleAdjust = 0;
 		if (isDriving && followingTarget) {
 			angleAdjust = - Vision.offsetFromTarget();
-			if (Math.abs(angleAdjust) > 5) 
-				angleAdjust = 5 * Math.signum(angleAdjust);
-
-			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle + angleAdjust));
-			SmartDashboard.putNumber("DA Ang Adj", angleAdjust);
+			if (Math.abs(angleAdjust) > 2) {
+				strafeAngle = (strafeAngle - (.12 * Math.signum(angleAdjust)));
+			} else
+				strafeAngle = strafeAngleOriginal;
+					
+			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle));
+						
+			SmartDashboard.putNumber("DA Ang Adj", strafeAngle);
 		}
 
 		// SmartDashboard.putNumber("Cur Turn Speed", currentTurnSpeed);

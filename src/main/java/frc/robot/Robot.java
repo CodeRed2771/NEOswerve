@@ -215,7 +215,7 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
 			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
 		}
 		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
@@ -355,7 +355,7 @@ public class Robot extends TimedRobot {
 		// SmartDashboard.putNumber("Match Time",
 		// DriverStation.getInstance().getMatchTime());
 
-		SmartDashboard.putNumber("Gyro Relative", round2(RobotGyro.getRelativeAngle(false)));
+		SmartDashboard.putNumber("Gyro Relative", round2(RobotGyro.getRelativeAngle()));
 		SmartDashboard.putNumber("Gyro Raw", round2(RobotGyro.getAngle()));
 
 		if (SmartDashboard.getBoolean("Show Encoders", false)) {

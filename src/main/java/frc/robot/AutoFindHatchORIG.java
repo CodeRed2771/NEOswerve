@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * Add your docs here.
  */
-public class AutoFindHatch extends AutoBaseClass {
-
+public class AutoFindHatchORIG extends AutoBaseClass {
+    
     private double distanceToTarget = 0;
     private double angleDiff;
-    private double distToStayBackOnFirstDrive = 20;
+    private double distToStayBack = 30;
     private double targetAngle = 0;
     private boolean drivingAllowed = true;
 
@@ -53,7 +53,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 System.out.println("target type " + mTargetType.toString());
                 targetAngle = TargetInfo.targetAngle(mTargetType);
                 System.out.println("Target Angle " + targetAngle);
-                DriveAuto.turnDegrees(Vision.offsetFromTarget(), .35);
+                DriveAuto.turnDegrees(Vision.offsetFromTarget(), .25);
                 setTimerAndAdvanceStep(1000);
                 break;
             case 2:
@@ -65,7 +65,7 @@ public class AutoFindHatch extends AutoBaseClass {
                 angleDiff = RobotGyro.getClosestTurn(targetAngle);
                 // angleDiff = targetAngle - RobotGyro.getRelativeAngle();
                 System.out.println("anglediff " + angleDiff);
-                DriveAuto.turnDegrees(angleDiff, .45); // Square up with target
+                DriveAuto.turnDegrees(angleDiff, .25); // Square up?
                 setTimerAndAdvanceStep(1000);
                 break;
             case 4:
@@ -74,10 +74,33 @@ public class AutoFindHatch extends AutoBaseClass {
                 }
                 break;
             case 5:
-                double slideDistance = -((Math.sin(Math.toRadians(angleDiff)) * distanceToTarget) + 1);
-                SmartDashboard.putNumber("Slide Dist", slideDistance);
-                driveInches(slideDistance, 90, .5, false);
-                setTimerAndAdvanceStep(3000);
+                double opposite = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget;
+                double adjacent = Math.cos(Math.toRadians(angleDiff)) * distanceToTarget;
+
+                double newDist = Math.sqrt(Math.pow(opposite, 2) + Math.pow((adjacent - distToStayBack), 2));
+                double newAngle = -Math.atan(opposite / (adjacent - distToStayBack)); // calculates strafe angle
+
+                newAngle = (newAngle * 180) / Math.PI; // Converts angle to degrees from radians.
+
+                // newAngle = newAngle - angleDiff;
+
+                SmartDashboard.putNumber("Dist to target", distanceToTarget);
+                SmartDashboard.putNumber("Drive dist", newDist);
+       
+                SmartDashboard.putNumber("New Angle", newAngle);
+                SmartDashboard.putNumber("Angle Diff", angleDiff);
+                // SmartDashboard.putNumber("opposite", opposite);
+                // SmartDashboard.putNumber("adjacent", adjacent);
+
+                // DriveAuto.reset();
+                if (drivingAllowed) {
+                    DriveAuto.driveInches(newDist, newAngle, .4, false);
+
+                    setTimerAndAdvanceStep(3000); 
+                }
+                 else {
+                     setTimerAndAdvanceStep(20);
+                 }
                 break;
             case 6:
                 if (DriveAuto.hasArrived()) {
@@ -87,12 +110,17 @@ public class AutoFindHatch extends AutoBaseClass {
             case 7:
                 // keep scanning for a distance reading
                 distanceToTarget = Vision.getDistanceFromTarget();
+                angleDiff = Vision.offsetFromTarget();
+                SmartDashboard.putNumber("Dist To Targ", distanceToTarget);
+                SmartDashboard.putNumber("Angle Diff", angleDiff);
                 if (distanceToTarget > 0) {
                     advanceStep();
                 }
                 break;
             case 8:
-                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .5, true);
+                double slideDistance = Math.sin(Math.toRadians(angleDiff)) * distanceToTarget + 1;
+                SmartDashboard.putNumber("Slide Dist", slideDistance);
+                driveInches(slideDistance, 90, .3, false);
                 setTimerAndAdvanceStep(3000);
                 break;
             case 9:
@@ -102,8 +130,8 @@ public class AutoFindHatch extends AutoBaseClass {
                 break;
             case 10:
                 if (drivingAllowed) {
-                    driveInches(distToStayBackOnFirstDrive, 0, .2, false);
-                    setTimerAndAdvanceStep(1000);
+                    driveInches(distanceToTarget - 8, 0, .25, false);
+                    setTimerAndAdvanceStep(1000);    
                 } else {
                     setTimerAndAdvanceStep(20);
                 }

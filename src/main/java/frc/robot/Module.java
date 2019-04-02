@@ -254,6 +254,8 @@ public class Module {
 		else
 			distanceToNormalPosition = reqPosition - currentTurnPosition;
 
+			// note - this part could be eliminated because the distance to reverse
+			// is a simple calculation based on the distance of the normal way.
 		if (currentTurnPosition - reverseTurnPosition >= 0)
 			if (currentTurnPosition - reverseTurnPosition > .5)
 				distanceToReversePosition = (1 - currentTurnPosition) + reverseTurnPosition;
