@@ -187,7 +187,7 @@ public class DriveTrain implements PIDOutput {
 		if (getInstance() == null)
 			return;
 
-		setDrivePosition(moduleA.getDriveEnc() +  vr* ticks),
+		setDrivePosition(moduleA.getDriveEnc() + ((moduleA.modulesReversed() ? -1 : 1) * ticks),
 				moduleB.getDriveEnc() + ((moduleB.modulesReversed() ? -1 : 1) * ticks),
 				moduleC.getDriveEnc() + ((moduleC.modulesReversed() ? -1 : 1) * ticks),
 				moduleD.getDriveEnc() + ((moduleD.modulesReversed() ? -1 : 1) * ticks));
