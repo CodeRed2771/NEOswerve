@@ -27,8 +27,8 @@ public class RobotGyro implements PIDSource {
 	}
 
 	public RobotGyro() {
-		mGyro = new AHRS(SerialPort.Port.kUSB);
-		// mGyro = new AHRS(SPI.Port.kMXP);
+		// mGyro = new AHRS(SerialPort.Port.kUSB);
+		mGyro = new AHRS(SPI.Port.kMXP);
 	}
 
 	public static AHRS getGyro() {
