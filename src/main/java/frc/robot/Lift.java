@@ -174,16 +174,16 @@ public class Lift {
 
 	// calculated 357 ticks per inch
 
-	private static final double HATCH_ACQUIRING = 1200;
+	private static final double HATCH_ACQUIRING = 486;
 	private static final double HATCH_PICK_OFF_FEEDER = HATCH_ACQUIRING + 1100;
-	private static final double HATCH_LEVEL_1 = 1640;
-	private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
+	private static final double HATCH_LEVEL_1 = 926;
+	// private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
 	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 4800;
-	private static final double HATCH_LEVEL_2 = 11200;
-	private static final double HATCH_FLOOR_LEVEL_2 = HATCH_LEVEL_2 + 2000;
+	private static final double HATCH_LEVEL_2 = 10486;
+	// private static final double HATCH_FLOOR_LEVEL_2 = HATCH_LEVEL_2 + 2000;
 	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5000;
-	private static final double HATCH_LEVEL_3 = 20800;
-	private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
+	private static final double HATCH_LEVEL_3 = 20086;
+	// private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
 	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5000;
 	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_2 + 1386;
 
@@ -199,17 +199,17 @@ public class Lift {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_PICK_OFF_FEEDER);
 	}
 
-	public static void prepareToGetHatchPanel() {
-		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1 - 1000);
-	}
+	// public static void prepareToGetHatchPanel() {
+	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1 - 1000);
+	// }
 
 	public static void goHatchLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_1);
 	}
 
-	public static void goHatchFloorLvl1() {
-		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1);
-	}
+	// public static void goHatchFloorLvl1() {
+	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1);
+	// }
 
 	public static void goCargoLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_1);
@@ -218,9 +218,9 @@ public class Lift {
 	public static void goHatchLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_2);
 	}
-	public static void goHatchFloorLvl2() {
-		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_2);
-	}
+	// public static void goHatchFloorLvl2() {
+	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_2);
+	// }
 
 	public static void goCargoLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_2);
@@ -229,9 +229,9 @@ public class Lift {
 	public static void goHatchLvl3() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_3);
 	}
-	public static void goHatchFloorLvl3() {
-		liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_3);
-	}
+	// public static void goHatchFloorLvl3() {
+	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_3);
+	// }
 
 	public static void goCargoLvl3() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_3);
