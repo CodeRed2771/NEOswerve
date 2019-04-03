@@ -27,9 +27,8 @@ public class RobotGyro implements PIDSource {
 	}
 
 	public RobotGyro() {
-		// mGyro = new AHRS(SerialPort.Port.kUSB);
-		// mGyro = new AHRS(I2C.Port.kMXP); // i2c is 10x slower than SPI
-		mGyro = new AHRS(SPI.Port.kMXP);
+		mGyro = new AHRS(SerialPort.Port.kUSB);
+		// mGyro = new AHRS(SPI.Port.kMXP);
 	}
 
 	public static AHRS getGyro() {
