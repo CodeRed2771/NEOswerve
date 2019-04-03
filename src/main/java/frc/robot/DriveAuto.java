@@ -184,7 +184,7 @@ public class DriveAuto {
 		// this is called roughly 50 times per second
 
 		// try to keep target in center by adjusting module angles
-		double angleAdjust = 0;
+		double angleAdjust = 0; // Is this a problem?
 		if (isDriving && followingTarget) {
 			angleAdjust = - Vision.offsetFromTarget();
 			if (Math.abs(angleAdjust) > 2) {

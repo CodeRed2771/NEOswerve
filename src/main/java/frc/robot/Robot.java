@@ -219,12 +219,12 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
 			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
 		}
 		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(true);
+			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1
