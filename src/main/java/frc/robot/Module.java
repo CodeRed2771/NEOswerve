@@ -1,6 +1,3 @@
-// THIS IS THE MODULE THAT WAS USED IN CANADA AND THAT WE HAD AT THE END OF CANADA.
-// CS 3/21/2019
-
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.*;
@@ -92,6 +89,14 @@ public class Module {
 
 	public int getDriveVelocity() {
 		return drive.getSelectedSensorVelocity(0);
+	}
+
+	/**
+	 * getModuleLetter
+	 * @return a single character, A,B,C,D indicating which module this is
+	 */
+	public char getModuleLetter() {
+		return mModuleID;
 	}
 
 	/**
@@ -259,6 +264,7 @@ public class Module {
 		// I believe it would be just 1 - distance to Normal
 		// if normal is .7, reverse would be .3 (1 - .7)
 		// if normal is .3, reverse would be .7 (1 - .3)
+		// this next line didn't work for some reason....
 		// distanceToReversePosition = 1 - distanceToNormalPosition;
 		if (currentTurnPosition - reverseTurnPosition >= 0)
 			if (currentTurnPosition - reverseTurnPosition > .5)
