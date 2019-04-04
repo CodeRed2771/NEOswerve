@@ -188,11 +188,11 @@ public class DriveAuto {
 		if (isDriving && followingTarget) {
 			angleAdjust = - Vision.offsetFromTarget();
 			if (Math.abs(angleAdjust) > 2) {
-				strafeAngle = (strafeAngle - (.12 * Math.signum(angleAdjust)));
+				strafeAngle = (strafeAngle + (.13 * Math.signum(angleAdjust)));
 			} else
 				strafeAngle = strafeAngleOriginal;
 					
-			DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle), true);
+			DriveTrain.setAllTurnOrientation(DriveTrain.angleToPosition(strafeAngle), true);
 						
 			SmartDashboard.putNumber("DA Ang Adj", strafeAngle);
 		}

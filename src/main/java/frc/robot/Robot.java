@@ -313,6 +313,7 @@ public class Robot extends TimedRobot {
 			break;
 		case autoDrivePIDTune:
 			SmartDashboard.putNumber("Drive To Setpoint", 0);
+			SmartDashboard.putNumber("Drive Strafe Angle", 0);
 			mAutoProgram = new AutoDrivePIDTune();
 			break;
 		case autoRotateTest:
