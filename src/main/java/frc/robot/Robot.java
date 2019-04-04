@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 		DriveTrain.allowTurnEncoderReset();
 		DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
 
-		SmartDashboard.putBoolean("Show Encoders", true);
+		SmartDashboard.putBoolean("Show Encoders", false);
 	}
 
 	@Override

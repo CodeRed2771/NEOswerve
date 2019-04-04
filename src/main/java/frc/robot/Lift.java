@@ -75,14 +75,14 @@ public class Lift {
 		currentBreaker = new CurrentBreaker(Wiring.LIFT_PDP_PORT, MAX_SUSTAINED_CURRENT, MAX_TIME_AT_MAX_CURRENT);
 		currentBreaker.reset();
 
-		SmartDashboard.putNumber("Lift Vel", Calibration.LIFT_VELOCITY);
-		SmartDashboard.putNumber("Lift Accel", Calibration.LIFT_ACCEL);
-		SmartDashboard.putNumber("Lift P", Calibration.LIFT_P);
-		SmartDashboard.putNumber("Lift I", Calibration.LIFT_I);
-		SmartDashboard.putNumber("Lift D", Calibration.LIFT_D);
-		SmartDashboard.putNumber("Lift F", Calibration.LIFT_F);
+		// SmartDashboard.putNumber("Lift Vel", Calibration.LIFT_VELOCITY);
+		// SmartDashboard.putNumber("Lift Accel", Calibration.LIFT_ACCEL);
+		// SmartDashboard.putNumber("Lift P", Calibration.LIFT_P);
+		// SmartDashboard.putNumber("Lift I", Calibration.LIFT_I);
+		// SmartDashboard.putNumber("Lift D", Calibration.LIFT_D);
+		// SmartDashboard.putNumber("Lift F", Calibration.LIFT_F);
 
-		SmartDashboard.putBoolean("Lift TUNE", false);
+		// SmartDashboard.putBoolean("Lift TUNE", false);
 	}
 
 	public static void tick() {
@@ -108,20 +108,20 @@ public class Lift {
 			encoderSet = true;
 		}
 
-		if (SmartDashboard.getBoolean("Lift TUNE", false)) {
-			liftMotor.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Lift Vel", 0), 0);
-			liftMotor.configMotionAcceleration((int) SmartDashboard.getNumber("Lift Accel", 0), 0);
-			liftMotor.config_kF(0, SmartDashboard.getNumber("Lift F", 1.0), 0);
-			liftMotor.config_kP(0, SmartDashboard.getNumber("Lift P", 1.0), 0);
-			liftMotor.config_kI(0, SmartDashboard.getNumber("Lift I", 0), 0);
-			liftMotor.config_kD(0, SmartDashboard.getNumber("Lift D", 0), 0);
-		}
+		// if (SmartDashboard.getBoolean("Lift TUNE", false)) {
+		// 	liftMotor.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Lift Vel", 0), 0);
+		// 	liftMotor.configMotionAcceleration((int) SmartDashboard.getNumber("Lift Accel", 0), 0);
+		// 	liftMotor.config_kF(0, SmartDashboard.getNumber("Lift F", 1.0), 0);
+		// 	liftMotor.config_kP(0, SmartDashboard.getNumber("Lift P", 1.0), 0);
+		// 	liftMotor.config_kI(0, SmartDashboard.getNumber("Lift I", 0), 0);
+		// 	liftMotor.config_kD(0, SmartDashboard.getNumber("Lift D", 0), 0);
+		// }
 
-		SmartDashboard.putNumber("Lift Enc", liftMotor.getSensorCollection().getQuadraturePosition());
-		if (liftMotor.getControlMode() == ControlMode.MotionMagic)
-			SmartDashboard.putNumber("Lift Setpt", liftMotor.getClosedLoopTarget());
-		else
-			SmartDashboard.putNumber("Lift Setpt", -1);
+		// SmartDashboard.putNumber("Lift Enc", liftMotor.getSensorCollection().getQuadraturePosition());
+		// if (liftMotor.getControlMode() == ControlMode.MotionMagic)
+		// 	SmartDashboard.putNumber("Lift Setpt", liftMotor.getClosedLoopTarget());
+		// else
+		// 	SmartDashboard.putNumber("Lift Setpt", -1);
 	}
 
 	public static boolean liftStalled() {
