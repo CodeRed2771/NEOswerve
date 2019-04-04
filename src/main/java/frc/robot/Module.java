@@ -259,15 +259,16 @@ public class Module {
 			// I believe it would be just 1 - distance to Normal
 			// if normal is .7, reverse would be .3  (1 - .7)
 			// if normal is .3, reverse would be .7  (1 - .3)
-		if (currentTurnPosition - reverseTurnPosition >= 0)
-			if (currentTurnPosition - reverseTurnPosition > .5)
-				distanceToReversePosition = (1 - currentTurnPosition) + reverseTurnPosition;
-			else
-				distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
-		else if (reverseTurnPosition - currentTurnPosition > .5)
-			distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
-		else
-			distanceToReversePosition = reverseTurnPosition - currentTurnPosition;
+		distanceToReversePosition = 1 - distanceToNormalPosition;
+		// if (currentTurnPosition - reverseTurnPosition >= 0)
+		// 	if (currentTurnPosition - reverseTurnPosition > .5)
+		// 		distanceToReversePosition = (1 - currentTurnPosition) + reverseTurnPosition;
+		// 	else
+		// 		distanceToReversePosition = currentTurnPosition - reverseTurnPosition;
+		// else if (reverseTurnPosition - currentTurnPosition > .5)
+		// 	distanceToReversePosition = (1 - reverseTurnPosition) + currentTurnPosition;
+		// else
+		// 	distanceToReversePosition = reverseTurnPosition - currentTurnPosition;
 
 		if (optimize) {
 			closestTurnPosition = distanceToReversePosition < distanceToNormalPosition ? reverseTurnPosition
@@ -275,8 +276,12 @@ public class Module {
 		} else
 			closestTurnPosition = reqPosition;
 
-		isReversed = closestTurnPosition != reqPosition;
-
+		if (isReversed) {
+			isReversed = (closestTurnPosition == reqPosition);
+		} else {
+			isReversed = (closestTurnPosition != reqPosition);
+		}
+		
 		if (turnRelativePosition >= 0) {
 			if ((base + (closestTurnPosition * FULL_ROTATION)) - turnRelativePosition < -FULL_ROTATION / 2) {
 				base += FULL_ROTATION;

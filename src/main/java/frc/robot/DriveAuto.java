@@ -68,7 +68,7 @@ public class DriveAuto {
 
 		SmartDashboard.putNumber("DRIVE INCHES", inches);
 
-		strafeAngle = angle;
+		strafeAngle = -angle;
 		strafeAngleOriginal = strafeAngle;
 
 		stopTurning();
@@ -80,7 +80,7 @@ public class DriveAuto {
 		// angle at which the wheel modules should be turned
 		
 		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags are reset.
-		DriveTrain.setAllTurnOrientation(-DriveTrain.angleToPosition(strafeAngle), true);
+		DriveTrain.setAllTurnOrientation(DriveTrain.angleToPosition(strafeAngle), true);
 
 		// give it just a little time to get the modules turned to position
 		// before starting the drive

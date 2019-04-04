@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
 	final String autoTestEncoders = "Test Encoders";
 	final String autoTeleop = "TELEOP";
 	final String autoDriveOffPlatform = "Auto Platform";
+	final String autoHexDrive = "Hex Drive";
 
 	final String testProgram = "Test Program";
 	final String targetTracking = "Target Tracking";
@@ -320,6 +321,9 @@ public class Robot extends TimedRobot {
 		case autoTestEncoders:
 			mAutoProgram = new AutoTestEncoders();
 			break;
+		case autoHexDrive:
+			mAutoProgram = new AutoDriveHexagon();
+			break;
 		}
 
 		DriveAuto.reset();
@@ -469,6 +473,7 @@ public class Robot extends TimedRobot {
 		autoChooser.addOption(autoTestEncoders, autoTestEncoders);
 		autoChooser.addOption(autoDriveOffPlatform, autoDriveOffPlatform);
 		autoChooser.setDefaultOption(autoTeleop, autoTeleop);
+		autoChooser.addOption(autoHexDrive, autoHexDrive);
 
 		// Put options to smart dashboard
 		SmartDashboard.putData("Auto choices", autoChooser);
