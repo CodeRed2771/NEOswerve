@@ -86,7 +86,7 @@ public class AutoDoEverything extends AutoBaseClass {
             case 5:
                 double slideDistance = -((Math.sin(Math.toRadians(angleDiff)) * distanceToTarget)) + 2;
                 SmartDashboard.putNumber("Slide Dist", slideDistance);
-                driveInches(slideDistance, 90, .5, false);
+                driveInches(slideDistance, 90, .6, false);
                 setTimerAndAdvanceStep(3000);
                 break;
             case 6:
@@ -102,7 +102,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 8:
-                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .75, true);
+                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .85, true);
                 setTimerAndAdvanceStep(3000);
                 break;
             case 9:
@@ -230,6 +230,7 @@ public class AutoDoEverything extends AutoBaseClass {
             // PLACE HATCH
             /////////////////////////////////////////////////////////////////////////
             case 60:
+                Manipulator.setLinkageForPlacement();
                 Lift.goHatchLvl1();
                 driveInches(30, 0, .3);
                 setTimerAndAdvanceStep(2000);
@@ -264,6 +265,7 @@ public class AutoDoEverything extends AutoBaseClass {
             
             //Need to make sure Lift is at the right height
             case 90: 
+                Manipulator.setLinkageForPlacement();
                 Lift.goCargoLvl1();
                 driveInches(30, 0, .3); 
                 setTimerAndAdvanceStep(2000);
