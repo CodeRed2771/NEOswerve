@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.libs.CurrentBreaker;
 
 public class DriveAuto {
 	private static DriveAuto instance;
@@ -16,6 +17,8 @@ public class DriveAuto {
 	private static double heading = 0; // keeps track of intended heading - used for driving "straight"
 	private static double strafeAngle = 0;
 	private static double strafeAngleOriginal = 0;
+
+	private static CurrentBreaker driveCurrentBreaker; 
 
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
@@ -38,6 +41,10 @@ public class DriveAuto {
 
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
+
+		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 300);
+		driveCurrentBreaker.reset();
+
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I);
@@ -187,6 +194,7 @@ public class DriveAuto {
 		double angleAdjust = 0; // Is this a problem?
 		if (isDriving && followingTarget) {
 			angleAdjust = - Vision.offsetFromTarget();
+			angleAdjust += 2;
 			if (Math.abs(angleAdjust) > 2) {
 				strafeAngle = (strafeAngle + (.11 * Math.signum(angleAdjust)));
 			} else
@@ -304,6 +312,13 @@ public class DriveAuto {
 		} else {
 			rotDrivePID.disable();
 		}
+	}
+
+	public static void resetDriveCurrentBreaker() {
+		driveCurrentBreaker.reset();
+	}
+	public static boolean isAgainstWall() {
+		return driveCurrentBreaker.tripped();
 	}
 
 	public static void disable() {

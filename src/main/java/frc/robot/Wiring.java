@@ -20,6 +20,7 @@ public class Wiring {
 	public static final int LINKAGE_PDP_PORT = 8;
 	public static final int LIFT_PDP_PORT = 6;
 	public static final int INTAKE_PDP_PORT = 7;
+	public static final int DRIVE_PDP_PORT = 1;
 
 	/*
 	 * PCM PORTS

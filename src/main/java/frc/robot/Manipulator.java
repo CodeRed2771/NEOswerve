@@ -281,6 +281,7 @@ public class Manipulator {
             holdCargo();
         } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
+            Lift.getHatchOffFeeder();
         }
     }
 

@@ -84,7 +84,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 5:
-                double slideDistance = -((Math.sin(Math.toRadians(angleDiff)) * distanceToTarget) + 1);
+                double slideDistance = -((Math.sin(Math.toRadians(angleDiff)) * distanceToTarget)) + 2;
                 SmartDashboard.putNumber("Slide Dist", slideDistance);
                 driveInches(slideDistance, 90, .5, false);
                 setTimerAndAdvanceStep(3000);
@@ -102,7 +102,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 8:
-                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .5, true);
+                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .75, true);
                 setTimerAndAdvanceStep(3000);
                 break;
             case 9:
@@ -146,26 +146,22 @@ public class AutoDoEverything extends AutoBaseClass {
             // Get HATCH
             /////////////////////////////////////////////////////////////////////////
             case 20:
+                DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.intakeHatch();
                 Manipulator.resetIntakeStallDetector();
                 driveInches(30, 0, .3, true);
                 setTimerAndAdvanceStep(2000);
                 break;
             case 21:
-            
-                // if (Manipulator.intakeStalled()) {
-                //     advanceStep();
-                // }
+                if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
+                    DriveAuto.stopDriving();
+                    advanceStep();
+                }
                 break;
             case 22:
                 DriveAuto.stopDriving();
-                // if (Manipulator.intakeStalled()) {
-                    Manipulator.holdGamePieceOverride();
-                    // Manipulator.resetIntakeStallDetector();
-                    setStep(23);
-                // } else {
-                //     setStep(500);
-                // }
+                Manipulator.holdGamePieceOverride();
+                setStep(23);
                 break;
             case 23:
                 DriveAuto.driveInches(-24, 0, .5);
