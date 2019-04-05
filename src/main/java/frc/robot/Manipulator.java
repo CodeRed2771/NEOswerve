@@ -222,8 +222,8 @@ public class Manipulator {
     }
 
     public static void intakeHatch() {
-        Lift.getHatchPanel();
         moveFingerDown();
+        Lift.getHatchPanel();
         manipulatorState = ManipulatorState.GETTING_HATCH;
     }
 
@@ -281,7 +281,6 @@ public class Manipulator {
             holdCargo();
         } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
-            Lift.getHatchOffFeeder();
         }
     }
 

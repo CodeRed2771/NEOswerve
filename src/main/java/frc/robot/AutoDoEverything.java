@@ -146,7 +146,7 @@ public class AutoDoEverything extends AutoBaseClass {
             // Get HATCH
             /////////////////////////////////////////////////////////////////////////
             case 20:
-                Manipulator.prepareToGetHatchFromFeeder();
+                Manipulator.intakeHatch();
                 Manipulator.resetIntakeStallDetector();
                 driveInches(30, 0, .3, true);
                 setTimerAndAdvanceStep(2000);
@@ -160,7 +160,7 @@ public class AutoDoEverything extends AutoBaseClass {
             case 22:
                 DriveAuto.stopDriving();
                 // if (Manipulator.intakeStalled()) {
-                    Manipulator.intakeHatchOverride();
+                    Manipulator.holdGamePieceOverride();
                     // Manipulator.resetIntakeStallDetector();
                     setStep(23);
                 // } else {
