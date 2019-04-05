@@ -176,15 +176,15 @@ public class Lift {
 
 	private static final double HATCH_ACQUIRING = 1200;
 	private static final double HATCH_PICK_OFF_FEEDER = HATCH_ACQUIRING + 1100;
-	private static final double HATCH_LEVEL_1 = 1640;
+	private static final double HATCH_LEVEL_1 = 2000;
 	// private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
-	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 4800;
-	private static final double HATCH_LEVEL_2 = 10500;
+	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 5300;
+	private static final double HATCH_LEVEL_2 = 11000;
 	// private static final double HATCH_FLOOR_LEVEL_2 = HATCH_LEVEL_2 + 2000;
-	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 4300;
-	private static final double HATCH_LEVEL_3 = 20100;
+	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5900;
+	private static final double HATCH_LEVEL_3 = 21000;
 	// private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
-	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 4300;
+	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5900;
 	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_2 + 686;
 
 	public static void getHatchPanel() {

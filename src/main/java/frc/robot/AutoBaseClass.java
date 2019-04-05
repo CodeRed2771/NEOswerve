@@ -90,7 +90,7 @@ public abstract class AutoBaseClass {
 	}
 
 	public void driveInches(double distance, double angle, double maxPower) {
-		DriveAuto.driveInches(distance, angle, maxPower);
+		DriveAuto.driveInches(distance, angle, maxPower, false);
 	}
 
 	public void driveInches(double distance, double angle, double maxPower, boolean followTarget) {

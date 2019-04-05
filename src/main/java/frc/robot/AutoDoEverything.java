@@ -148,23 +148,24 @@ public class AutoDoEverything extends AutoBaseClass {
             case 20:
                 Manipulator.prepareToGetHatchFromFeeder();
                 Manipulator.resetIntakeStallDetector();
-                driveInches(30, 0, .3);
-                setTimerAndAdvanceStep(3000);
+                driveInches(30, 0, .3, true);
+                setTimerAndAdvanceStep(2000);
                 break;
             case 21:
-                if (Manipulator.intakeStalled()) {
-                    advanceStep();
-                }
+            
+                // if (Manipulator.intakeStalled()) {
+                //     advanceStep();
+                // }
                 break;
             case 22:
                 DriveAuto.stopDriving();
-                if (Manipulator.intakeStalled()) {
-                    Manipulator.intakeHatch();
-                    Manipulator.resetIntakeStallDetector();
+                // if (Manipulator.intakeStalled()) {
+                    Manipulator.intakeHatchOverride();
+                    // Manipulator.resetIntakeStallDetector();
                     setStep(23);
-                } else {
-                    setStep(500);
-                }
+                // } else {
+                //     setStep(500);
+                // }
                 break;
             case 23:
                 DriveAuto.driveInches(-24, 0, .5);
