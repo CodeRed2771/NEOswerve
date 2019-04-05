@@ -218,7 +218,7 @@ public class Manipulator {
         linkageDown();
         manipulator.set(ControlMode.PercentOutput, -1);
         moveFingerDown();
-        Lift.goHatchLvl1();
+        Lift.getHatchPanel();
     }
 
     public static void intakeHatch() {
@@ -257,7 +257,7 @@ public class Manipulator {
 
     private static void holdCargo() {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
-        resetIntakeStallDetector();
+        // resetIntakeStallDetector();
         Lift.goCargoLvl1();
         manipulator.set(ControlMode.PercentOutput, 0);
     }

@@ -75,14 +75,14 @@ public class Lift {
 		currentBreaker = new CurrentBreaker(Wiring.LIFT_PDP_PORT, MAX_SUSTAINED_CURRENT, MAX_TIME_AT_MAX_CURRENT);
 		currentBreaker.reset();
 
-		// SmartDashboard.putNumber("Lift Vel", Calibration.LIFT_VELOCITY);
-		// SmartDashboard.putNumber("Lift Accel", Calibration.LIFT_ACCEL);
-		// SmartDashboard.putNumber("Lift P", Calibration.LIFT_P);
-		// SmartDashboard.putNumber("Lift I", Calibration.LIFT_I);
-		// SmartDashboard.putNumber("Lift D", Calibration.LIFT_D);
-		// SmartDashboard.putNumber("Lift F", Calibration.LIFT_F);
+		SmartDashboard.putNumber("Lift Vel", Calibration.LIFT_VELOCITY);
+		SmartDashboard.putNumber("Lift Accel", Calibration.LIFT_ACCEL);
+		SmartDashboard.putNumber("Lift P", Calibration.LIFT_P);
+		SmartDashboard.putNumber("Lift I", Calibration.LIFT_I);
+		SmartDashboard.putNumber("Lift D", Calibration.LIFT_D);
+		SmartDashboard.putNumber("Lift F", Calibration.LIFT_F);
 
-		// SmartDashboard.putBoolean("Lift TUNE", false);
+		SmartDashboard.putBoolean("Lift TUNE", false);
 	}
 
 	public static void tick() {
@@ -108,14 +108,14 @@ public class Lift {
 			encoderSet = true;
 		}
 
-		// if (SmartDashboard.getBoolean("Lift TUNE", false)) {
-		// 	liftMotor.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Lift Vel", 0), 0);
-		// 	liftMotor.configMotionAcceleration((int) SmartDashboard.getNumber("Lift Accel", 0), 0);
-		// 	liftMotor.config_kF(0, SmartDashboard.getNumber("Lift F", 1.0), 0);
-		// 	liftMotor.config_kP(0, SmartDashboard.getNumber("Lift P", 1.0), 0);
-		// 	liftMotor.config_kI(0, SmartDashboard.getNumber("Lift I", 0), 0);
-		// 	liftMotor.config_kD(0, SmartDashboard.getNumber("Lift D", 0), 0);
-		// }
+		if (SmartDashboard.getBoolean("Lift TUNE", false)) {
+			liftMotor.configMotionCruiseVelocity((int) SmartDashboard.getNumber("Lift Vel", 0), 0);
+			liftMotor.configMotionAcceleration((int) SmartDashboard.getNumber("Lift Accel", 0), 0);
+			liftMotor.config_kF(0, SmartDashboard.getNumber("Lift F", 1.0), 0);
+			liftMotor.config_kP(0, SmartDashboard.getNumber("Lift P", 1.0), 0);
+			liftMotor.config_kI(0, SmartDashboard.getNumber("Lift I", 0), 0);
+			liftMotor.config_kD(0, SmartDashboard.getNumber("Lift D", 0), 0);
+		}
 
 		// SmartDashboard.putNumber("Lift Enc", liftMotor.getSensorCollection().getQuadraturePosition());
 		// if (liftMotor.getControlMode() == ControlMode.MotionMagic)
@@ -179,13 +179,13 @@ public class Lift {
 	private static final double HATCH_LEVEL_1 = 1640;
 	// private static final double HATCH_FLOOR_LEVEL_1 = HATCH_LEVEL_1 + 2000;
 	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 4800;
-	private static final double HATCH_LEVEL_2 = 11200;
+	private static final double HATCH_LEVEL_2 = 10500;
 	// private static final double HATCH_FLOOR_LEVEL_2 = HATCH_LEVEL_2 + 2000;
-	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5000;
-	private static final double HATCH_LEVEL_3 = 20800;
+	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 4300;
+	private static final double HATCH_LEVEL_3 = 20100;
 	// private static final double HATCH_FLOOR_LEVEL_3 = HATCH_LEVEL_3 + 2000;
-	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5000;
-	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_2 + 1386;
+	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 4300;
+	private static final double CARGO_PICK_OFF_FEEDER = HATCH_LEVEL_2 + 686;
 
 	public static void getHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);

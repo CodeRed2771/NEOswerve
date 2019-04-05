@@ -66,7 +66,7 @@ public class AutoDriveOffPlatform extends AutoBaseClass {
 				}
 				break;
 			case 34:
-				mSubAutoProg = new AutoFindHatch();
+				mSubAutoProg = new AutoDoEverything();
 				mSubAutoProg.start();
 				advanceStep();
 				break;

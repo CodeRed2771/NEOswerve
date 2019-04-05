@@ -108,7 +108,7 @@ public class KeyMap {
     }
 
     public boolean activateCargoFeedIntake() {
-        return getHID(gamepad2).button(intakeCargo);
+        return getHID(gamepad2).button(intakeCargo) && !getHID(gamepad2).button(modifier);
     }
 
     public boolean activateHatchIntake() {

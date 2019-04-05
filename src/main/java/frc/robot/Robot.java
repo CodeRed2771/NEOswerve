@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
 		// GAME PIECES
 		// --------------------------------------------------
 		if (gamepad.activateCargoIntake()) {
+			System.out.println("Pressed regular cargo intake buttons");
 			Manipulator.intakeCargo();
 		}
 
@@ -214,18 +215,21 @@ public class Robot extends TimedRobot {
 
 		// FIND HATCH TARGET
 		if (gamepad.findRocketTarget() && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			mAutoProgram = new AutoDoEverything();
+			((AutoDoEverything) mAutoProgram).setDrivingAllowed(true);
+			((AutoDoEverything) mAutoProgram).setActionMode(AutoDoEverything.ActionMode.PLACE_HATCH);
 			mAutoProgram.start(TargetInfo.TargetType.ROCKET_TARGET);
 		}
 		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			mAutoProgram = new AutoDoEverything();
+			((AutoDoEverything) mAutoProgram).setDrivingAllowed(true);
+			((AutoDoEverything) mAutoProgram).setActionMode(AutoDoEverything.ActionMode.GET_HATCH);
 			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
 		}
 		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoFindHatch();
-			((AutoFindHatch) mAutoProgram).setDrivingAllowed(false);
+			mAutoProgram = new AutoDoEverything();
+			((AutoDoEverything) mAutoProgram).setDrivingAllowed(true);
+			((AutoDoEverything) mAutoProgram).setActionMode(AutoDoEverything.ActionMode.PLACE_HATCH);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1
