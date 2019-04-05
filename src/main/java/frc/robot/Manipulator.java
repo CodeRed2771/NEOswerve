@@ -314,6 +314,12 @@ public class Manipulator {
         linkageCurrentBreaker.reset();
     }
 
+    public static void stopAll() {
+        stopLinkage();
+        stopIntake();
+        resetIntakeStallDetector();
+    }
+
     // UTILITY METHODS ---------------------------------------------------------
 
     public static boolean intakeStalled() {
@@ -322,6 +328,7 @@ public class Manipulator {
 
     public static void resetIntakeStallDetector() {
         currentBreaker.reset();
+        ejectEndTime = aDistantFutureTime();
     }
 
     private static double aDistantFutureTime() {

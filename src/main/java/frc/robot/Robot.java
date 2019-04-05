@@ -74,9 +74,7 @@ public class Robot extends TimedRobot {
 		DriveTrain.stopDriveAndTurnMotors();
 		Climber.stop();
 		Lift.stop();
-		Manipulator.stopLinkage();
-		Manipulator.stopIntake();
-
+		Manipulator.stopAll();
 		DriveTrain.setAllTurnOrientation(0, false); // sets them back to calibrated zero position
 
 		Vision.setDriverMode();
@@ -289,7 +287,7 @@ public class Robot extends TimedRobot {
 		mAutoProgram.stop();
 		Climber.stop();
 		Lift.stop();
-		Manipulator.stopIntake();
+		Manipulator.stopAll();
 		Vision.setDriverMode();
 		DriveTrain.stopDriveAndTurnMotors();
 		DriveTrain.setAllTurnOrientation(0, false);
