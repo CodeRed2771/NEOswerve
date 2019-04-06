@@ -42,7 +42,7 @@ public class DriveAuto {
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
-		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 750);
+		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 500);
 		driveCurrentBreaker.reset();
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);

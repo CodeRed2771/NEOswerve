@@ -103,7 +103,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 8:
                 driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .85, true);
-                setTimerAndAdvanceStep(3000);
+                setTimerAndAdvanceStep(4000);
                 break;
             case 9:
                 if (DriveAuto.hasArrived()) {
@@ -230,13 +230,14 @@ public class AutoDoEverything extends AutoBaseClass {
             // PLACE HATCH
             /////////////////////////////////////////////////////////////////////////
             case 60:
+                DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.setLinkageForPlacement();
                 Lift.goHatchLvl1();
-                driveInches(30, 0, 1);
-                setTimerAndAdvanceStep(2000);
+                driveInches(50, 0, 1);
+                setTimerAndAdvanceStep(3000);
                 break;
             case 61:
-                if (DriveAuto.hasArrived()) {
+                if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
                     advanceStep();
                 }
                 break;

@@ -178,12 +178,12 @@ public class Manipulator {
 
     public static void linkageUp() {
         moveFingerUp();
-        if (linkageIsDown) {
+        // if (linkageIsDown) {
             linkage.set(ControlMode.Position, 0);
             linkageIsDown = false;
             // linkage.set(ControlMode.MotionMagic, 0);
-        } else
-            linkage.set(ControlMode.PercentOutput, 0);
+        // } else
+        //     linkage.set(ControlMode.PercentOutput, 0);
     }
 
     public static void resetLinkage() {
@@ -277,12 +277,12 @@ public class Manipulator {
     }
 
     public static void holdGamePieceOverride() {
-        if (manipulatorState == ManipulatorState.GETTING_CARGO) {
-            holdCargo();
-        } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
+        // if (manipulatorState == ManipulatorState.GETTING_CARGO) {
+        //     holdCargo();
+        // } else if (manipulatorState == ManipulatorState.GETTING_HATCH) {
             holdHatch();
             Lift.getHatchOffFeeder();
-        }
+        // }
     }
 
     public static void ejectGamePiece() {
