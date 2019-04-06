@@ -40,8 +40,8 @@ public class AutoClimb extends AutoBaseClass {
 			case 3:
 				DriveTrain.moduleB.setTurnOrientation(.25);
 				DriveTrain.moduleC.setTurnOrientation(.25);
-				Climber.setClimbDriveSpeed(.6); // drive forward
-				setTimerAndAdvanceStep(2500);
+				Climber.setClimbDriveSpeed(.7); // drive forward
+				setTimerAndAdvanceStep(3000);
 				// setTimerAndAdvanceStep(4000);
 				break;
 			case 4:
