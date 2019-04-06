@@ -154,14 +154,14 @@ public class Lift {
 		int newSetpoint;
 
 		if (direction > 0) {
-			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 4000;
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 3000;
 			if (newSetpoint >= 0) {
 				newSetpoint = 0;
 			}
 		} else {
-			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 4000;
-			if (newSetpoint < -40000) {
-				newSetpoint = -40000;
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 3000;
+			if (newSetpoint < -30000) {
+				newSetpoint = -30000;
 			}
 		}
 
@@ -184,7 +184,7 @@ public class Lift {
 	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5900;
 	
 	private static final double HATCH_LEVEL_3 = 21800;
-	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5900;
+	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5700;
 	
 	private static final double CARGO_PICK_OFF_FEEDER = 13000;   // was at 11686, 37"
 

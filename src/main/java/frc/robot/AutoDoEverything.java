@@ -149,7 +149,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.intakeHatch();
                 Manipulator.resetIntakeStallDetector();
-                driveInches(30, 0, .3, true);
+                driveInches(30, 0, 1, true);
                 setTimerAndAdvanceStep(2000);
                 break;
             case 21:
@@ -164,7 +164,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 setStep(23);
                 break;
             case 23:
-                DriveAuto.driveInches(-24, 0, .5);
+                DriveAuto.driveInches(-24, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
             case 24:
@@ -232,7 +232,7 @@ public class AutoDoEverything extends AutoBaseClass {
             case 60:
                 Manipulator.setLinkageForPlacement();
                 Lift.goHatchLvl1();
-                driveInches(30, 0, .3);
+                driveInches(30, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
             case 61:
@@ -242,12 +242,12 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 62:
                 Manipulator.moveFingerDown();
-                setTimerAndAdvanceStep(300);
+                setTimerAndAdvanceStep(750);
                 break;
             case 63:
                 break;
             case 64:
-                driveInches(-12, 0, .25);
+                driveInches(-12, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
             case 65:

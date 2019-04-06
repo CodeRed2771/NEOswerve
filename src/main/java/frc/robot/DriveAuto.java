@@ -18,7 +18,7 @@ public class DriveAuto {
 	private static double strafeAngle = 0;
 	private static double strafeAngleOriginal = 0;
 
-	private static CurrentBreaker driveCurrentBreaker; 
+	private static CurrentBreaker driveCurrentBreaker;
 
 	public static enum DriveSpeed {
 		VERY_LOW_SPEED, LOW_SPEED, MED_SPEED, HIGH_SPEED
@@ -42,9 +42,8 @@ public class DriveAuto {
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
-		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 300);
+		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 750);
 		driveCurrentBreaker.reset();
-
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
 		// SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I);
@@ -85,8 +84,9 @@ public class DriveAuto {
 		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * speedFactor));
 
 		// angle at which the wheel modules should be turned
-		
-		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags are reset.
+
+		// didnt help - DriveTrain.unReverseModules(); // make sure all "reversed" flags
+		// are reset.
 		DriveTrain.setAllTurnOrientation(DriveTrain.angleToPosition(strafeAngle), true);
 
 		// give it just a little time to get the modules turned to position
@@ -102,7 +102,7 @@ public class DriveAuto {
 
 		// set the new drive distance setpoint
 		DriveTrain.addToAllDrivePositions(convertToTicks(inches));
-		
+
 	}
 
 	public static void driveInches(double inches, double angle, double speedFactor) {
@@ -141,7 +141,7 @@ public class DriveAuto {
 	}
 
 	public static double degreesToInches(double degrees) {
-		double inches = degrees / 3.47; 
+		double inches = degrees / 3.47;
 		return inches;
 	}
 
@@ -157,15 +157,15 @@ public class DriveAuto {
 
 		SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
 
-		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(-133.6677), DriveTrain.angleToPosition(46.3322), DriveTrain.angleToPosition(133.6677),
-				DriveTrain.angleToPosition(-46.3322), true);
+		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(-133.6677), DriveTrain.angleToPosition(46.3322),
+				DriveTrain.angleToPosition(133.6677), DriveTrain.angleToPosition(-46.3322), true);
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		DriveTrain.setDriveMMVelocity((int) (Calibration.DT_MM_VELOCITY * turnSpeedFactor));
 
 		DriveTrain.addToAllDrivePositions(convertToTicks(degreesToInches(degrees)));
@@ -182,8 +182,8 @@ public class DriveAuto {
 	public static void continuousDrive(double inches, double maxPower) {
 		setRotationalPowerOutput(maxPower);
 
-		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0),
-				DriveTrain.angleToPosition(0), true);
+		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0),
+				DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0), true);
 		rotDrivePID.disable();
 	}
 
@@ -193,13 +193,15 @@ public class DriveAuto {
 		// try to keep target in center by adjusting module angles
 		double angleAdjust = 0; // Is this a problem?
 		if (isDriving && followingTarget) {
-			angleAdjust = - Vision.offsetFromTarget();
-			angleAdjust += 2;
-			if (Math.abs(angleAdjust) > 2) {
-				strafeAngle = (strafeAngle + (.11 * Math.signum(angleAdjust)));
-			} else
-				strafeAngle = strafeAngleOriginal;
-			
+			angleAdjust = Vision.offsetFromTarget();
+			strafeAngle = -angleAdjust;
+			// angleAdjust = - Vision.offsetFromTarget();
+
+			// if (Math.abs(angleAdjust) > 1) {
+			// strafeAngle = (strafeAngle + (.11 * Math.signum(angleAdjust)));
+			// } else
+			// strafeAngle = strafeAngleOriginal;
+
 			SmartDashboard.putNumber("VA angleadj", angleAdjust);
 			SmartDashboard.putNumber("VA strafeAngle", strafeAngle);
 
@@ -317,6 +319,7 @@ public class DriveAuto {
 	public static void resetDriveCurrentBreaker() {
 		driveCurrentBreaker.reset();
 	}
+
 	public static boolean isAgainstWall() {
 		return driveCurrentBreaker.tripped();
 	}

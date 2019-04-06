@@ -407,7 +407,7 @@ public class Robot extends TimedRobot {
 		if (normalDrive) {
 			return fwd;
 		} else {
-			return fwd * .40;
+			return fwd * .66;
 		}
 	}
 
@@ -430,7 +430,7 @@ public class Robot extends TimedRobot {
 					}
 				}
 			} else { // lift is up, so do more drastic adjustments
-				adjustedAmt = strafeAmt * .40;
+				adjustedAmt = strafeAmt * .56;
 			}
 		}
 		return adjustedAmt;
