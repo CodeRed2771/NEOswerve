@@ -233,30 +233,38 @@ public class AutoDoEverything extends AutoBaseClass {
                 DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.setLinkageForPlacement();
                 Lift.goHatchLvl1();
+                driveInches(12, 270, .5);
+                setTimerAndAdvanceStep(1500);
+                break;
+            case 61:
+                if(DriveAuto.hasArrived())
+                advanceStep();
+                break;
+            case 62:
                 driveInches(50, 0, 1);
                 setTimerAndAdvanceStep(3000);
                 break;
-            case 61:
+            case 63:
                 if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
                     advanceStep();
                 }
                 break;
-            case 62:
+            case 64:
                 Manipulator.moveFingerDown();
                 setTimerAndAdvanceStep(750);
                 break;
-            case 63:
+            case 65:
                 break;
-            case 64:
+            case 66:
                 driveInches(-12, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
-            case 65:
+            case 67:
                 if (DriveAuto.hasArrived()) {
                     advanceStep();
                 }
                 break;
-            case 66:
+            case 68:
                 setStep(500);
                 break;
 
