@@ -233,7 +233,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.setLinkageForPlacement();
                 Lift.goHatchLvl1();
-                driveInches(12, 270, .5);
+                driveInches(9, 270, .5);
                 setTimerAndAdvanceStep(1500);
                 break;
             case 61:

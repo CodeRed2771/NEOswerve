@@ -499,5 +499,13 @@ public class Robot extends TimedRobot {
 		// added this back in on 1/15/18
 		return new BigDecimal(val.toString()).setScale(0, RoundingMode.HALF_UP).doubleValue();
 	}
-
 }
+
+
+// if (!win) {
+// 	this.win = true;
+// }
+
+// while (win) {
+	// robot.celebrate
+//}
