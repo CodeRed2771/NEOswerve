@@ -142,7 +142,7 @@ public class Robot extends TimedRobot {
 			Lift.goToStart();
 			Manipulator.fingerUp();
 		}
-		if (!mAutoProgram.isRunning()) {
+		if (mAutoProgram.isRunning()) {
 			if (gamepad.goToLvl1()) {
 				AutoDoEverything.setLiftHeight(1);
 			}
