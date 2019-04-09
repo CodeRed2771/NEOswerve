@@ -142,27 +142,40 @@ public class Robot extends TimedRobot {
 			Lift.goToStart();
 			Manipulator.fingerUp();
 		}
-		if (gamepad.goToLvl1()) {
-			Manipulator.setLinkageForPlacement();
-			if (Manipulator.isHoldingCargo())
-				Lift.goCargoLvl1();
-			else
-				Lift.goHatchLvl1();
+		if (!mAutoProgram.isRunning()) {
+			if (gamepad.goToLvl1()) {
+				AutoDoEverything.setLiftHeight(1);
+			}
+			if (gamepad.goToLvl2()) {
+				AutoDoEverything.setLiftHeight(2);
+			} 
+			if (gamepad.goToLvl3()) {
+				AutoDoEverything.setLiftHeight(3);
+			}
+		} else {
+			if (gamepad.goToLvl1()) {
+				Manipulator.setLinkageForPlacement();
+				if (Manipulator.isHoldingCargo())
+					Lift.goCargoLvl1();
+				else
+					Lift.goHatchLvl1();
+			}
+			if (gamepad.goToLvl2()) {
+				Manipulator.setLinkageForPlacement();
+				if (Manipulator.isHoldingCargo())
+					Lift.goCargoLvl2();
+				else
+					Lift.goHatchLvl2();
+			}
+			if (gamepad.goToLvl3()) {
+				Manipulator.setLinkageForPlacement();
+				if (Manipulator.isHoldingCargo())
+					Lift.goCargoLvl3();
+				else
+					Lift.goHatchLvl3();
+			}
 		}
-		if (gamepad.goToLvl2()) {
-			Manipulator.setLinkageForPlacement();
-			if (Manipulator.isHoldingCargo())
-				Lift.goCargoLvl2();
-			else
-				Lift.goHatchLvl2();
-		}
-		if (gamepad.goToLvl3()) {
-			Manipulator.setLinkageForPlacement();
-			if (Manipulator.isHoldingCargo())
-				Lift.goCargoLvl3();
-			else
-				Lift.goHatchLvl3();
-		}
+		
 
 		if (gamepad.getCargoShipPlacement()) {
 			Manipulator.setLinkageForPlacement();

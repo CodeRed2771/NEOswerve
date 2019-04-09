@@ -24,7 +24,22 @@ public class AutoDoEverything extends AutoBaseClass {
         JUST_DRIVE, GET_HATCH, GET_CARGO, PLACE_HATCH, PLACE_CARGO;
     }
 
+    public enum LiftHeight {
+        LVL_1, LVL_2, LVL_3;
+    }
+
+    private static LiftHeight liftHeight = LiftHeight.LVL_1;
     private ActionMode actionMode = ActionMode.JUST_DRIVE;
+
+    public static void setLiftHeight(int liftHeightParameter) {
+        if (liftHeightParameter == 1) {
+            liftHeight = LiftHeight.LVL_1;
+        } else if (liftHeightParameter == 2) {
+            liftHeight = LiftHeight.LVL_2;
+        } else if (liftHeightParameter == 3) {
+            liftHeight = LiftHeight.LVL_3;
+        }
+    }
 
     public void start() {
         super.start();
@@ -63,7 +78,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 System.out.println("target type " + mTargetType.toString());
                 targetAngle = TargetInfo.targetAngle(mTargetType);
                 System.out.println("Target Angle " + targetAngle);
-                DriveAuto.turnDegrees(Vision.offsetFromTarget(), .35);
+                DriveAuto.turnDegrees(Vision.offsetFromTarget(), 1);
                 setTimerAndAdvanceStep(1000);
                 break;
             case 2:
@@ -75,7 +90,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 angleDiff = RobotGyro.getClosestTurn(targetAngle);
                 // angleDiff = targetAngle - RobotGyro.getRelativeAngle();
                 System.out.println("anglediff " + angleDiff);
-                DriveAuto.turnDegrees(angleDiff, .45); // Square up with target
+                DriveAuto.turnDegrees(angleDiff, 1); // Square up with target
                 setTimerAndAdvanceStep(1000);
                 break;
             case 4:
@@ -86,7 +101,7 @@ public class AutoDoEverything extends AutoBaseClass {
             case 5:
                 double slideDistance = -((Math.sin(Math.toRadians(angleDiff)) * distanceToTarget)) + 2;
                 SmartDashboard.putNumber("Slide Dist", slideDistance);
-                driveInches(slideDistance, 90, .6, false);
+                driveInches(slideDistance, 90, 1, false);
                 setTimerAndAdvanceStep(3000);
                 break;
             case 6:
@@ -102,7 +117,25 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 8:
-                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, .85, true);
+            //We added this
+                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, 1, true);
+                if (Manipulator.isHoldingCargo()) {
+                    if (liftHeight == LiftHeight.LVL_1){
+                        Lift.goCargoLvl1();
+                    } else if (liftHeight == LiftHeight.LVL_2) {
+                        Lift.goCargoLvl2();
+                    } else if (liftHeight == LiftHeight.LVL_3) {
+                        Lift.goCargoLvl3();
+                    }
+                } else {
+                    if (liftHeight == LiftHeight.LVL_1){
+                        Lift.goHatchLvl1();
+                    } else if (liftHeight == LiftHeight.LVL_2) {
+                        Lift.goHatchLvl2();
+                    } else if (liftHeight == LiftHeight.LVL_3) {
+                        Lift.goHatchLvl3();
+                    }
+                }   
                 setTimerAndAdvanceStep(4000);
                 break;
             case 9:
@@ -141,7 +174,7 @@ public class AutoDoEverything extends AutoBaseClass {
                     setStep(500);
                 }
                 break;
-
+                
             /////////////////////////////////////////////////////////////////////////
             // Get HATCH
             /////////////////////////////////////////////////////////////////////////
@@ -159,12 +192,11 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 22:
-                DriveAuto.stopDriving();
                 Manipulator.holdGamePieceOverride();
                 setStep(23);
                 break;
             case 23:
-                DriveAuto.driveInches(-24, 0, 1);
+                DriveAuto.driveInches(-9, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
             case 24:
@@ -233,7 +265,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.setLinkageForPlacement();
                 Lift.goHatchLvl1();
-                driveInches(9, 270, .5);
+                //driveInches(9, 270, 1);
                 setTimerAndAdvanceStep(1500);
                 break;
             case 61:
