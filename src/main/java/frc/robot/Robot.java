@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.TargetInfo.TargetType;
 
 public class Robot extends TimedRobot {
 	KeyMap gamepad;
@@ -38,6 +39,8 @@ public class Robot extends TimedRobot {
 	private ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
 	private NetworkTableEntry SB_vision_STR_P = visionTab.add("Vision STR P", Calibration.VISION_STR_P).getEntry();
 	private NetworkTableEntry SB_vision_FWD_DIST = visionTab.add("Vision FWD DIST", 48).getEntry();
+
+	private double currentTargetAngle = -1;
 
 	// End setup stuff
 
@@ -148,7 +151,7 @@ public class Robot extends TimedRobot {
 			}
 			if (gamepad.goToLvl2()) {
 				AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_2);
-			} 
+			}
 			if (gamepad.goToLvl3()) {
 				AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_3);
 			}
@@ -175,7 +178,6 @@ public class Robot extends TimedRobot {
 					Lift.goHatchLvl3();
 			}
 		}
-		
 
 		if (gamepad.getCargoShipPlacement()) {
 			Manipulator.setLinkageForPlacement();
@@ -196,8 +198,8 @@ public class Robot extends TimedRobot {
 
 		// AUTO GET HATCH
 		// if (gamepad.activateHatchIntakeAuto() && !mAutoProgram.isRunning()) {
-		// 	mAutoProgram = new AutoGrabHatchFromFeeder();
-		// 	mAutoProgram.start();
+		// mAutoProgram = new AutoGrabHatchFromFeeder();
+		// mAutoProgram.start();
 		// }
 
 		// AUTO CLIMB
@@ -255,8 +257,6 @@ public class Robot extends TimedRobot {
 			mAutoProgram.tick();
 		} else {
 			//
-			
-
 
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
@@ -268,15 +268,28 @@ public class Robot extends TimedRobot {
 				driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 			else
 				driveStrafeAmount = driveStrafeAmount * .75;
-			
+
+			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+
 			if (gamepad.getAutoAlignToTarget()) {
+				Vision.inVisionTrackingMode();
+				if (currentTargetAngle == -1) {
+					currentTargetAngle = TargetInfo.targetAngle(TargetType.ROCKET_TARGET);
+				}
 				double angleAdjust = -Vision.offsetFromTarget();
 				if (angleAdjust != 0) {
 					driveStrafeAmount = angleAdjust;
 				}
+				if (currentTargetAngle != -1) {
+					double rotAdjust = RobotGyro.getRelativeAngle() - currentTargetAngle;
+					if (Math.abs(rotAdjust) > 4) {
+						driveRotAmount = rotAdjust * .02;
+					}
+				}
+			} else {
+				currentTargetAngle = -1;
+				Vision.setDriverMode();
 			}
-
-			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
 			driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
 
@@ -524,11 +537,10 @@ public class Robot extends TimedRobot {
 	}
 }
 
-
 // if (!win) {
-// 	this.win = true;
+// this.win = true;
 // }
 
 // while (win) {
-	// robot.celebrate
-//}
+// robot.celebrate
+// }

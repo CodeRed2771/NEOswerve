@@ -36,7 +36,7 @@ public class TargetInfo {
 
         if (targetType == TargetType.ROCKET_TARGET) {
             if (Manipulator.isHoldingCargo()) {
-                if (currentGyroAngle > 200 && currentGyroAngle < -340) {
+                if (currentGyroAngle > 200 && currentGyroAngle < 340) {
                     System.out.println("Holding Cargo, returning -90, current gyro angle: " + currentGyroAngle);
                     return 270;
                 } else {
@@ -82,48 +82,5 @@ public class TargetInfo {
             System.out.println("Feeder Station, Returning 180, current gyro angle: " + currentGyroAngle);
             return 180;
         }
-
-
-        // if (targetType == TargetType.ROCKET_TARGET) {
-        // if (currentGyroAngle > 6 && currentGyroAngle < 75) {
-        // return 30;
-        // }
-        // if (currentGyroAngle > 76 && currentGyroAngle < 170) {
-        // return 90;
-        // }
-        // if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-        // return -30;
-        // }
-        // if (currentGyroAngle > -6 && currentGyroAngle < -75) {
-        // return -30;
-        // }
-        // if (currentGyroAngle > -76 && currentGyroAngle < -170) {
-        // return -90;
-        // }
-        // if (currentGyroAngle < -10 && currentGyroAngle > -90) {
-        // return -150;
-        // }
-        // }
-        // if (targetType == TargetType.SHIP_TARGET) {
-        // if (currentGyroAngle < 40 && currentGyroAngle > -40) {
-        // return 0;
-        // }
-        // if (currentGyroAngle < 70 && currentGyroAngle > 120) {
-        // return 90;
-        // }
-        // if (currentGyroAngle < -70 && currentGyroAngle > -120) {
-        // return -90;
-        // }
-        // }
-        // if (targetType == TargetType.FEEDER_TARGET) {
-        // return 180;
-        // }
-
-        // return 90;
-
-        // // NEED MORE IF STATEMENTS FOR OTHER POSITIONS
-
-        // return 90;
-
     }
 }
