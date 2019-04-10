@@ -31,15 +31,9 @@ public class AutoDoEverything extends AutoBaseClass {
     private static LiftHeight liftHeight = LiftHeight.LVL_1;
     private ActionMode actionMode = ActionMode.JUST_DRIVE;
 
-    public static void setLiftHeight(int liftHeightParameter) {
-        if (liftHeightParameter == 1) {
-            liftHeight = LiftHeight.LVL_1;
-        } else if (liftHeightParameter == 2) {
-            liftHeight = LiftHeight.LVL_2;
-        } else if (liftHeightParameter == 3) {
-            liftHeight = LiftHeight.LVL_3;
-        }
-    }
+    public static void setLiftHeight(LiftHeight liftHeightParameter) {
+        liftHeight = liftHeightParameter;
+    }  
 
     public void start() {
         super.start();
@@ -118,24 +112,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 8:
             //We added this
-                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, 1, true);
-                if (Manipulator.isHoldingCargo()) {
-                    if (liftHeight == LiftHeight.LVL_1){
-                        Lift.goCargoLvl1();
-                    } else if (liftHeight == LiftHeight.LVL_2) {
-                        Lift.goCargoLvl2();
-                    } else if (liftHeight == LiftHeight.LVL_3) {
-                        Lift.goCargoLvl3();
-                    }
-                } else {
-                    if (liftHeight == LiftHeight.LVL_1){
-                        Lift.goHatchLvl1();
-                    } else if (liftHeight == LiftHeight.LVL_2) {
-                        Lift.goHatchLvl2();
-                    } else if (liftHeight == LiftHeight.LVL_3) {
-                        Lift.goHatchLvl3();
-                    }
-                }   
+                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, 1, true); 
                 setTimerAndAdvanceStep(4000);
                 break;
             case 9:
@@ -183,6 +160,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 Manipulator.intakeHatch();
                 Manipulator.resetIntakeStallDetector();
                 driveInches(30, 0, 1, true);
+                Lift.getHatchOffFeeder();
                 setTimerAndAdvanceStep(2000);
                 break;
             case 21:
@@ -215,6 +193,7 @@ public class AutoDoEverything extends AutoBaseClass {
             case 40:
                 Manipulator.intakeCargoFeeder();
                 driveInches(30, 0, .2);
+                Lift.getCargoOffFeeder();
                 setTimerAndAdvanceStep(3000);
                 break;
             case 41:
@@ -264,7 +243,7 @@ public class AutoDoEverything extends AutoBaseClass {
             case 60:
                 DriveAuto.resetDriveCurrentBreaker();
                 Manipulator.setLinkageForPlacement();
-                Lift.goHatchLvl1();
+                Lift.goHeight(liftHeight);
                 //driveInches(9, 270, 1);
                 setTimerAndAdvanceStep(1500);
                 break;
@@ -307,7 +286,7 @@ public class AutoDoEverything extends AutoBaseClass {
             //Need to make sure Lift is at the right height
             case 90: 
                 Manipulator.setLinkageForPlacement();
-                Lift.goCargoLvl1();
+                Lift.goHeight(liftHeight);
                 driveInches(30, 0, .3); 
                 setTimerAndAdvanceStep(2000);
                 break;

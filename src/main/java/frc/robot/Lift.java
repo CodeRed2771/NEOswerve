@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.AutoDoEverything.LiftHeight;
 import frc.robot.libs.CurrentBreaker;
 
 public class Lift {
@@ -20,6 +21,7 @@ public class Lift {
 	private static CurrentBreaker currentBreaker;
 	private static final int MAX_SUSTAINED_CURRENT = 15;
 	private static final int MAX_TIME_AT_MAX_CURRENT = 4000;
+	private static double currentLiftSetpoint = 0;
 
 	public static Lift getInstance() {
 		if (instance == null)
@@ -117,23 +119,30 @@ public class Lift {
 			liftMotor.config_kD(0, SmartDashboard.getNumber("Lift D", 0), 0);
 		}
 
-		// SmartDashboard.putNumber("Lift Enc", liftMotor.getSensorCollection().getQuadraturePosition());
+		// SmartDashboard.putNumber("Lift Enc",
+		// liftMotor.getSensorCollection().getQuadraturePosition());
 		// if (liftMotor.getControlMode() == ControlMode.MotionMagic)
-		// 	SmartDashboard.putNumber("Lift Setpt", liftMotor.getClosedLoopTarget());
+		// SmartDashboard.putNumber("Lift Setpt", liftMotor.getClosedLoopTarget());
 		// else
-		// 	SmartDashboard.putNumber("Lift Setpt", -1);
+		// SmartDashboard.putNumber("Lift Setpt", -1);
 	}
 
 	public static boolean liftStalled() {
-        return (currentBreaker.tripped());
+		return (currentBreaker.tripped());
 	}
-	
+
+	public static boolean isLiftAtCurrentSetpoint() {
+		return liftMotor.getSelectedSensorPosition() > currentLiftSetpoint - 1500;
+	}
+
 	/**
-	 * LiftIsDown - primary used to decide whether driving speeds should be reduceed.
+	 * LiftIsDown - primary used to decide whether driving speeds should be
+	 * reduceed.
+	 * 
 	 * @return
 	 */
 	public static boolean liftIsDown() {
-		return  liftMotor.getSensorCollection().getQuadraturePosition() < (HATCH_LEVEL_2 - 200);
+		return liftMotor.getSensorCollection().getQuadraturePosition() < (HATCH_LEVEL_2 - 200);
 	}
 
 	public static void move(double speed) {
@@ -150,18 +159,38 @@ public class Lift {
 		encoderSet = false;
 	}
 
+	public static void goHeight(LiftHeight liftHeight) {
+		if (Manipulator.isHoldingCargo()) {
+			if (liftHeight == LiftHeight.LVL_1) {
+				goCargoLvl1();
+			} else if (liftHeight == LiftHeight.LVL_2) {
+				goCargoLvl2();
+			} else if (liftHeight == LiftHeight.LVL_3) {
+				goCargoLvl3();
+			}
+		} else {
+			if (liftHeight == LiftHeight.LVL_1) {
+				goHatchLvl1();
+			} else if (liftHeight == LiftHeight.LVL_2) {
+				goHatchLvl2();
+			} else if (liftHeight == LiftHeight.LVL_3) {
+				goHatchLvl3();
+			}
+		}
+	}
+
 	public static void moveSetpoint(double direction) {
 		int newSetpoint;
 
-		if (direction > 0) {
-			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 3000;
-			if (newSetpoint >= 0) {
+		if (direction < 0) {
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) - 1000;
+			if (newSetpoint <= 0) {
 				newSetpoint = 0;
 			}
 		} else {
-			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 3000;
-			if (newSetpoint < -30000) {
-				newSetpoint = -30000;
+			newSetpoint = liftMotor.getSelectedSensorPosition(0) + 1000;
+			if (newSetpoint > 30000) {
+				newSetpoint = 30000;
 			}
 		}
 
@@ -176,76 +205,71 @@ public class Lift {
 
 	private static final double HATCH_ACQUIRING = 1200;
 	private static final double HATCH_PICK_OFF_FEEDER = HATCH_ACQUIRING + 1100;
-	
+
 	private static final double HATCH_LEVEL_1 = 2000;
 	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 5300;
-	
+
 	private static final double HATCH_LEVEL_2 = 11000;
 	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5900;
-	
+
 	private static final double HATCH_LEVEL_3 = 21800;
 	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5700;
-	
-	private static final double CARGO_PICK_OFF_FEEDER = 13000;   // was at 11686, 37"
+
+	private static final double CARGO_PICK_OFF_FEEDER = 13000; // was at 11686, 37"
 
 	public static void getHatchPanel() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_ACQUIRING);
+		currentLiftSetpoint = HATCH_ACQUIRING;
 	}
 
 	public static void getHatchOffFeeder() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_PICK_OFF_FEEDER);
+		currentLiftSetpoint = HATCH_PICK_OFF_FEEDER;
 	}
 
 	public static void getCargoOffFeeder() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_PICK_OFF_FEEDER);
+		currentLiftSetpoint = CARGO_PICK_OFF_FEEDER;
 	}
-
-	// public static void prepareToGetHatchPanel() {
-	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1 - 1000);
-	// }
 
 	public static void goHatchLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_1);
+		currentLiftSetpoint = HATCH_LEVEL_1;
 	}
-
-	// public static void goHatchFloorLvl1() {
-	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_1);
-	// }
 
 	public static void goCargoLvl1() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_1);
+		currentLiftSetpoint = CARGO_LEVEL_1;
 	}
 
 	public static void goHatchLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_2);
+		currentLiftSetpoint = HATCH_LEVEL_2;
 	}
-	// public static void goHatchFloorLvl2() {
-	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_2);
-	// }
 
 	public static void goCargoLvl2() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_2);
+		currentLiftSetpoint = CARGO_LEVEL_2;
 	}
 
 	public static void goHatchLvl3() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_3);
+		currentLiftSetpoint = HATCH_LEVEL_3;
 	}
-	// public static void goHatchFloorLvl3() {
-	// 	liftMotor.set(ControlMode.MotionMagic, HATCH_FLOOR_LEVEL_3);
-	// }
 
 	public static void goCargoLvl3() {
 		liftMotor.set(ControlMode.MotionMagic, CARGO_LEVEL_3);
+		currentLiftSetpoint = CARGO_LEVEL_3;
 	}
 
-	// This here may not be right we assumued that this is just hatch level one so
-	// we put the variable in it has 'HATCH_LEVEL_1'
 	public static void goCargoShipCargo() {
 		liftMotor.set(ControlMode.MotionMagic, HATCH_LEVEL_2);
+		currentLiftSetpoint = HATCH_LEVEL_2;
 	}
 
 	public static void stop() {
 		liftMotor.set(ControlMode.PercentOutput, 0);
+		currentLiftSetpoint = 0;
 	}
 
 	// returns true if the lift is high enough that we should reduce drving speed

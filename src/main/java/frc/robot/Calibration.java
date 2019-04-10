@@ -107,8 +107,8 @@ public class Calibration {
 	public static final double LIFT_I = 0.0;
 	public static final double LIFT_D = 0.0;
 	public static final double LIFT_F = 1.0;
-	public static final int LIFT_ACCEL = 1500;
-	public static final int LIFT_VELOCITY = 3000;
+	public static final int LIFT_ACCEL = 3500;
+	public static final int LIFT_VELOCITY = 3500;
 
 	public static final double LINKAGE_P = 5; // was 3.2
 	public static final double LINKAGE_I = 0.0;

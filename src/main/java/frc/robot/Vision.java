@@ -58,7 +58,7 @@ public class Vision {
 
 	public static void readTargetInfo() {
 		validCount++;
-		if (inVisionTrackingMode() && targetCount() > 0 && validCount > 5) {
+		if (inVisionTrackingMode() && targetCount() > 0 && validCount >= 2) {
 
 			lastValidReadTime = System.currentTimeMillis();
 

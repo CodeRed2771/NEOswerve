@@ -162,26 +162,22 @@ public class Manipulator {
     }
 
     // CONTROL METHODS ------------------------------------------------
-    public static void linkageMove(double speed) {
-        linkage.set(ControlMode.PercentOutput, speed);
-    }
-
     public static void linkageDown() {
         // if (linkageIsDown) {
         // linkage.set(ControlMode.PercentOutput, 0);
         // } else {
-        linkage.set(ControlMode.Position, -1000);
+        // linkage.set(ControlMode.Position, -1000);
         linkageIsDown = true;
-        // linkage.set(ControlMode.MotionMagic, -900);
+        linkage.set(ControlMode.MotionMagic, -900);
         // }
     }
 
     public static void linkageUp() {
         moveFingerUp();
         // if (linkageIsDown) {
-            linkage.set(ControlMode.Position, 0);
+            // linkage.set(ControlMode.Position, 0);
             linkageIsDown = false;
-            // linkage.set(ControlMode.MotionMagic, 0);
+            linkage.set(ControlMode.MotionMagic, 0);
         // } else
         //     linkage.set(ControlMode.PercentOutput, 0);
     }

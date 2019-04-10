@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
 		// --------------------------------------------------
 
 		if (Math.abs(gamepad.getManualLift()) > .1) {
-			Lift.moveSetpoint(0.75 * powerOf2PreserveSign(-gamepad.getManualLift()));
+			Lift.moveSetpoint(gamepad.getManualLift());
 		}
 		if (gamepad.goToTravelPosition()) {
 			Lift.goToStart();
@@ -144,13 +144,13 @@ public class Robot extends TimedRobot {
 		}
 		if (mAutoProgram.isRunning()) {
 			if (gamepad.goToLvl1()) {
-				AutoDoEverything.setLiftHeight(1);
+				AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_1);
 			}
 			if (gamepad.goToLvl2()) {
-				AutoDoEverything.setLiftHeight(2);
+				AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_2);
 			} 
 			if (gamepad.goToLvl3()) {
-				AutoDoEverything.setLiftHeight(3);
+				AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_3);
 			}
 		} else {
 			if (gamepad.goToLvl1()) {
@@ -255,16 +255,26 @@ public class Robot extends TimedRobot {
 			mAutoProgram.tick();
 		} else {
 			//
+			
+
+
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
 			double driveFWDAmount = gamepad.getSwerveYAxis();
 			double driveStrafeAmount = -gamepad.getSwerveXAxis();
-			boolean normalDrive = Lift.liftIsDown() && !gamepad.getDriveModifier();
+			boolean normalDrive = !gamepad.getDriveModifier();
 			if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
 				driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 			else
 				driveStrafeAmount = driveStrafeAmount * .75;
+			
+			if (gamepad.getAutoAlignToTarget()) {
+				double angleAdjust = -Vision.offsetFromTarget();
+				if (angleAdjust != 0) {
+					driveStrafeAmount = angleAdjust;
+				}
+			}
 
 			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
@@ -276,8 +286,8 @@ public class Robot extends TimedRobot {
 				DriveTrain.fieldCentricDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
 
 			if (isTippingOver()) {
-				System.out.print("ANTI-TIP CODE ACTIVATED - NO ACTION TAKEN THOUGH");
-				// Lift.goToStart(); // if we start tipping, bring the lift down
+				System.out.print("ANTI-TIP CODE ACTIVATED");
+				Lift.goToStart(); // if we start tipping, bring the lift down
 			}
 		}
 
@@ -496,7 +506,7 @@ public class Robot extends TimedRobot {
 	}
 
 	private boolean isTippingOver() {
-		return Math.abs(RobotGyro.getGyro().getPitch()) > 15 || Math.abs(RobotGyro.getGyro().getRoll()) > 15;
+		return Math.abs(RobotGyro.getGyro().getPitch()) > 20 || Math.abs(RobotGyro.getGyro().getRoll()) > 20;
 	}
 
 	private double powerOf2PreserveSign(double v) {
