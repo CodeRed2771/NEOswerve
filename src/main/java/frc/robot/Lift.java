@@ -207,13 +207,16 @@ public class Lift {
 	private static final double HATCH_PICK_OFF_FEEDER = HATCH_ACQUIRING + 1100;
 
 	private static final double HATCH_LEVEL_1 = 2000;
-	private static final double CARGO_LEVEL_1 = HATCH_LEVEL_1 + 5300;
+	
+	private static final double CARGO_LEVEL_1 = 7300;
 
-	private static final double HATCH_LEVEL_2 = 11000;
-	private static final double CARGO_LEVEL_2 = HATCH_LEVEL_2 + 5900;
+	private static final double HATCH_LEVEL_2 = 10500;
+	
+	private static final double CARGO_LEVEL_2 = 16900;
 
-	private static final double HATCH_LEVEL_3 = 21800;
-	private static final double CARGO_LEVEL_3 = HATCH_LEVEL_3 + 5700;
+	private static final double HATCH_LEVEL_3 = 20800;
+	
+	private static final double CARGO_LEVEL_3 = 27500;
 
 	private static final double CARGO_PICK_OFF_FEEDER = 13000; // was at 11686, 37"
 
