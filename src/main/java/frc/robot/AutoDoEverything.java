@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Manipulator.ManipulatorState;
 
 /**
  * Add your docs here.

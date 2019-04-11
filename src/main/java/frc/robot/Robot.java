@@ -272,7 +272,7 @@ public class Robot extends TimedRobot {
 			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
 			if (gamepad.getAutoAlignToTarget()) {
-				Vision.inVisionTrackingMode();
+				Vision.setTargetTrackingMode();
 				if (currentTargetAngle == -1) {
 					currentTargetAngle = TargetInfo.targetAngle(TargetType.ROCKET_TARGET);
 				}
@@ -281,7 +281,7 @@ public class Robot extends TimedRobot {
 					driveStrafeAmount = angleAdjust;
 				}
 				if (currentTargetAngle != -1) {
-					double rotAdjust = RobotGyro.getRelativeAngle() - currentTargetAngle;
+					double rotAdjust = currentTargetAngle - RobotGyro.getRelativeAngle();
 					if (Math.abs(rotAdjust) > 4) {
 						driveRotAmount = rotAdjust * .02;
 					}
@@ -431,7 +431,7 @@ public class Robot extends TimedRobot {
 					if (Math.abs(rotateAmt) < .95) {
 						adjustedAmt = .6 * Math.signum(rotateAmt);
 					} else {
-						adjustedAmt = rotateAmt;
+						adjustedAmt = rotateAmt * .8;
 					}
 				}
 			}

@@ -23,11 +23,11 @@ public class Manipulator {
     private static boolean linkageEncoderSetting = false;
     private static double linkageEncoderSettingStartTime = System.currentTimeMillis();
 
-    private enum ManipulatorState {
+    public enum ManipulatorState {
         INACTIVE, GETTING_CARGO, GETTING_HATCH, HOLDING_CARGO, HOLDING_HATCH,
     }
 
-    private static ManipulatorState manipulatorState;
+    public static ManipulatorState manipulatorState;
     private static ManipulatorState previousState;
 
     private static boolean linkageIsDown = false;
@@ -218,6 +218,7 @@ public class Manipulator {
     }
 
     public static void intakeHatch() {
+        stopIntake();
         moveFingerDown();
         Lift.getHatchPanel();
         manipulatorState = ManipulatorState.GETTING_HATCH;

@@ -198,7 +198,7 @@ public class KeyMap {
     }
 
     public boolean getAutoAlignToTarget() {
-        return getHID(gamepad2).axis(autoAlignToTarget) > 0.8;
+        return getHID(gamepad1).axis(autoAlignToTarget) > 0.8;
     }
 
     public double getClimbDrive() {
