@@ -49,6 +49,7 @@ public class KeyMap {
     private final HID.Button gamePieceOverride = LogitechF310.DPAD_DOWN;
     private final HID.Axis ejectGamePiece = LogitechF310.TRIGGER_RIGHT_AXIS;
     private final HID.Button fingerUp = LogitechF310.START;
+    private final HID.Button extendLinkage = LogitechF310.BACK;
 
     // Hatch Placement
     private final HID.Button goToLvl1 = LogitechF310.A;
@@ -124,6 +125,10 @@ public class KeyMap {
 
     public boolean linkageUp() {
         return getHID(gamepad2).button(goToTravelPosition) && getHID(gamepad2).button(modifier);
+    }
+
+    public boolean linkageDown() {
+        return getHID(gamepad2).button(extendLinkage);
     }
 
     public boolean turnIntakeOff() {

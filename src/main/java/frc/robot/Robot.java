@@ -134,6 +134,12 @@ public class Robot extends TimedRobot {
 			Manipulator.linkageUp();
 			Lift.goToStart();
 		}
+
+		if (gamepad.linkageDown()) {
+			Manipulator.linkageDown();
+			Manipulator.moveFingerDown();
+		}
+
 		// --------------------------------------------------
 		// LIFT
 		// --------------------------------------------------
@@ -273,23 +279,28 @@ public class Robot extends TimedRobot {
 
 			if (gamepad.getAutoAlignToTarget()) {
 				Vision.setTargetTrackingMode();
+				
 				if (currentTargetAngle == -1) {
 					currentTargetAngle = TargetInfo.targetAngle(TargetType.ROCKET_TARGET);
 				}
+				
 				double angleAdjust = -Vision.offsetFromTarget();
 				if (angleAdjust != 0) {
-					driveStrafeAmount = angleAdjust;
+					driveStrafeAmount = angleAdjust / 40; // strafeAmt is -1 to 1
 				}
+
 				if (currentTargetAngle != -1) {
-					double rotAdjust = currentTargetAngle - RobotGyro.getRelativeAngle();
+					double rotAdjust = 0;//currentTargetAngle - RobotGyro.getRelativeAngle();
 					if (Math.abs(rotAdjust) > 4) {
 						driveRotAmount = rotAdjust * .02;
 					}
 				}
+				System.out.println("SA: " + driveStrafeAmount + " RA: " + driveRotAmount + " AA: " + angleAdjust);
 			} else {
 				currentTargetAngle = -1;
 				Vision.setDriverMode();
 			}
+		
 
 			driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
 
@@ -416,7 +427,7 @@ public class Robot extends TimedRobot {
 
 	private double rotationalAdjust(double rotateAmt) {
 		// put some rotational power restrictions in place to make it
-		// more controlled
+		// more controlled movement
 		double adjustedAmt = 0;
 
 		if (Math.abs(rotateAmt) < .1) {
