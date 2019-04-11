@@ -214,7 +214,8 @@ public class Lift {
 	
 	private static final double CARGO_LEVEL_2 = 16900;
 
-	private static final double HATCH_LEVEL_3 = 20800;
+	private static final double HATCH_LEVEL_3 = 20
+	800;
 	
 	private static final double CARGO_LEVEL_3 = 27500;
 
