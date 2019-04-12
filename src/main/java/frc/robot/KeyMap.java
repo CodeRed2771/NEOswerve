@@ -8,10 +8,9 @@ public class KeyMap {
     // GAMEPADS
     private final HID gp1 = new HID(0);
     private final HID gp2 = new HID(1);
-    private final HID gp3 = new HID(2);
+    //private final HID gp3 = new HID(2);
     private final int gamepad1 = 0;
     private final int gamepad2 = 1;
-    private final int gamepad3 = 2;
 
     // MANAGEMENT BOOLEANS
     private boolean singleControllerMode = false;
@@ -75,8 +74,8 @@ public class KeyMap {
                 return gp1;
             case gamepad2:
                 return gp2;
-            case gamepad3:
-                return gp3;
+            // case gamepad3:
+            //     return gp3;
             default:
                 return null;
             }
@@ -194,14 +193,6 @@ public class KeyMap {
         return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(undoClimb);
     }
 
-    public boolean getSingleClimbRevolution() {
-        return getHID(gamepad3).button(singleClimbRevolutionButton);
-    }
-
-    public boolean getSingleClimbReverseRevolution() {
-        return getHID(gamepad3).button(singleClimbRevolutionReverseButton);
-    }
-
     public boolean getAutoAlignToTarget() {
         return getHID(gamepad1).axis(autoAlignToTarget) > 0.8;
     }
@@ -227,9 +218,6 @@ public class KeyMap {
     // }
 
     //TEST METHODS
-    public double manualClimb() {
-        return getHID(gamepad3).axis(manualClimb);
-    }
 
 
      /*
@@ -237,52 +225,52 @@ public class KeyMap {
      * Provide some direct access to the commonly used F310 gamepad features
      * 
      */
-    public boolean getBumperLeft(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.BUMPER_LEFT);
-    }
+    // public boolean getBumperLeft(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.BUMPER_LEFT);
+    // }
 
-    public boolean getButtonA(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.A);
-    }
+    // public boolean getButtonA(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.A);
+    // }
 
-    public boolean getButtonB(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.B);
-    }
+    // public boolean getButtonB(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.B);
+    // }
 
-    public boolean getButtonX(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.X);
-    }
+    // public boolean getButtonX(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.X);
+    // }
 
-    public boolean getButtonY(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.Y);
-    }
+    // public boolean getButtonY(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.Y);
+    // }
 
-    public boolean getStartButton(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.START);
-    }
+    // public boolean getStartButton(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.START);
+    // }
 
-    public boolean getDpadLeft(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.DPAD_LEFT);
-    }
+    // public boolean getDpadLeft(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.DPAD_LEFT);
+    // }
 
-    public boolean getDpadRight(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.DPAD_RIGHT);
-    }
+    // public boolean getDpadRight(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.DPAD_RIGHT);
+    // }
 
-    public boolean getDpadUp(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.DPAD_UP);
-    }
+    // public boolean getDpadUp(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.DPAD_UP);
+    // }
 
-    public boolean getDpadDown(int gamePadNumber) {
-        return getHID(gamePadNumber).button(LogitechF310.DPAD_DOWN);
-    }
+    // public boolean getDpadDown(int gamePadNumber) {
+    //     return getHID(gamePadNumber).button(LogitechF310.DPAD_DOWN);
+    // }
 
-    public double getLeftStickY(int gamePadNumber) {
-        return getHID(gamePadNumber).axis(LogitechF310.STICK_LEFT_Y);
-    }
+    // public double getLeftStickY(int gamePadNumber) {
+    //     return getHID(gamePadNumber).axis(LogitechF310.STICK_LEFT_Y);
+    // }
 
-    public double getRightStickY(int gamePadNumber) {
-        return getHID(gamePadNumber).axis(LogitechF310.STICK_RIGHT_Y);
-    }
+    // public double getRightStickY(int gamePadNumber) {
+    //     return getHID(gamePadNumber).axis(LogitechF310.STICK_RIGHT_Y);
+    // }
 
 }

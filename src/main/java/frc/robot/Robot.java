@@ -289,7 +289,7 @@ public class Robot extends TimedRobot {
 				double angleAdjust = -Vision.offsetFromTarget();
 				if (angleAdjust != 0) {
 					driveStrafeAmount = angleAdjust / 40; // strafeAmt is -1 to 1
-
+					//we need to figure out if 40 is the correct number
 					if (driveStrafeAmount < -1) {
 						driveStrafeAmount = -1;
 					}
@@ -316,7 +316,6 @@ public class Robot extends TimedRobot {
 			}
 			
 			
-
 			driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
 
 			if (gamepad.getRobotCentricModifier())
