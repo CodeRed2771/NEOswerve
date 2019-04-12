@@ -168,7 +168,7 @@ public class Manipulator {
         // } else {
         // linkage.set(ControlMode.Position, -1000);
         linkageIsDown = true;
-        linkage.set(ControlMode.MotionMagic, -900);
+        linkage.set(ControlMode.MotionMagic, -1000);
         // }
     }
 

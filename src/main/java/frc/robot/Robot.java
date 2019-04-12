@@ -121,6 +121,7 @@ public class Robot extends TimedRobot {
 		}
 
 		if (gamepad.activateHatchIntake()) {
+			Manipulator.setLinkageForPlacement();
 			Manipulator.intakeHatch();
 		}
 		if (gamepad.ejectGamePiece()) {

@@ -82,6 +82,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 3:
+                Manipulator.setLinkageForPlacement();
                 angleDiff = RobotGyro.getClosestTurn(targetAngle);
                 // angleDiff = targetAngle - RobotGyro.getRelativeAngle();
                 System.out.println("anglediff " + angleDiff);
