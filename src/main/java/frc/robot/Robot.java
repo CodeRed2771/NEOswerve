@@ -276,30 +276,45 @@ public class Robot extends TimedRobot {
 
 			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
+			SmartDashboard.putBoolean("AutoAssist", gamepad.getAutoAlignToTarget());
+
 			if (gamepad.getAutoAlignToTarget()) {
 				Vision.setTargetTrackingMode();
-				
+
 				if (currentTargetAngle == -1) {
 					currentTargetAngle = TargetInfo.targetAngle(TargetType.ROCKET_TARGET);
 				}
-				
+
 				double angleAdjust = -Vision.offsetFromTarget();
 				if (angleAdjust != 0) {
 					driveStrafeAmount = angleAdjust / 40; // strafeAmt is -1 to 1
+
+					if (driveStrafeAmount < -1) {
+						driveStrafeAmount = -1;
+					}
+
+					if (driveStrafeAmount > 1) {
+						driveStrafeAmount = 1;
+					}
 				}
 
 				if (currentTargetAngle != -1) {
-					double rotAdjust = 0;//currentTargetAngle - RobotGyro.getRelativeAngle();
+					double rotAdjust = 0;// currentTargetAngle - RobotGyro.getRelativeAngle();
 					if (Math.abs(rotAdjust) > 4) {
 						driveRotAmount = rotAdjust * .02;
 					}
 				}
-				System.out.println("SA: " + driveStrafeAmount + " RA: " + driveRotAmount + " AA: " + angleAdjust);
+				//System.out.println("SA: " + driveStrafeAmount + " RA: " + driveRotAmount + " AA: " + angleAdjust);
+				SmartDashboard.putNumber("AA Angle", angleAdjust);
+				SmartDashboard.putNumber("AA StrafeAmount", driveStrafeAmount);
+			
+
 			} else {
 				currentTargetAngle = -1;
 				Vision.setDriverMode();
 			}
-		
+			
+			
 
 			driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
 
