@@ -137,7 +137,6 @@ public class Robot extends TimedRobot {
 
 		if (gamepad.linkageDown()) {
 			Manipulator.linkageDown();
-			Manipulator.moveFingerDown();
 		}
 
 		// --------------------------------------------------
