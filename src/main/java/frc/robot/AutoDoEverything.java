@@ -73,8 +73,9 @@ public class AutoDoEverything extends AutoBaseClass {
                 System.out.println("target type " + mTargetType.toString());
                 targetAngle = TargetInfo.targetAngle(mTargetType);
                 System.out.println("Target Angle " + targetAngle);
-                DriveAuto.turnDegrees(Vision.offsetFromTarget(), 1);
-                setTimerAndAdvanceStep(1000);
+                // DriveAuto.turnDegrees(Vision.offsetFromTarget(), 1); // We commented this out because we thought it might be
+                // a problem so we are testing it once we have a robot.
+                setTimerAndAdvanceStep(500); // changed from 1000 4.15.19
                 break;
             case 2:
                 if (DriveAuto.turnCompleted()) {
