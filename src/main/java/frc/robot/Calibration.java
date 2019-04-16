@@ -31,10 +31,10 @@ public class Calibration {
 	
 	// COMPETIION
 	
-	private final static double DT_A_ABS_ZERO_INITIAL = .323; // COMPEITION
+	private final static double DT_A_ABS_ZERO_INITIAL = .328; // COMPEITION
 	private final static double DT_B_ABS_ZERO_INITIAL = .632;
 	private final static double DT_C_ABS_ZERO_INITIAL = .681;
-	private final static double DT_D_ABS_ZERO_INITIAL = .501;
+	private final static double DT_D_ABS_ZERO_INITIAL = .500;
 	
 	public final static double VISION_FWD_P = 0.05;
 	public final static double VISION_FWD_I = 0;
@@ -88,7 +88,7 @@ public class Calibration {
 	// COMPETIION AND PRACTICE
 	public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 61.15;  
 
-	// TEST BOT
+	// TEST BOT2
 	// public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 32.900; 
 
 	public static final double AUTO_ROT_P = 0.08; // increased from .03 on 2/9/2019 by CS
