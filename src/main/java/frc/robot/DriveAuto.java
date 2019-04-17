@@ -377,3 +377,7 @@ public class DriveAuto {
 		return new BigDecimal(val.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 }
+
+//if (levitateButton) {
+//    robot.levitate();
+//}
