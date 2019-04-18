@@ -273,7 +273,7 @@ public class Robot extends TimedRobot {
 			if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
 				driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 			else
-				driveStrafeAmount = driveStrafeAmount * .75;
+				driveStrafeAmount = driveStrafeAmount * .50;
 
 			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
@@ -288,14 +288,21 @@ public class Robot extends TimedRobot {
 
 				double angleAdjust = -Vision.offsetFromTarget();
 				if (angleAdjust != 0) {
-					driveStrafeAmount = angleAdjust / 40; // strafeAmt is -1 to 1
-					//we need to figure out if 40 is the correct number
+					driveStrafeAmount = angleAdjust / 60; // strafeAmt is -1 to 1
+					if (driveStrafeAmount < .1 && driveStrafeAmount > 0) {
+						driveStrafeAmount = .1;
+					}
+					if (driveStrafeAmount > -.1 && driveStrafeAmount < 0) {
+						driveStrafeAmount = -.1;
+					}
 					if (driveStrafeAmount < -1) {
 						driveStrafeAmount = -1;
 					}
-
 					if (driveStrafeAmount > 1) {
 						driveStrafeAmount = 1;
+					}
+					if (RobotGyro.getRelativeAngle() >= 90 && RobotGyro.getRelativeAngle() <= 270) {
+						driveStrafeAmount = -driveStrafeAmount;
 					}
 				}
 
@@ -447,16 +454,16 @@ public class Robot extends TimedRobot {
 		if (Math.abs(rotateAmt) < .1) {
 			adjustedAmt = 0;
 		} else {
-			if (Math.abs(rotateAmt) < .4) {
-				adjustedAmt = .15 * Math.signum(rotateAmt);
+			if (Math.abs(rotateAmt) < .6) {
+				adjustedAmt = .10 * Math.signum(rotateAmt);
 			} else {
-				if (Math.abs(rotateAmt) < .6) {
-					adjustedAmt = .25 * Math.signum(rotateAmt);
+				if (Math.abs(rotateAmt) < .8) {
+					adjustedAmt = .20 * Math.signum(rotateAmt);
 				} else {
 					if (Math.abs(rotateAmt) < .95) {
-						adjustedAmt = .6 * Math.signum(rotateAmt);
+						adjustedAmt = .45 * Math.signum(rotateAmt);
 					} else {
-						adjustedAmt = rotateAmt * .8;
+						adjustedAmt = rotateAmt * .65;
 					}
 				}
 			}
@@ -468,7 +475,7 @@ public class Robot extends TimedRobot {
 		if (normalDrive) {
 			return fwd;
 		} else {
-			return fwd * .66;
+			return fwd * .45;
 		}
 	}
 
@@ -482,16 +489,16 @@ public class Robot extends TimedRobot {
 		} else {
 			if (normalDrive) { // do normal adjustments
 				if (Math.abs(strafeAmt) < .7) {
-					adjustedAmt = .5 * strafeAmt; // .2 * Math.signum(strafeAmt);
+					adjustedAmt = .3 * strafeAmt; // .2 * Math.signum(strafeAmt);
 				} else {
 					if (Math.abs(strafeAmt) < .98) {
-						adjustedAmt = .75 * strafeAmt; // .4 * Math.signum(strafeAmt);
+						adjustedAmt = .50 * strafeAmt; // .4 * Math.signum(strafeAmt);
 					} else {
 						adjustedAmt = strafeAmt;
 					}
 				}
 			} else { // lift is up, so do more drastic adjustments
-				adjustedAmt = strafeAmt * .56;
+				adjustedAmt = strafeAmt * .35;
 			}
 		}
 		return adjustedAmt;

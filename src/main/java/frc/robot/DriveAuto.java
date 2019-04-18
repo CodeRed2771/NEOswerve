@@ -42,7 +42,7 @@ public class DriveAuto {
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
-		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 500);
+		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 300);
 		driveCurrentBreaker.reset();
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
@@ -194,7 +194,7 @@ public class DriveAuto {
 		double angleAdjust = 0; // Is this a problem?
 		if (isDriving && followingTarget) {
 			angleAdjust = Vision.offsetFromTarget();
-			strafeAngle = -angleAdjust;
+			strafeAngle = -angleAdjust * 1.2;
 			// angleAdjust = - Vision.offsetFromTarget();
 
 			// if (Math.abs(angleAdjust) > 1) {

@@ -67,15 +67,13 @@ public class AutoDoEverything extends AutoBaseClass {
                 distanceToTarget = Vision.getDistanceFromTarget();
                 if (distanceToTarget > 0) {
                     advanceStep();
+                    setStep(3);
                 }
                 break;
             case 1:
-                System.out.println("target type " + mTargetType.toString());
-                targetAngle = TargetInfo.targetAngle(mTargetType);
-                System.out.println("Target Angle " + targetAngle);
                 // DriveAuto.turnDegrees(Vision.offsetFromTarget(), 1); // We commented this out because we thought it might be
                 // a problem so we are testing it once we have a robot.
-                setTimerAndAdvanceStep(500); // changed from 1000 4.15.19
+                // setTimerAndAdvanceStep(500); // changed from 1000 4.15.19
                 break;
             case 2:
                 if (DriveAuto.turnCompleted()) {
@@ -84,9 +82,9 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 3:
                 Manipulator.setLinkageForPlacement();
+                targetAngle = TargetInfo.targetAngle(mTargetType);
                 angleDiff = RobotGyro.getClosestTurn(targetAngle);
                 // angleDiff = targetAngle - RobotGyro.getRelativeAngle();
-                System.out.println("anglediff " + angleDiff);
                 DriveAuto.turnDegrees(angleDiff, 1); // Square up with target
                 setTimerAndAdvanceStep(1000);
                 break;
@@ -163,7 +161,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 Manipulator.intakeHatch();
                 Manipulator.resetIntakeStallDetector();
                 driveInches(30, 0, 1, true);
-                Lift.getHatchOffFeeder();
+                Lift.getHatchPanel();
                 setTimerAndAdvanceStep(2000);
                 break;
             case 21:
