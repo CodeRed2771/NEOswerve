@@ -45,7 +45,7 @@ public class Module {
 		drive.config_IntegralZone(0, DRIVE_IZONE, 0);
 		drive.selectProfileSlot(0, 0);
 
-		drive.configOpenloopRamp(.1, 0);
+		drive.configOpenloopRamp(.15, 0);
 		drive.configClosedloopRamp(.05, 0);
 
 		drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 0);

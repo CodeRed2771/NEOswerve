@@ -126,9 +126,11 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.ejectGamePiece()) {
 			Manipulator.ejectGamePiece();
+			Vision.flashLED();
 		}
 		if (gamepad.gamePieceOverride()) {
 			Manipulator.holdGamePieceOverride();
+			Vision.flashLED();
 		}
 
 		if (gamepad.linkageUp()) {
@@ -237,18 +239,21 @@ public class Robot extends TimedRobot {
 			mAutoProgram = new AutoDoEverything();
 			((AutoDoEverything) mAutoProgram).setDrivingAllowed(true);
 			((AutoDoEverything) mAutoProgram).setActionMode(AutoDoEverything.ActionMode.PLACE_HATCH);
+			AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_1);
 			mAutoProgram.start(TargetInfo.TargetType.ROCKET_TARGET);
 		}
 		if (gamepad.findFeedStation() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoDoEverything();
 			((AutoDoEverything) mAutoProgram).setDrivingAllowed(true);
 			((AutoDoEverything) mAutoProgram).setActionMode(AutoDoEverything.ActionMode.GET_HATCH);
+			AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_1);
 			mAutoProgram.start(TargetInfo.TargetType.FEEDER_TARGET);
 		}
 		if (gamepad.findShipTarget() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoDoEverything();
 			((AutoDoEverything) mAutoProgram).setDrivingAllowed(true);
 			((AutoDoEverything) mAutoProgram).setActionMode(AutoDoEverything.ActionMode.PLACE_HATCH);
+			AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_1);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
 		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1

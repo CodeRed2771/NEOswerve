@@ -1,26 +1,19 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * Vision
- * 
- * To track a vision target Call setVisionTrackingMode() to entable tracking
- * Call "Vision.tick()" in your periodic loop to continually check for a target
- * and store the horizontal offset for when you ask for it. This avoids the
- * issue where the image happens not to be valid the instant you check it. With
- * this code, if it was valid up to a half second earlier, it uses those values.
- * Your code should check targetInfoIsValid() before bothering to read the data.
- * If the targetInfo is not valid, the data function will return a 0.
- * 
+/*
+  Vision
+  
+  To track a vision target Call setVisionTrackingMode() to entable tracking
+  Call "Vision.tick()" in your periodic loop to continually check for a target
+  and store the horizontal offset for when you ask for it. This avoids the
+  issue where the image happens not to be valid the instant you check it. With
+  this code, if it was valid up to a half second earlier, it uses those values.
+  Your code should check targetInfoIsValid() before bothering to read the data.
+  If the targetInfo is not valid, the data function will return a 0.
+  
  */
 public class Vision {
 	private static Vision instance;
@@ -54,6 +47,7 @@ public class Vision {
 
 	public static void tick() {
 		readTargetInfo();
+
 	}
 
 	public static void readTargetInfo() {
@@ -75,7 +69,9 @@ public class Vision {
 	public static void setLED(boolean turnOn) {
 		table.getEntry("ledMode").forceSetNumber(turnOn ? 3 : 1); // 3 - on, 1 = off, 2 - blink
 	}
-
+	public static void flashLED(){
+		table.getEntry("ledMode").forceSetNumber(2);
+	}
 	public static boolean inVisionTrackingMode() {
 		return (table.getEntry("camMode").getNumber(0).intValue() == 0);
 	}

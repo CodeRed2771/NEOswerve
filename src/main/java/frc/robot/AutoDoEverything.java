@@ -97,6 +97,28 @@ public class AutoDoEverything extends AutoBaseClass {
                 double slideDistance = -((Math.sin(Math.toRadians(angleDiff)) * distanceToTarget)) + 2;
                 SmartDashboard.putNumber("Slide Dist", slideDistance);
                 driveInches(slideDistance, 90, 1, false);
+
+                if (actionMode == ActionMode.JUST_DRIVE) {
+                    
+                } else if (actionMode == ActionMode.GET_HATCH) {
+                    Manipulator.intakeHatch();
+                     Manipulator.resetIntakeStallDetector();
+                     Lift.getHatchPanel();
+                     DriveAuto.resetDriveCurrentBreaker();
+                } else if (actionMode == ActionMode.GET_CARGO) {
+                    Manipulator.intakeCargoFeeder();
+                    Lift.getCargoOffFeeder();
+                    DriveAuto.resetDriveCurrentBreaker();
+                } else if (actionMode == ActionMode.PLACE_HATCH) {
+                    Manipulator.setLinkageForPlacement();
+                    Lift.goHeight(liftHeight);
+                    DriveAuto.resetDriveCurrentBreaker();
+                } else if (actionMode == ActionMode.PLACE_CARGO) {
+                    Manipulator.setLinkageForPlacement();
+                    Lift.goHeight(liftHeight);
+                    DriveAuto.resetDriveCurrentBreaker();
+                }
+
                 setTimerAndAdvanceStep(3000);
                 break;
             case 6:
@@ -113,13 +135,14 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 8:
             //We added this
-                driveInches(distanceToTarget - distToStayBackOnFirstDrive, 0, 1, true); 
+                driveInches(distanceToTarget + 12, 0, 1, true); 
                 setTimerAndAdvanceStep(4000);
                 break;
             case 9:
-                if (DriveAuto.hasArrived()) {
+                if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
                     advanceStep();
                 }
+                Lift.goHeight(liftHeight);
                 break;
             case 10:
                 setStep(12);
@@ -157,33 +180,23 @@ public class AutoDoEverything extends AutoBaseClass {
             // Get HATCH
             /////////////////////////////////////////////////////////////////////////
             case 20:
-                DriveAuto.resetDriveCurrentBreaker();
-                Manipulator.intakeHatch();
-                Manipulator.resetIntakeStallDetector();
-                driveInches(30, 0, 1, true);
-                Lift.getHatchPanel();
-                setTimerAndAdvanceStep(2000);
+                DriveAuto.stopDriving();
+                Manipulator.holdGamePieceOverride();
+                advanceStep();
                 break;
             case 21:
-                if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
-                    DriveAuto.stopDriving();
-                    advanceStep();
-                }
+                setTimer(200);
                 break;
             case 22:
-                Manipulator.holdGamePieceOverride();
-                setStep(23);
-                break;
-            case 23:
-                DriveAuto.driveInches(-9, 0, 1);
+                DriveAuto.driveInches(-30, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
-            case 24:
+            case 23:
                 if (DriveAuto.hasArrived()) {
                     advanceStep();
                 }
                 break;
-            case 25:
+            case 24:
                 DriveAuto.stopDriving();
                 setStep(500);
                 break;
@@ -192,9 +205,7 @@ public class AutoDoEverything extends AutoBaseClass {
             // GET CARGO
             /////////////////////////////////////////////////////////////////////////
             case 40:
-                Manipulator.intakeCargoFeeder();
                 driveInches(30, 0, .2);
-                Lift.getCargoOffFeeder();
                 setTimerAndAdvanceStep(3000);
                 break;
             case 41:
@@ -242,41 +253,18 @@ public class AutoDoEverything extends AutoBaseClass {
             // PLACE HATCH
             /////////////////////////////////////////////////////////////////////////
             case 60:
-                DriveAuto.resetDriveCurrentBreaker();
-                Manipulator.setLinkageForPlacement();
-                Lift.goHeight(liftHeight);
-                //driveInches(9, 270, 1);
-                setTimerAndAdvanceStep(1500);
-                break;
-            case 61:
-                if(DriveAuto.hasArrived())
-                advanceStep();
-                break;
-            case 62:
-                driveInches(50, 0, 1);
-                setTimerAndAdvanceStep(3000);
-                break;
-            case 63:
-                if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
-                    advanceStep();
-                }
-                break;
-            case 64:
                 Manipulator.moveFingerDown();
-                setTimerAndAdvanceStep(750);
-                break;
-            case 65:
-                break;
-            case 66:
+                setTimer(750);
+            case 61:
                 driveInches(-12, 0, 1);
                 setTimerAndAdvanceStep(2000);
                 break;
-            case 67:
+            case 62:
                 if (DriveAuto.hasArrived()) {
                     advanceStep();
                 }
                 break;
-            case 68:
+            case 63:
                 setStep(500);
                 break;
 
@@ -286,7 +274,6 @@ public class AutoDoEverything extends AutoBaseClass {
             
             //Need to make sure Lift is at the right height
             case 90: 
-                Manipulator.setLinkageForPlacement();
                 Lift.goHeight(liftHeight);
                 driveInches(30, 0, .3); 
                 setTimerAndAdvanceStep(2000);
