@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
 	private NetworkTableEntry SB_vision_FWD_DIST = visionTab.add("Vision FWD DIST", 48).getEntry();
 
 	private double currentTargetAngle = -1;
+	private double rotationLockAngle = -1;
 
 	// End setup stuff
 
@@ -125,6 +126,7 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.ejectGamePiece()) {
 			Manipulator.ejectGamePiece();
+			rotationLockAngle = -1;
 			Vision.flashLED();
 		}
 		if (gamepad.gamePieceOverride()) {
@@ -234,8 +236,13 @@ public class Robot extends TimedRobot {
 		}
 
 		if (gamepad.getTurnToBackTarget() && !mAutoProgram.isRunning()) {
-			mAutoProgram = new AutoTurn();
-			mAutoProgram.start();
+			if (RobotGyro.getRelativeAngle() < 179 && RobotGyro.getRelativeAngle() > 0) {
+				rotationLockAngle = 150; // Right back angle
+			} else {
+				rotationLockAngle = 210; // Left back angle
+			}
+			// mAutoProgram = new AutoTurn();
+			// mAutoProgram.start();
 		}
 
 		// FIND HATCH TARGET
@@ -276,15 +283,27 @@ public class Robot extends TimedRobot {
 			// DRIVER CONTROL MODE
 			// Issue the drive command using the parameters from
 			// above that have been tweaked as needed
+			double driveRotAmount;
 			double driveFWDAmount = gamepad.getSwerveYAxis();
 			double driveStrafeAmount = -gamepad.getSwerveXAxis();
 			boolean normalDrive = !gamepad.getDriveModifier();
+
 			if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
 				driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 			else
 				driveStrafeAmount = driveStrafeAmount * .50;
 
-			double driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+			// If the rotation stick is pressed all the way then disable rotation lock.
+			if (Math.abs(gamepad.getSwerveRotAxis()) > 0.9) {
+				rotationLockAngle = -1; // Turns off rotation lock angle and lets you turn
+			}
+			SmartDashboard.putNumber("Rot LOCK", rotationLockAngle);
+			
+			if (rotationLockAngle != -1) {
+				driveRotAmount = (rotationLockAngle - RobotGyro.getRelativeAngle()) * .02;
+			} else {
+				driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+			}
 
 			SmartDashboard.putBoolean("AutoAssist", gamepad.getAutoAlignToTarget());
 
