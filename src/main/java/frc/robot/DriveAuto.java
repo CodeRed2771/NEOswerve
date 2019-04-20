@@ -42,7 +42,7 @@ public class DriveAuto {
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
-		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 20, 300);
+		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 30, 400);
 		driveCurrentBreaker.reset();
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
@@ -143,6 +143,11 @@ public class DriveAuto {
 	public static double degreesToInches(double degrees) {
 		double inches = degrees / 3.47;
 		return inches;
+	}
+
+	public static void turnToHeading(double desiredHeading, double turnSpeedFactor) {
+		double turnAmount = desiredHeading - RobotGyro.getRelativeAngle();
+		turnDegrees(turnAmount, turnSpeedFactor);
 	}
 
 	public static void turnDegrees(double degrees, double turnSpeedFactor) {
@@ -302,7 +307,7 @@ public class DriveAuto {
 	}
 
 	public static boolean turnCompleted(double allowedError) {
-		return Math.abs(RobotGyro.getAngle() - heading) <= allowedError;
+		return Math.abs(RobotGyro.getRelativeAngle() - heading) <= allowedError;
 	}
 
 	public static boolean turnCompleted() {
