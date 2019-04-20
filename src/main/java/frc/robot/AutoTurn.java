@@ -4,7 +4,7 @@ package frc.robot;
 public class AutoTurn extends AutoBaseClass {
     public void tick() {
         final int rightRocketAngle = 150;
-        final int leftRocketAngle = 330;
+        final int leftRocketAngle = 210;
         double currentGyroAngle = RobotGyro.getRelativeAngle();
 
         if (isRunning()) {
@@ -14,11 +14,11 @@ public class AutoTurn extends AutoBaseClass {
 
             switch (getCurrentStep()) {
             case 0:
-                if (currentGyroAngle < 175 && currentGyroAngle > 5) {
+                if (currentGyroAngle < 179 && currentGyroAngle > 0) {
                     double turnAmount = rightRocketAngle - currentGyroAngle;
                     turnDegrees(turnAmount, 1);
                     System.out.println("Calling for turn on right rocket " + turnAmount);
-                } else if (currentGyroAngle > 185 && currentGyroAngle < 355) {
+                } else if (currentGyroAngle > 180 && currentGyroAngle < 359) {
                     double turnAmount = leftRocketAngle - currentGyroAngle;
                     turnDegrees(turnAmount, 1);
                     System.out.println("Calling for turn on left rocket " + turnAmount);

@@ -175,7 +175,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 advanceStep();
                 break;
             case 21:
-                setTimer(200);
+                setTimerAndAdvanceStep(200);
                 break;
             case 22:
                 DriveAuto.driveInches(-30, 0, 1);

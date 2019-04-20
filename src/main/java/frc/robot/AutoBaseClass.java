@@ -97,6 +97,10 @@ public abstract class AutoBaseClass {
 		DriveAuto.driveInches(distance, angle, maxPower, followTarget);
 	}
 
+	public void turnToHeading(double desiredHeading, double turnSpeedFactor) {
+		DriveAuto.turnToHeading(desiredHeading, turnSpeedFactor);
+	}
+
 	
 	public boolean driveCompleted() {
 		return DriveAuto.hasArrived();
