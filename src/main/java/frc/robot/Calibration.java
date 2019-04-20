@@ -24,9 +24,9 @@ public class Calibration {
 
 	// PRACTICE
 	
-	private final static double DT_A_ABS_ZERO_INITIAL = .222; //Practice Robot Calibration
-	private final static double DT_B_ABS_ZERO_INITIAL = .306; //Practice Robot Calibration
-	private final static double DT_C_ABS_ZERO_INITIAL = .136; //Practice Robot Calibration
+	private final static double DT_A_ABS_ZERO_INITIAL = .228; //Practice Robot Calibration
+	private final static double DT_B_ABS_ZERO_INITIAL = .748; //Practice Robot Calibration
+	private final static double DT_C_ABS_ZERO_INITIAL = .518; //Practice Robot Calibration
 	private final static double DT_D_ABS_ZERO_INITIAL = .292; //Practice Robot Calibration
 	
 	// COMPETIION
