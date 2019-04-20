@@ -24,6 +24,7 @@ public class KeyMap {
     // private final HID.Axis swerveRotAxis = LogitechExtreme3D.STICK_ROT;
     private final HID.Button switchToRobotCentric = LogitechF310.BUMPER_LEFT;
     private final HID.Axis autoAlignToTarget = LogitechF310.TRIGGER_LEFT_AXIS;
+    private final HID.Axis turnToBackTarget = LogitechF310.TRIGGER_RIGHT_AXIS;
 
     private final HID.Button zeroGyro = LogitechF310.START;
 
@@ -195,6 +196,10 @@ public class KeyMap {
 
     public boolean getAutoAlignToTarget() {
         return getHID(gamepad1).axis(autoAlignToTarget) > 0.8;
+    }
+
+    public boolean getTurnToBackTarget() {
+        return getHID(gamepad1).axis(turnToBackTarget) > 0.8;
     }
 
     public double getClimbDrive() {

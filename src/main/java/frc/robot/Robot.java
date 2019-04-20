@@ -1,4 +1,3 @@
-
 package frc.robot;
 
 import java.math.BigDecimal;
@@ -232,6 +231,11 @@ public class Robot extends TimedRobot {
 		if (gamepad.shipMoveRight() && !mAutoProgram.isRunning()) {
 			mAutoProgram = new AutoSlideOver();
 			mAutoProgram.start(AutoBaseClass.Direction.RIGHT);
+		}
+
+		if (gamepad.getTurnToBackTarget() && !mAutoProgram.isRunning()) {
+			mAutoProgram = new AutoTurn();
+			mAutoProgram.start();
 		}
 
 		// FIND HATCH TARGET
