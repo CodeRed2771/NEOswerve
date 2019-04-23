@@ -130,6 +130,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 9:
                 if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
+                    System.out.println("CURRENT TRIPPED!!!!!");
                     advanceStep();
                 }
                 Lift.goHeight(liftHeight);

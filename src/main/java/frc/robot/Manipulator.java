@@ -163,23 +163,24 @@ public class Manipulator {
 
     // CONTROL METHODS ------------------------------------------------
     public static void linkageDown() {
-        // if (linkageIsDown) {
-        // linkage.set(ControlMode.PercentOutput, 0);
-        // } else {
-        // linkage.set(ControlMode.Position, -1000);
+        if (linkageIsDown) {
+            linkage.set(ControlMode.PercentOutput, 0);
+        } else {
+            linkage.set(ControlMode.Position, -1000);
+        }
         linkageIsDown = true;
-        linkage.set(ControlMode.MotionMagic, -1100);
+        // linkage.set(ControlMode.MotionMagic, -1100);
         // }
     }
 
     public static void linkageUp() {
         moveFingerUp();
-        // if (linkageIsDown) {
-            // linkage.set(ControlMode.Position, 0);
+        if (linkageIsDown) {
+            linkage.set(ControlMode.Position, 0);
             linkageIsDown = false;
-            linkage.set(ControlMode.MotionMagic, 0);
-        // } else
-        //     linkage.set(ControlMode.PercentOutput, 0);
+            // linkage.set(ControlMode.MotionMagic, 0);
+        } else
+            linkage.set(ControlMode.PercentOutput, 0);
     }
 
     public static void resetLinkage() {
