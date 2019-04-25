@@ -127,11 +127,13 @@ public class Robot extends TimedRobot {
 		if (gamepad.ejectGamePiece()) {
 			Manipulator.ejectGamePiece();
 			rotationLockAngle = -1;
+			System.out.println("FLASH 1");
 			Vision.flashLED();
 		}
 		if (gamepad.gamePieceOverride()) {
 			Manipulator.holdGamePieceOverride();
 			Vision.flashLED();
+			System.out.println("FLASH 2");
 		}
 
 		if (gamepad.linkageUp()) {
@@ -197,9 +199,9 @@ public class Robot extends TimedRobot {
 			Manipulator.moveFingerUp();
 		}
 
-		if (gamepad.getHatchOverride()) {
-			Manipulator.intakeHatchOverride();
-		}
+		// if (gamepad.getHatchOverride()) {
+		// 	Manipulator.intakeHatchOverride();
+		// }
 
 		// --------------------------------------------------
 		// AUTO SUB ROUTINES
@@ -267,8 +269,8 @@ public class Robot extends TimedRobot {
 			AutoDoEverything.setLiftHeight(AutoDoEverything.LiftHeight.LVL_1);
 			mAutoProgram.start(TargetInfo.TargetType.SHIP_TARGET);
 		}
-		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .1
-				|| Math.abs(gamepad.getSwerveXAxis()) > .1 || Math.abs(gamepad.getSwerveRotAxis()) > .1)) {
+		if (mAutoProgram.isRunning() && (Math.abs(gamepad.getSwerveYAxis()) > .5
+				|| Math.abs(gamepad.getSwerveXAxis()) > .5 || Math.abs(gamepad.getSwerveRotAxis()) > .5)) {
 			mAutoProgram.stop();
 		}
 

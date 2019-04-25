@@ -56,7 +56,7 @@ public class Manipulator {
 
         finger = new DoubleSolenoid(Wiring.FLIPPER_PCM_PORTA, Wiring.FLIPPER_PCM_PORTB);
 
-        currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 150);
+        currentBreaker = new CurrentBreaker(Wiring.INTAKE_PDP_PORT, Calibration.INTAKE_MAX_CURRENT, 250);
 
         linkageCurrentBreaker = new CurrentBreaker(Wiring.LINKAGE_PDP_PORT, 15, 2000);
 
@@ -265,7 +265,7 @@ public class Manipulator {
         manipulatorState = ManipulatorState.HOLDING_CARGO;
         // resetIntakeStallDetector();
         Lift.goCargoLvl1();
-        manipulator.set(ControlMode.PercentOutput, 0);
+        manipulator.set(ControlMode.PercentOutput, -.25);
     }
 
     private static void holdHatch() {

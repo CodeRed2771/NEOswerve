@@ -203,7 +203,7 @@ public class Lift {
 
 	// calculated 357 ticks per inch
 
-	private static final double HATCH_ACQUIRING = 1200;
+	private static final double HATCH_ACQUIRING = 1600;
 	private static final double HATCH_PICK_OFF_FEEDER = HATCH_ACQUIRING + 1100;
 
 	private static final double HATCH_LEVEL_1 = 2000;

@@ -65,11 +65,15 @@ public class AutoDoEverything extends AutoBaseClass {
                 // a problem so we are testing it once we have a robot.
                 // setTimerAndAdvanceStep(500); // changed from 1000 4.15.19
                 break;
-            case 2:
+            /*case 2:
                 if (DriveAuto.turnCompleted()) {
                     advanceStep();
                 }
                 break;
+                I commented this out because we don't need it anymore since we haven't started driving yet--
+                we commented out case 1. I did not have authorization to do this. ~Code Menace
+                */
+
             case 3:
                 Manipulator.setLinkageForPlacement();
                 targetAngle = TargetInfo.targetAngle(mTargetType);
@@ -130,7 +134,7 @@ public class AutoDoEverything extends AutoBaseClass {
                 break;
             case 9:
                 if (DriveAuto.isAgainstWall() || DriveAuto.hasArrived()) {
-                    System.out.println("CURRENT TRIPPED!!!!!");
+                    //System.out.println("CURRENT TRIPPED!!!!!"); ~Code Menace
                     advanceStep();
                 }
                 Lift.goHeight(liftHeight);

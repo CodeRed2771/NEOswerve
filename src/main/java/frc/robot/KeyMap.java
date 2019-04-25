@@ -210,9 +210,9 @@ public class KeyMap {
         return getHID(gamepad2).button(fingerUp);
     }
 
-    public boolean getHatchOverride() {
-        return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).button(modifier);
-    }
+    // public boolean getHatchOverride() {
+    //     return getHID(gamepad2).button(intakeHatch) && getHID(gamepad2).button(modifier);
+    // }
 
     public boolean getDriveModifier() {
         return getHID(gamepad1).button(driveModifier);
