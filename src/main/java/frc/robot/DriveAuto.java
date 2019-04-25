@@ -42,7 +42,7 @@ public class DriveAuto {
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
-		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 30, 800);
+		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 35, 400);
 		driveCurrentBreaker.reset();
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
@@ -327,7 +327,6 @@ public class DriveAuto {
 	}
 
 	public static boolean isAgainstWall() {
-		System.out.println("Current: " + driveCurrentBreaker.getCurrent());
 		return driveCurrentBreaker.tripped();
 	}
 

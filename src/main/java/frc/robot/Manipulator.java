@@ -99,6 +99,7 @@ public class Manipulator {
         SmartDashboard.putNumber("Link I", Calibration.LINKAGE_I);
         SmartDashboard.putNumber("Link D", Calibration.LINKAGE_D);
         SmartDashboard.putNumber("Link F", Calibration.LINKAGE_F);
+    
 
         SmartDashboard.putBoolean("Link TUNE", false);
     }
@@ -150,6 +151,7 @@ public class Manipulator {
         }
 
         if (System.currentTimeMillis() > ejectEndTime) {
+            System.out.println("About to call stop Intake");
             stopIntake();
             Lift.goCargoLvl1();
             ejectEndTime = aDistantFutureTime();
@@ -163,24 +165,30 @@ public class Manipulator {
 
     // CONTROL METHODS ------------------------------------------------
     public static void linkageDown() {
-        if (linkageIsDown) {
-            linkage.set(ControlMode.PercentOutput, 0);
-        } else {
-            linkage.set(ControlMode.Position, -1000);
+        /* if (linkageIsDown) {
+             linkage.set(ControlMode.PercentOutput, 0);
+             System.out.println("Linkage is Down");
+         } else {
+            
+            // System.out.println("Linkage is set to -1000");
+            // linkageIsDown = true;
         }
-        linkageIsDown = true;
+        */
+        linkage.set(ControlMode.Position, -1000);
+        
         // linkage.set(ControlMode.MotionMagic, -1100);
         // }
     }
 
     public static void linkageUp() {
         moveFingerUp();
-        if (linkageIsDown) {
-            linkage.set(ControlMode.Position, 0);
-            linkageIsDown = false;
-            // linkage.set(ControlMode.MotionMagic, 0);
-        } else
-            linkage.set(ControlMode.PercentOutput, 0);
+        // if (linkageIsDown) {
+        //     linkage.set(ControlMode.Position, 0);
+        //     linkageIsDown = false;
+        //     // linkage.set(ControlMode.MotionMagic, 0);
+        // } else
+
+        linkage.set(ControlMode.Position, 0);
     }
 
     public static void resetLinkage() {
@@ -289,8 +297,8 @@ public class Manipulator {
 
         if (state == ManipulatorState.HOLDING_CARGO) {
             manipulator.set(ControlMode.PercentOutput, 1);
-            ejectEndTime = System.currentTimeMillis() + 800;
             resetIntakeStallDetector();
+            ejectEndTime = System.currentTimeMillis() + 800;
         } else if (state == ManipulatorState.HOLDING_HATCH) {
             moveFingerDown();
         }
@@ -304,6 +312,7 @@ public class Manipulator {
 
     public static void stopIntake() {
         manipulator.set(ControlMode.PercentOutput, 0);
+        System.out.println("Turned intake off");
         resetIntakeStallDetector();
     }
 
