@@ -148,6 +148,8 @@ public class Manipulator {
 
         if (intakeStalled() && manipulatorState == ManipulatorState.GETTING_CARGO) {
             holdCargo();
+            Vision.flashLED();
+
         }
 
         if (System.currentTimeMillis() > ejectEndTime) {
