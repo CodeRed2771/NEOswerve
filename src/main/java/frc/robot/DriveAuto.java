@@ -43,6 +43,9 @@ public class DriveAuto {
 		DriveTrain.setDriveMMVelocity(Calibration.DT_MM_VELOCITY);
 
 		driveCurrentBreaker = new CurrentBreaker(Wiring.DRIVE_PDP_PORT, 55, 400); //Changed from 35 on 4/26/2019 by CS and AR
+		//changed amps back to 35 on 4/27/19 because Mr. Scott said to :( ~CM
+		//changed amps back to 55 on 4/27/19 at 9:20 because Mr. Scott decided that it was fine XD ~CS 
+		//Yay ~CM
 		driveCurrentBreaker.reset();
 
 		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
