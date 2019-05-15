@@ -53,6 +53,8 @@ public class AutoDoEverything extends AutoBaseClass {
 
             switch (getCurrentStep()) {
             case 0:
+                driveInches(30, 270, 1);
+            case 1:
                 // keep scanning for a distance reading
                 distanceToTarget = Vision.getDistanceFromTarget();
                 if (distanceToTarget > 0) {
@@ -60,7 +62,7 @@ public class AutoDoEverything extends AutoBaseClass {
                     setStep(3);
                 }
                 break;
-            case 1:
+            case 2:
                 // DriveAuto.turnDegrees(Vision.offsetFromTarget(), 1); // We commented this out because we thought it might be
                 // a problem so we are testing it once we have a robot.
                 // setTimerAndAdvanceStep(500); // changed from 1000 4.15.19
@@ -260,7 +262,15 @@ public class AutoDoEverything extends AutoBaseClass {
                 }
                 break;
             case 63:
-                setStep(500);
+                turnToHeading(180, 1);
+                break;
+            case 64:
+                if (turnCompleted()) {
+                    advanceStep();
+                }
+                break;
+            case 65:
+                setStep(1);
                 break;
 
             /////////////////////////////////////////////////////////////////////////
