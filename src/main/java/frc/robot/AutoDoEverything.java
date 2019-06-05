@@ -52,8 +52,6 @@ public class AutoDoEverything extends AutoBaseClass {
             SmartDashboard.putNumber("Hatch Step", getCurrentStep());
 
             switch (getCurrentStep()) {
-            case 0:
-                driveInches(30, 270, 1);
             case 1:
                 // keep scanning for a distance reading
                 distanceToTarget = Vision.getDistanceFromTarget();
