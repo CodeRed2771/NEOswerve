@@ -292,8 +292,8 @@ public class Robot extends TimedRobot {
 
 			if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
 				driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
-			else
-				driveStrafeAmount = driveStrafeAmount * .50;
+			// else
+			// 	driveStrafeAmount = driveStrafeAmount * .50;
 
 			// If the rotation stick is pressed all the way then disable rotation lock.
 			if (Math.abs(gamepad.getSwerveRotAxis()) > 0.9) {
@@ -479,26 +479,29 @@ public class Robot extends TimedRobot {
 	private double rotationalAdjust(double rotateAmt) {
 		// put some rotational power restrictions in place to make it
 		// more controlled movement
-		double adjustedAmt = 0;
 
-		if (Math.abs(rotateAmt) < .1) {
-			adjustedAmt = 0;
-		} else {
-			if (Math.abs(rotateAmt) < .6) {
-				adjustedAmt = .10 * Math.signum(rotateAmt);
-			} else {
-				if (Math.abs(rotateAmt) < .8) {
-					adjustedAmt = .20 * Math.signum(rotateAmt);
-				} else {
-					if (Math.abs(rotateAmt) < .95) {
-						adjustedAmt = .45 * Math.signum(rotateAmt);
-					} else {
-						adjustedAmt = rotateAmt * .65;
-					}
-				}
-			}
-		}
-		return adjustedAmt;
+		return rotateAmt;
+
+		// double adjustedAmt = 0;
+
+		// if (Math.abs(rotateAmt) < .1) {
+		// 	adjustedAmt = 0;
+		// } else {
+		// 	if (Math.abs(rotateAmt) < .6) {
+		// 		adjustedAmt = .10 * Math.signum(rotateAmt);
+		// 	} else {
+		// 		if (Math.abs(rotateAmt) < .8) {
+		// 			adjustedAmt = .20 * Math.signum(rotateAmt);
+		// 		} else {
+		// 			if (Math.abs(rotateAmt) < .95) {
+		// 				adjustedAmt = .45 * Math.signum(rotateAmt);
+		// 			} else {
+		// 				adjustedAmt = rotateAmt * .65;
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// return adjustedAmt;
 	}
 
 	private double forwardAdjust(double fwd, boolean normalDrive) {
@@ -512,26 +515,28 @@ public class Robot extends TimedRobot {
 	private double strafeAdjust(double strafeAmt, boolean normalDrive) {
 		// put some power restrictions in place to make it
 		// more controlled
-		double adjustedAmt = 0;
+		return strafeAmt;
 
-		if (Math.abs(strafeAmt) < .1) {
-			adjustedAmt = 0;
-		} else {
-			if (normalDrive) { // do normal adjustments
-				if (Math.abs(strafeAmt) < .7) {
-					adjustedAmt = .3 * strafeAmt; // .2 * Math.signum(strafeAmt);
-				} else {
-					if (Math.abs(strafeAmt) < .98) {
-						adjustedAmt = .50 * strafeAmt; // .4 * Math.signum(strafeAmt);
-					} else {
-						adjustedAmt = strafeAmt;
-					}
-				}
-			} else { // lift is up, so do more drastic adjustments
-				adjustedAmt = strafeAmt * .35;
-			}
-		}
-		return adjustedAmt;
+		// double adjustedAmt = 0;
+
+		// if (Math.abs(strafeAmt) < .1) {
+		// 	adjustedAmt = 0;
+		// } else {
+		// 	if (normalDrive) { // do normal adjustments
+		// 		if (Math.abs(strafeAmt) < .7) {
+		// 			adjustedAmt = .3 * strafeAmt; // .2 * Math.signum(strafeAmt);
+		// 		} else {
+		// 			if (Math.abs(strafeAmt) < .98) {
+		// 				adjustedAmt = .50 * strafeAmt; // .4 * Math.signum(strafeAmt);
+		// 			} else {
+		// 				adjustedAmt = strafeAmt;
+		// 			}
+		// 		}
+		// 	} else { // lift is up, so do more drastic adjustments
+		// 		adjustedAmt = strafeAmt * .35;
+		// 	}
+		// }
+		// return adjustedAmt;
 	}
 
 	@Override
