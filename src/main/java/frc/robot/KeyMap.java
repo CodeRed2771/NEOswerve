@@ -16,31 +16,28 @@ public class KeyMap {
     private boolean singleControllerMode = false;
 
     // CONTROLLER 1
-    private final HID.Axis swerveXAxis = LogitechF310.STICK_LEFT_X;
-    private final HID.Axis swerveYAxis = LogitechF310.STICK_LEFT_Y;
-    private final HID.Axis swerveRotAxis = LogitechF310.STICK_RIGHT_X;
-    // private final HID.Axis swerveXAxis = LogitechExtreme3D.STICK_X;
-    // private final HID.Axis swerveYAxis = LogitechExtreme3D.STICK_Y;
-    // private final HID.Axis swerveRotAxis = LogitechExtreme3D.STICK_ROT;
-    private final HID.Button switchToRobotCentric = LogitechF310.BUMPER_LEFT;
-    private final HID.Axis autoAlignToTarget = LogitechF310.TRIGGER_LEFT_AXIS;
-    private final HID.Axis turnToBackTarget = LogitechF310.TRIGGER_RIGHT_AXIS;
+    private final HID.Axis swerveXAxis = LogitechExtreme3D.STICK_X;
+    private final HID.Axis swerveYAxis = LogitechExtreme3D.STICK_Y;
+    private final HID.Axis swerveRotAxis = LogitechExtreme3D.STICK_ROT;
+    private final HID.Button switchToRobotCentric = LogitechExtreme3D.Thumb;
+    private final HID.Button autoAlignToTarget = LogitechExtreme3D.Button7;
+    private final HID.Button turnToBackTarget = LogitechExtreme3D.Button5;
 
-    private final HID.Button zeroGyro = LogitechF310.START;
+    private final HID.Button zeroGyro = LogitechExtreme3D.Button8;
 
     // private final HID.Button driveOffPlatform = LogitechF310.BUMPER_LEFT;
 
     // Climbing
-    private final HID.Button climb = LogitechF310.DPAD_UP;
-    private final HID.Button driveModifier = LogitechF310.BUMPER_RIGHT;
-    private final HID.Button undoClimb = LogitechF310.DPAD_DOWN;
+    private final HID.Button climb = LogitechExtreme3D.Button11;
+    //private final HID.Button driveModifier = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button undoClimb = LogitechExtreme3D.Button12;
     
     // Auto Programs
-    private final HID.Button shipMoveLeft = LogitechF310.DPAD_LEFT;
-    private final HID.Button shipMoveRight = LogitechF310.DPAD_RIGHT;
-    private final HID.Button findRocketTarget = LogitechF310.A;
-    private final HID.Button findShipTarget = LogitechF310.B;
-    private final HID.Button findFeedStation = LogitechF310.Y;
+   // private final HID.Button shipMoveLeft = LogitechF310.DPAD_LEFT;
+   // private final HID.Button shipMoveRight = LogitechF310.DPAD_RIGHT;
+    private final HID.Button findRocketTarget = LogitechExtreme3D.Button3;
+    private final HID.Button findShipTarget = LogitechExtreme3D.Button4;
+    private final HID.Button findFeedStation = LogitechExtreme3D.Button6;
 
     // CONTROLLER 2
     private final HID.Button intakeCargo = LogitechF310.DPAD_LEFT;
@@ -178,28 +175,34 @@ public class KeyMap {
         return getHID(gamepad1).button(findFeedStation);
     }
 
-    public boolean shipMoveLeft() {
-        return getHID(gamepad1).button(shipMoveLeft) && !getHID(gamepad1).button(driveModifier);
+   public boolean shipMoveLeft() {
+        //return getHID(gamepad1).button(shipMoveLeft) && !getHID(gamepad1).button(driveModifier);
+        return false;
     }
 
     public boolean shipMoveRight() {
-        return getHID(gamepad1).button(shipMoveRight) && !getHID(gamepad1).button(driveModifier);
+        //return getHID(gamepad1).button(shipMoveRight) && !getHID(gamepad1).button(driveModifier);
+        return false;
     }
     
     public boolean getClimb() {
-        return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(climb);
+        //return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(climb);
+        return false;
     }
 
     public boolean getUndoClimb() {
-        return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(undoClimb);
+        //return getHID(gamepad1).button(driveModifier) && getHID(gamepad1).button(undoClimb);
+        return false;
     }
 
     public boolean getAutoAlignToTarget() {
-        return getHID(gamepad1).axis(autoAlignToTarget) > 0.8;
+        //return getHID(gamepad1).axis(autoAlignToTarget) > 0.8;
+        return false;
     }
 
     public boolean getTurnToBackTarget() {
-        return getHID(gamepad1).axis(turnToBackTarget) > 0.8;
+        //return getHID(gamepad1).axis(turnToBackTarget) > 0.8;
+        return false;
     }
 
     public double getClimbDrive() {
@@ -215,7 +218,8 @@ public class KeyMap {
     // }
 
     public boolean getDriveModifier() {
-        return getHID(gamepad1).button(driveModifier);
+        //return getHID(gamepad1).button(driveModifier);
+        return false;
     }
 
     // public boolean driveOffPlatform() {

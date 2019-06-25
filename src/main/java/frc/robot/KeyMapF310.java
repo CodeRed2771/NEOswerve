@@ -3,7 +3,7 @@ package frc.robot;
 import frc.robot.libs.HID.*;
 import frc.robot.libs.HID.HID.Axis;
 
-public class KeyMap {
+public class KeyMapF310 {
 
     // GAMEPADS
     private final HID gp1 = new HID(0);
