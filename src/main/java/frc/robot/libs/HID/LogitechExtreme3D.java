@@ -6,9 +6,9 @@ package frc.robot.libs.HID;
  */
 public class LogitechExtreme3D extends HID {
 
-    public static final Axis STICK_X = new Axis(0, 0.05);
+    public static final Axis STICK_X = new Axis(0, 0.1);
     public static final Axis STICK_Y = new Axis(1, 0.05, -1);
-    public static final Axis STICK_ROT = new Axis(2, 0.05);
+    public static final Axis STICK_ROT = new Axis(2, .3);
     public static final Button Button1 = new Button(1);
     public static final Button Thumb = new Button(2);
     public static final Button Button3 = new Button(3);
