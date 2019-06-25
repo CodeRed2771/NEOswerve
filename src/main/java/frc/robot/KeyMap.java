@@ -29,7 +29,7 @@ public class KeyMap {
 
     // Climbing
     private final HID.Button climb = LogitechExtreme3D.Button11;
-    //private final HID.Button driveModifier = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button driveModifier = LogitechExtreme3D.Button1;
     private final HID.Button undoClimb = LogitechExtreme3D.Button12;
     
     // Auto Programs
