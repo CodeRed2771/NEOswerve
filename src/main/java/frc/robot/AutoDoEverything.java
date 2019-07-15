@@ -10,6 +10,7 @@ public class AutoDoEverything extends AutoBaseClass {
     private double distToStayBackOnFirstDrive = 20;
     private double targetAngle = 0;
     private boolean drivingAllowed = true;
+    private boolean doNothing = true;
 
     public enum ActionMode {
         JUST_DRIVE, GET_HATCH, GET_CARGO, PLACE_HATCH, PLACE_CARGO;
