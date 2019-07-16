@@ -480,28 +480,28 @@ public class Robot extends TimedRobot {
 		// put some rotational power restrictions in place to make it
 		// more controlled movement
 
-		return rotateAmt;
+		// return rotateAmt;
 
-		// double adjustedAmt = 0;
+		double adjustedAmt = 0;
 
-		// if (Math.abs(rotateAmt) < .1) {
-		// 	adjustedAmt = 0;
-		// } else {
-		// 	if (Math.abs(rotateAmt) < .6) {
-		// 		adjustedAmt = .10 * Math.signum(rotateAmt);
-		// 	} else {
-		// 		if (Math.abs(rotateAmt) < .8) {
-		// 			adjustedAmt = .20 * Math.signum(rotateAmt);
-		// 		} else {
-		// 			if (Math.abs(rotateAmt) < .95) {
-		// 				adjustedAmt = .45 * Math.signum(rotateAmt);
-		// 			} else {
-		// 				adjustedAmt = rotateAmt * .65;
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// return adjustedAmt;
+		if (Math.abs(rotateAmt) < .1) {
+			adjustedAmt = 0;
+		} else {
+			if (Math.abs(rotateAmt) < .6) {
+				adjustedAmt = .10 * Math.signum(rotateAmt);
+			} else {
+				if (Math.abs(rotateAmt) < .8) {
+					adjustedAmt = .30 * Math.signum(rotateAmt);
+				} else {
+					if (Math.abs(rotateAmt) < .95) {
+						adjustedAmt = .45 * Math.signum(rotateAmt);
+					} else {
+						adjustedAmt = rotateAmt * .85;
+					}
+				}
+			}
+		}
+		return adjustedAmt;
 	}
 
 	private double forwardAdjust(double fwd, boolean normalDrive) {
