@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Calibration {
 
-	/*
+	/*	
 	 * Drive Train
 	 */
 	
@@ -31,7 +31,7 @@ public class Calibration {
 	
 	// COMPETIION
 	
-	private final static double DT_A_ABS_ZERO_INITIAL = .556; // COMPEITION
+	private final static double DT_A_ABS_ZERO_INITIAL = .231; // COMPEITION
 	private final static double DT_B_ABS_ZERO_INITIAL = .119;
 	private final static double DT_C_ABS_ZERO_INITIAL = .125;
 	private final static double DT_D_ABS_ZERO_INITIAL = .016;
