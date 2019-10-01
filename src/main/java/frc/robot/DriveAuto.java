@@ -198,24 +198,6 @@ public class DriveAuto {
 	public static void tick() {
 		// this is called roughly 50 times per second
 
-		// try to keep target in center by adjusting module angles
-		double angleAdjust = 0; // Is this a problem?
-		if (isDriving && followingTarget) {
-			angleAdjust = Vision.offsetFromTarget();
-			strafeAngle = -angleAdjust * 1.2;
-			// angleAdjust = - Vision.offsetFromTarget();
-
-			// if (Math.abs(angleAdjust) > 1) {
-			// strafeAngle = (strafeAngle + (.11 * Math.signum(angleAdjust)));
-			// } else
-			// strafeAngle = strafeAngleOriginal;
-
-			SmartDashboard.putNumber("VA angleadj", angleAdjust);
-			SmartDashboard.putNumber("VA strafeAngle", strafeAngle);
-
-			DriveTrain.setAllTurnOrientation(DriveTrain.angleToPosition(strafeAngle), true);
-		}
-
 		// SmartDashboard.putNumber("Cur Turn Speed", currentTurnSpeed);
 		// SmartDashboard.putNumber("Decel cycles", cyclesToDecelerate);
 		// SmartDashboard.putNumber("Cycles left", cyclesLeft);
