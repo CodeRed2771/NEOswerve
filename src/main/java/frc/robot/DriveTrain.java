@@ -3,15 +3,15 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
-public class DriveTrain implements PIDOutput {
+public class DriveTrain {
 
 	private static DriveTrain instance;
 	public static Module moduleA, moduleB, moduleC, moduleD;
-	private static PIDController pidControllerRot;
-	private static boolean inPIDRotationMode = true;
+	// private static PIDController pidControllerRot;
 
 	public static DriveTrain getInstance() {
 		if (instance == null) {
@@ -47,11 +47,11 @@ public class DriveTrain implements PIDOutput {
 
 		// PID is for PID drive not for the modules
 		// DVV - I don't believe we're using a mode that uses this
-		pidControllerRot = new PIDController(Calibration.DT_ROT_PID_P, Calibration.DT_ROT_PID_I,
-				Calibration.DT_ROT_PID_D, RobotGyro.getGyro(), this);
-		pidControllerRot.setInputRange(-180.0f, 180.0f);
-		pidControllerRot.setOutputRange(-1.0, 1.0);
-		pidControllerRot.setContinuous(true);
+		// pidControllerRot = new PIDController(Calibration.DT_ROT_PID_P, Calibration.DT_ROT_PID_I,
+				// Calibration.DT_ROT_PID_D);
+		// TO DO pidControllerRot.setInputRange(-180.0f, 180.0f);
+		// TO DO pidControllerRot.setOutputRange(-1.0, 1.0);
+		// TO DO pidControllerRot.setContinuous(true);
 	}
 
 	public static void setFollowerFix(boolean enable) {
@@ -513,26 +513,37 @@ public class DriveTrain implements PIDOutput {
 		}
 	}
 
-	public static void pidDrive(double fwd, double strafe, double angle) {
-		if (getInstance() == null)
-			return;
+	// private static void rotPIDEnable() {
+	// 	mRotPIDEnabled = true;
+	// }
+	// private static void rotPIDDisable() {
+	// 	mRotPIDEnabled = false;
+	// }
+	// private static boolean isRotPIDEnabled() {
+	// 	return mRotPIDEnabled;
+	// }
 
-		double temp = (fwd * Math.cos(RobotGyro.getGyroAngleInRad()))
-				+ (strafe * Math.sin(RobotGyro.getGyroAngleInRad()));
-		strafe = (-fwd * Math.sin(RobotGyro.getGyroAngleInRad())) + (strafe * Math.cos(RobotGyro.getGyroAngleInRad()));
-		fwd = temp;
-		if (!pidControllerRot.isEnabled())
-			pidControllerRot.enable();
-		if (Math.abs(fwd) < .15 && Math.abs(strafe) < .15) {
-			pidFWD = 0;
-			pidSTR = 0;
-		} else {
-			setDriveBrakeMode(false);
-			pidFWD = fwd;
-			pidSTR = strafe;
-		}
-		pidControllerRot.setSetpoint(angle);
-	}
+	// public static void pidDrive(double fwd, double strafe, double angle) {
+	// 	if (getInstance() == null)
+	// 		return;
+
+	// 	double temp = (fwd * Math.cos(RobotGyro.getGyroAngleInRad()))
+	// 			+ (strafe * Math.sin(RobotGyro.getGyroAngleInRad()));
+	// 	strafe = (-fwd * Math.sin(RobotGyro.getGyroAngleInRad())) + (strafe * Math.cos(RobotGyro.getGyroAngleInRad()));
+	// 	fwd = temp;
+	// 	if (!isRotPIDEnabled())
+	// 		rotPIDEnable();
+			 
+	// 	if (Math.abs(fwd) < .15 && Math.abs(strafe) < .15) {
+	// 		pidFWD = 0;
+	// 		pidSTR = 0;
+	// 	} else {
+	// 		setDriveBrakeMode(false);
+	// 		pidFWD = fwd;
+	// 		pidSTR = strafe;
+	// 	}
+	// 	pidControllerRot.setSetpoint(angle);
+	// }
 
 	public static void fieldCentricDrive(double fwd, double strafe, double rot) {
 		if (getInstance() == null)
@@ -557,38 +568,37 @@ public class DriveTrain implements PIDOutput {
 	 * PID Stuff
 	 */
 
-	@Override
-	public void pidWrite(double output) {
-		if (getInstance() == null)
-			return;
+	// public void pidWrite(double output) {
+	// 	if (getInstance() == null)
+	// 		return;
 
-		if (Math.abs(pidControllerRot.getError()) < Calibration.DT_ROT_PID_IZONE) {
-			pidControllerRot.setPID(Calibration.DT_ROT_PID_P, Calibration.DT_ROT_PID_I, Calibration.DT_ROT_PID_D);
-		} else {
-			// I Zone
-			pidControllerRot.setPID(Calibration.DT_ROT_PID_P, 0, Calibration.DT_ROT_PID_D);
-			pidControllerRot.setContinuous(true);
-		}
-		if (inPIDRotationMode) {
-			swerveDrive(pidFWD, pidSTR, output);
-		} else {
-			swerveDrive(-output, pidSTR, 0);
-		}
-	}
+	// 	if (Math.abs(pidControllerRot.getError()) < Calibration.DT_ROT_PID_IZONE) {
+	// 		pidControllerRot.setPID(Calibration.DT_ROT_PID_P, Calibration.DT_ROT_PID_I, Calibration.DT_ROT_PID_D);
+	// 	} else {
+	// 		// I Zone
+	// 		pidControllerRot.setPID(Calibration.DT_ROT_PID_P, 0, Calibration.DT_ROT_PID_D);
+	// 		// TO DO pidControllerRot.setContinuous(true);
+	// 	}
+	// 	if (inPIDRotationMode) {
+	// 		swerveDrive(pidFWD, pidSTR, output);
+	// 	} else {
+	// 		swerveDrive(-output, pidSTR, 0);
+	// 	}
+	// }
 
-	public static void disablePID() {
-		if (getInstance() == null)
-			return;
-		pidControllerRot.disable();
-	}
+	// public static void disablePID() {
+	// 	if (getInstance() == null)
+	// 		return;
+	// 	rotPIDDisable();
+	// }
 
-	public static void setDistancePIDMode() {
-		inPIDRotationMode = false;
-	}
+	// public static void setDistancePIDMode() {
+	// 	inPIDRotationMode = false;
+	// }
 
-	public static void setRotationPIDMode() {
-		inPIDRotationMode = true;
-	}
+	// public static void setRotationPIDMode() {
+	// 	inPIDRotationMode = true;
+	// }
 
 	public static double[] getAllAbsoluteTurnOrientations() {
 		if (getInstance() == null)

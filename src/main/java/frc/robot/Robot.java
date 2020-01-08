@@ -172,7 +172,7 @@ public class Robot extends TimedRobot {
 											// periodic
 		DriveTrain.resetDriveEncoders();
 
-		DriveTrain.disablePID();
+		// DriveTrain.disablePID();
 	}
 
 	public void disabledPeriodic() {
