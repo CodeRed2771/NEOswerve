@@ -1,11 +1,20 @@
 package frc.robot;
 
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Module {
-	public WPI_TalonSRX drive, turn;
+	
+	public WPI_TalonSRX turn;
+	public CANSparkMax drive;
+	private CANPIDController m_pidController;
+  	private CANEncoder m_encoder;
 	private char mModuleID;
 	private final int FULL_ROTATION = 4096;
 	private double TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
@@ -17,7 +26,7 @@ public class Module {
 	/**
 	 * Lets make a new module :)
 	 * 
-	 * @param driveTalonID First I gotta know what talon we are using for driving
+	 * @param driveSparkID First I gotta know what spark we are using for driving
 	 * @param turnTalonID  Next I gotta know what talon we are using to turn
 	 * @param tP           I probably need to know the P constant for the turning
 	 *                     PID
@@ -28,29 +37,55 @@ public class Module {
 	 * @param tIZone       I might not need to know the I Zone value for the turning
 	 *                     PID
 	 */
-	public Module(int driveTalonID, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI,
+	public Module(int driveSparkID/*driveTalonID*/, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI,
 			double tD, int tIZone, double tZeroPos, char moduleID) {
-		drive = new WPI_TalonSRX(driveTalonID);
-		drive.configFactoryDefault(10);
+		// drive = new WPI_TalonSRX(driveTalonID);
+		// drive.setFactoryDefault(10);
+		drive = new CANSparkMax(driveSparkID, MotorType.kBrushless);
+		drive.restoreFactoryDefaults();
 		mModuleID = moduleID;
-		drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); // ?? don't know if zeros are right
+		// drive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); // ?? don't know if zeros are right
+
+		/**
+     	* In order to use PID functionality for a controller, a CANPIDController object
+     	* is constructed by calling the getPIDController() method on an existing
+     	* CANSparkMax object
+     	*/
+    	m_pidController = drive.getPIDController();
+
+   		// Encoder object created to display position values
+    	m_encoder = drive.getEncoder();
+		
 		DRIVE_P = dP;
 		DRIVE_I = dI;
 		DRIVE_D = dD;
 		DRIVE_IZONE = dIZone;
 
-		drive.config_kP(0, DRIVE_P, 0);
-		drive.config_kI(0, DRIVE_I, 0);
-		drive.config_kD(0, DRIVE_D, 0);
-		drive.config_IntegralZone(0, DRIVE_IZONE, 0);
-		drive.selectProfileSlot(0, 0);
+		// drive.config_kP(0, DRIVE_P, 0);
+		// drive.config_kI(0, DRIVE_I, 0);
+		// drive.config_kD(0, DRIVE_D, 0);
+		// drive.config_IntegralZone(0, DRIVE_IZONE, 0);
 
-		drive.configOpenloopRamp(.15, 0);
-		drive.configClosedloopRamp(.05, 0);
+		m_pidController.setP(DRIVE_P);
+		m_pidController.setI(DRIVE_I);
+		m_pidController.setD(DRIVE_D);
+		m_pidController.setIZone(DRIVE_IZONE);
+		m_pidController.setFF(0);
+		m_pidController.setOutputRange(-1, 1);
 
-		drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 0);
-		drive.configMotionAcceleration(Calibration.DT_MM_ACCEL, 0);
-		drive.setSensorPhase(true);
+		// drive.selectProfileSlot(0, 0);
+
+		// drive.configOpenloopRamp(.15, 0);
+		// drive.configClosedloopRamp(.05, 0);
+
+
+		// drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 0);
+		// drive.configMotionAcceleration(Calibration.DT_MM_ACCEL, 0);
+
+		m_pidController.setSmartMotionMaxVelocity(Calibration.DT_MM_VELOCITY, 0);
+		m_pidController.setSmartMotionMaxAccel(Calibration.DT_MM_ACCEL, 0);
+
+		// drive.setSensorPhase(true);
 
 		turn = new WPI_TalonSRX(turnTalonID);
 		turn.configFactoryDefault(10);
@@ -72,23 +107,32 @@ public class Module {
 		turn.configClosedloopRamp(.1, 0);
 	}
 
-	public void setFollower(int talonToFollow) {
-		if (talonToFollow != 0) {
-			drive.set(ControlMode.Follower, talonToFollow);
-		} else
+	public void setFollower(int sparkToFollow) {
+		if (sparkToFollow != 0) {
+			drive.follow(sparkToFollow);
+		} else {
 			drive.set(ControlMode.Velocity, 0);
+		}
+	}
+
+	public void setFollowerModule(CANSparkMax aCanSparkMaxModule) {
+		if (aCanSparkMaxModule != null) {
+			drive.follow(aCanSparkMaxModule);
+		} else {
+			// nothing to be followed
+		}
 	}
 
 	public void setDriveMMAccel(int accel) {
-		drive.configMotionAcceleration(accel, 0);
+		m_pidController.setSmartMotionMaxAccel(accel, 0);
 	}
 
 	public void setDriveMMVelocity(int velocity) {
-		drive.configMotionCruiseVelocity(velocity, 0);
+		m_pidController.setSmartMotionMaxVelocity(velocity, 0);
 	}
 
 	public int getDriveVelocity() {
-		return drive.getSelectedSensorVelocity(0);
+		return m_pidController.getSmartMotionVelocity(0);
 	}
 
 	/**
@@ -352,9 +396,9 @@ public class Module {
 	}
 
 	public void setDrivePIDValues(double p, double i, double d) {
-		drive.config_kP(0, p, 0);
-		drive.config_kI(0, i, 0);
-		drive.config_kD(0, d, 0);
+		m_pidController.setP(p);
+		m_pidController.setI(i);
+		m_pidController.setD(d);
 	}
 
 	public void setTurnPIDValues(double p, double i, double d) {
