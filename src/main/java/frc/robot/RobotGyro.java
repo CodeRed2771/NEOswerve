@@ -1,13 +1,9 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
 
-public class RobotGyro implements PIDSource {
+public class RobotGyro {
 	private static RobotGyro instance;
 	private static AHRS mGyro;
 
@@ -105,15 +101,15 @@ public class RobotGyro implements PIDSource {
 		return adjustedAngle * (Math.PI / 180d);
 	}
 
-	@Override
-	public void setPIDSourceType(PIDSourceType pidSource) {
-		mGyro.setPIDSourceType(pidSource);
-	}
+	// @Override
+	// public void setPIDSourceType(PIDSourceType pidSource) {
+	// 	mGyro.setPIDSourceType(pidSource);
+	// }
 
-	@Override
-	public PIDSourceType getPIDSourceType() {
-		return mGyro.getPIDSourceType();
-	}
+	// @Override
+	// public PIDSourceType getPIDSourceType() {
+	// 	return mGyro.getPIDSourceType();
+	// }
 
 	public double pidGet() {
 		return mGyro.getAngle();

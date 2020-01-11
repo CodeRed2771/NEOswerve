@@ -17,10 +17,10 @@ public class Calibration {
 	
 	 // TEST/OLD BOT
 	
-	// private final static double DT_A_ABS_ZERO_INITIAL = .522; //Practice Robot Calibration
-	// private final static double DT_B_ABS_ZERO_INITIAL = .904; //Practice Robot Calibration
-	// private final static double DT_C_ABS_ZERO_INITIAL = .793; //Practice Robot Calibration
-	// private final static double DT_D_ABS_ZERO_INITIAL = .106; //Practice Robot Calibration
+	private final static double DT_A_ABS_ZERO_INITIAL = .636; //Practice Robot Calibration
+	private final static double DT_B_ABS_ZERO_INITIAL = .896; //Practice Robot Calibration
+	private final static double DT_C_ABS_ZERO_INITIAL = .793; //Practice Robot Calibration
+	private final static double DT_D_ABS_ZERO_INITIAL = .108; //Practice Robot Calibration
 
 	// PRACTICE
 	
@@ -31,10 +31,10 @@ public class Calibration {
 	
 	// COMPETIION
 	
-	private final static double DT_A_ABS_ZERO_INITIAL = .231; // COMPEITION
-	private final static double DT_B_ABS_ZERO_INITIAL = .119;
-	private final static double DT_C_ABS_ZERO_INITIAL = .125;
-	private final static double DT_D_ABS_ZERO_INITIAL = .016;
+	// private final static double DT_A_ABS_ZERO_INITIAL = .231; // COMPEITION
+	// private final static double DT_B_ABS_ZERO_INITIAL = .119;
+	// private final static double DT_C_ABS_ZERO_INITIAL = .125;
+	// private final static double DT_D_ABS_ZERO_INITIAL = .016;
 	
 	public final static double VISION_FWD_P = 0.05;
 	public final static double VISION_FWD_I = 0;
@@ -82,11 +82,11 @@ public class Calibration {
 	public final static double DT_ROT_PID_D= .000;
 	public final static double DT_ROT_PID_IZONE = 18;
 
-	public final static int DT_MM_ACCEL = 300;
-	public final static int DT_MM_VELOCITY = 450;
+	public final static int DT_MM_ACCEL = 3;
+	public final static int DT_MM_VELOCITY = 4;
 	
 	// COMPETIION AND PRACTICE
-	public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 42.66;  
+	public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 2;  
 
 	// TEST BOT2
 	// public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 32.900; 
@@ -96,9 +96,9 @@ public class Calibration {
 	public static final double AUTO_ROT_D = 0.1;  // was 067
 	public static final double AUTO_ROT_F = 0.0;
 
-	public static final double AUTO_DRIVE_P = 20;  // was .5
-	public static final double AUTO_DRIVE_I = 0.1;
-	public static final double AUTO_DRIVE_D = 200.0;  // was 0
+	public static final double AUTO_DRIVE_P = .03;  // was .5
+	public static final double AUTO_DRIVE_I = 0;
+	public static final double AUTO_DRIVE_D = 0;  // was 0
 	public static final int AUTO_DRIVE_IZONE = 50;
 	
 	public static final double INTAKE_MAX_CURRENT = 14;

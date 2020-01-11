@@ -68,14 +68,6 @@ public class DriveTrain {
 		// TO DO pidControllerRot.setContinuous(true);
 	}
 
-	public static void setFollowerFix(boolean enable) {
-		if (enable)
-			// moduleB.setFollower(Calibration.DT_D_DRIVE_TALON_ID);
-			moduleB.setFollowerModule(moduleD);
-		else
-			moduleB.setFollower(0);
-	}
-
 	public static void setDrivePower(double modAPower, double modBPower, double modCPower, double modDPower) {
 		if (getInstance() == null)
 			return;
@@ -98,11 +90,6 @@ public class DriveTrain {
 		moduleB.setDriveMMVelocity(velocity);
 		moduleC.setDriveMMVelocity(velocity);
 		moduleD.setDriveMMVelocity(velocity);
-	}
-
-	public static int getDriveVelocity() {
-		return (moduleA.getDriveVelocity() + moduleB.getDriveVelocity() + moduleC.getDriveVelocity()
-				+ moduleD.getDriveVelocity()) / 4;
 	}
 
 	public static boolean hasDriveCompleted(int allowedError) {
@@ -172,7 +159,7 @@ public class DriveTrain {
 		setDrivePosition(position, position, position, position);
 	}
 
-	public static void setDrivePosition(int modAPosition, int modBPosition, int modCPosition, int modDPosition) {
+	public static void setDrivePosition(double modAPosition, double modBPosition, double modCPosition, double modDPosition) {
 		if (getInstance() == null)
 			return;
 
@@ -215,7 +202,7 @@ public class DriveTrain {
 	// 	return (moduleA.getDriveEncoder() + moduleB.getDriveEncoder() + moduleC.getDriveEncoder() + moduleD.getDriveEncoder()) / 4;
 	// }
 
-	public static int getDriveEnc() {
+	public static double getDriveEnc() {
 		if (getInstance() == null)
 			return 0;
 		return (moduleA.getDriveEnc() + moduleB.getDriveEnc() + moduleC.getDriveEnc() + moduleD.getDriveEnc()) / 4;
@@ -410,19 +397,19 @@ public class DriveTrain {
 				+ Math.abs(moduleD.getTurnError())) / 4d;
 	}
 
-	public static double getAverageDriveError() {
-		if (getInstance() == null)
-			return 0.0;
+	// public static double getAverageDriveError() {
+	// 	if (getInstance() == null)
+	// 		return 0.0;
 
-		return (Math.abs(moduleA.getDriveError()) + Math.abs(moduleB.getDriveError())
-				+ Math.abs(moduleC.getDriveError()) + Math.abs(moduleD.getDriveError())) / 4d;
-	}
+	// 	return (Math.abs(moduleA.getDriveError()) + Math.abs(moduleB.getDriveError())
+	// 			+ Math.abs(moduleC.getDriveError()) + Math.abs(moduleD.getDriveError())) / 4d;
+	// }
 
-	public static double getDriveError() {
-		if (getInstance() == null)
-			return 0.0;
-		return moduleA.getDriveError();
-	}
+	// public static double getDriveError() {
+	// 	if (getInstance() == null)
+	// 		return 0.0;
+	// 	return moduleA.getDriveError();
+	// }
 
 	/*
 	 * 

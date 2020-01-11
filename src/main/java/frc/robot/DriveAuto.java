@@ -3,7 +3,7 @@ package frc.robot;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.libs.CurrentBreaker;
 
@@ -34,9 +34,11 @@ public class DriveAuto {
 		DriveTrain.getInstance();
 
 		rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D,
-				Calibration.AUTO_ROT_F, RobotGyro.getInstance(), rot -> DriveTrain.autoSetRot(rot));
+		Calibration.AUTO_ROT_F);
+		// rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D,
+		// 		Calibration.AUTO_ROT_F, RobotGyro.getInstance(), rot -> DriveTrain.autoSetRot(rot));
 
-		rotDrivePID.setAbsoluteTolerance(2); // degrees off
+		rotDrivePID.setTolerance(2); // degrees off
 		// rotDrivePID.setToleranceBuffer(3);
 
 		DriveTrain.setDriveMMAccel(Calibration.DT_MM_ACCEL);
@@ -132,8 +134,8 @@ public class DriveAuto {
 	}
 
 	public static void stopTurning() {
-		rotDrivePID.setSetpoint(rotDrivePID.get());
-		rotDrivePID.disable();
+		// rotDrivePID.setSetpoint(rotDrivePID.calculate(RobotGyro.getAngle())); // changed 1/6/20
+		// rotDrivePID.disable();
 		DriveTrain.stopDriveAndTurnMotors();
 	}
 
@@ -188,11 +190,11 @@ public class DriveAuto {
 	// }
 	//
 	public static void continuousDrive(double inches, double maxPower) {
-		setRotationalPowerOutput(maxPower);
+		// setRotationalPowerOutput(maxPower);
 
 		DriveTrain.setTurnOrientation(DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0),
 				DriveTrain.angleToPosition(0), DriveTrain.angleToPosition(0), true);
-		rotDrivePID.disable();
+		// rotDrivePID.disable();
 	}
 
 	public static void tick() {
@@ -202,19 +204,19 @@ public class DriveAuto {
 		// SmartDashboard.putNumber("Decel cycles", cyclesToDecelerate);
 		// SmartDashboard.putNumber("Cycles left", cyclesLeft);
 		// SmartDashboard.putNumber("Int Setpoint", interimTurnSetpoint);
-		SmartDashboard.putNumber("ROT PID ERROR", rotDrivePID.getError());
-		SmartDashboard.putNumber("Drive Train Velocity", DriveTrain.getDriveVelocity());
+		// SmartDashboard.putNumber("ROT PID ERROR", rotDrivePID.getError());
+		// SmartDashboard.putNumber("Drive Train Velocity", DriveTrain.getDriveVelocity());
 		SmartDashboard.putBoolean("HasArrived", hasArrived());
 		SmartDashboard.putBoolean("TurnCompleted", turnCompleted());
-		SmartDashboard.putNumber("Drive PID Error", DriveTrain.getDriveError());
+		// SmartDashboard.putNumber("Drive PID Error", DriveTrain.getDriveError());
 
 		// Sets the PID values based on input from the SmartDashboard
 		// This is only needed during tuning
 		if (SmartDashboard.getBoolean("Tune Drive/Turn PIDs", false)) {
-			rotDrivePID.setPID(SmartDashboard.getNumber("ROT P", Calibration.AUTO_ROT_P),
-					SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
-					SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D),
-					SmartDashboard.getNumber("ROT F", Calibration.AUTO_ROT_F));
+			// rotDrivePID.setPID(SmartDashboard.getNumber("ROT P", Calibration.AUTO_ROT_P),
+			// 		SmartDashboard.getNumber("ROT I", Calibration.AUTO_ROT_I),
+			// 		SmartDashboard.getNumber("ROT D", Calibration.AUTO_ROT_D),
+			// 		SmartDashboard.getNumber("ROT F", Calibration.AUTO_ROT_F));
 
 			DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
 					SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
@@ -279,9 +281,9 @@ public class DriveAuto {
 		
 	}
 
-	private static void setRotationalPowerOutput(double powerLevel) {
-		rotDrivePID.setOutputRange(-powerLevel, powerLevel);
-	}
+	// private static void setRotationalPowerOutput(double powerLevel) {
+	// 	rotDrivePID.setOutputRange(-powerLevel, powerLevel);
+	// }
 
 	public static double getDistanceTravelled() {
 		return Math.abs(convertTicksToInches(DriveTrain.getDriveEnc()));
@@ -299,13 +301,13 @@ public class DriveAuto {
 		return turnCompleted(1); // allow 1 degree of error by default
 	}
 
-	public static void setPIDstate(boolean isEnabled) {
-		if (isEnabled) {
-			rotDrivePID.enable();
-		} else {
-			rotDrivePID.disable();
-		}
-	}
+	// public static void setPIDstate(boolean isEnabled) {
+	// 	if (isEnabled) {
+	// 		rotDrivePID.enable();
+	// 	} else {
+	// 		rotDrivePID.disable();
+	// 	}
+	// }
 
 	public static void resetDriveCurrentBreaker() {
 		driveCurrentBreaker.reset();
@@ -316,22 +318,22 @@ public class DriveAuto {
 	}
 
 	public static void disable() {
-		setPIDstate(false);
+		// setPIDstate(false);
 	}
 
 	private static int convertToTicks(double inches) {
 		return (int) (inches * Calibration.DRIVE_DISTANCE_TICKS_PER_INCH);
 	}
 
-	private static double convertTicksToInches(int ticks) {
+	private static double convertTicksToInches(double ticks) {
 		return ticks / Calibration.DRIVE_DISTANCE_TICKS_PER_INCH;
 	}
 
 	public static void showEncoderValues() {
 		SmartDashboard.putNumber("Drive Encoder", DriveTrain.getDriveEnc());
 
-		SmartDashboard.putNumber("Drive PID Error", DriveTrain.getDriveError());
-		SmartDashboard.putNumber("Drive Avg Error", DriveTrain.getAverageDriveError());
+		// SmartDashboard.putNumber("Drive PID Error", DriveTrain.getDriveError());
+		// SmartDashboard.putNumber("Drive Avg Error", DriveTrain.getAverageDriveError());
 
 		// SmartDashboard.putNumber("Gyro PID Setpoint",
 		// rotDrivePID.getSetpoint());

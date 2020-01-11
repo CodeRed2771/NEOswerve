@@ -4,6 +4,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -13,11 +14,11 @@ public class Module {
 	
 	public WPI_TalonSRX turn;
 	public CANSparkMax drive;
-	private CANPIDController m_pidController;
-  	private CANEncoder m_encoder;
-	private char mModuleID;
+	private final CANPIDController drivePID;
+  	private final CANEncoder driveEncoder;
+	private final char mModuleID;
 	private final int FULL_ROTATION = 4096;
-	private double TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
+	private final double TURN_P, TURN_I, TURN_D, DRIVE_P, DRIVE_I, DRIVE_D;
 	private final int TURN_IZONE, DRIVE_IZONE;
 	private double turnZeroPos = 0;
 	private double currentDriveSetpoint = 0;
@@ -37,8 +38,8 @@ public class Module {
 	 * @param tIZone       I might not need to know the I Zone value for the turning
 	 *                     PID
 	 */
-	public Module(int driveSparkID/*driveTalonID*/, int turnTalonID, double dP, double dI, double dD, int dIZone, double tP, double tI,
-			double tD, int tIZone, double tZeroPos, char moduleID) {
+	public Module(final int driveSparkID/*driveTalonID*/, final int turnTalonID, final double dP, final double dI, final double dD, final int dIZone, final double tP, final double tI,
+			final double tD, final int tIZone, final double tZeroPos, final char moduleID) {
 		// drive = new WPI_TalonSRX(driveTalonID);
 		// drive.setFactoryDefault(10);
 		drive = new CANSparkMax(driveSparkID, MotorType.kBrushless);
@@ -51,10 +52,10 @@ public class Module {
      	* is constructed by calling the getPIDController() method on an existing
      	* CANSparkMax object
      	*/
-    	m_pidController = drive.getPIDController();
+    	drivePID = drive.getPIDController();
 
    		// Encoder object created to display position values
-    	m_encoder = drive.getEncoder();
+    	driveEncoder = drive.getEncoder();
 		
 		DRIVE_P = dP;
 		DRIVE_I = dI;
@@ -66,24 +67,23 @@ public class Module {
 		// drive.config_kD(0, DRIVE_D, 0);
 		// drive.config_IntegralZone(0, DRIVE_IZONE, 0);
 
-		m_pidController.setP(DRIVE_P);
-		m_pidController.setI(DRIVE_I);
-		m_pidController.setD(DRIVE_D);
-		m_pidController.setIZone(DRIVE_IZONE);
-		m_pidController.setFF(0);
-		m_pidController.setOutputRange(-1, 1);
+		drivePID.setP(DRIVE_P);
+		drivePID.setI(DRIVE_I);
+		drivePID.setD(DRIVE_D);
+		drivePID.setIZone(DRIVE_IZONE);
+		drivePID.setFF(0);
+		drivePID.setOutputRange(-1, 1);
 
 		// drive.selectProfileSlot(0, 0);
 
 		// drive.configOpenloopRamp(.15, 0);
 		// drive.configClosedloopRamp(.05, 0);
 
-
 		// drive.configMotionCruiseVelocity(Calibration.DT_MM_VELOCITY, 0);
 		// drive.configMotionAcceleration(Calibration.DT_MM_ACCEL, 0);
 
-		m_pidController.setSmartMotionMaxVelocity(Calibration.DT_MM_VELOCITY, 0);
-		m_pidController.setSmartMotionMaxAccel(Calibration.DT_MM_ACCEL, 0);
+		drivePID.setSmartMotionMaxVelocity(Calibration.DT_MM_VELOCITY, 0);
+		drivePID.setSmartMotionMaxAccel(Calibration.DT_MM_ACCEL, 0);
 
 		// drive.setSensorPhase(true);
 
@@ -107,32 +107,12 @@ public class Module {
 		turn.configClosedloopRamp(.1, 0);
 	}
 
-	public void setFollower(int sparkToFollow) {
-		if (sparkToFollow != 0) {
-			drive.follow(sparkToFollow);
-		} else {
-			drive.set(ControlMode.Velocity, 0);
-		}
+	public void setDriveMMAccel(final int accel) {
+		drivePID.setSmartMotionMaxAccel(accel, 0);
 	}
 
-	public void setFollowerModule(CANSparkMax aCanSparkMaxModule) {
-		if (aCanSparkMaxModule != null) {
-			drive.follow(aCanSparkMaxModule);
-		} else {
-			// nothing to be followed
-		}
-	}
-
-	public void setDriveMMAccel(int accel) {
-		m_pidController.setSmartMotionMaxAccel(accel, 0);
-	}
-
-	public void setDriveMMVelocity(int velocity) {
-		m_pidController.setSmartMotionMaxVelocity(velocity, 0);
-	}
-
-	public int getDriveVelocity() {
-		return m_pidController.getSmartMotionVelocity(0);
+	public void setDriveMMVelocity(final int velocity) {
+		drivePID.setSmartMotionMaxVelocity(velocity, 0);
 	}
 
 	/**
@@ -148,7 +128,7 @@ public class Module {
 	 * 
 	 * @param p value from -1 to 1
 	 */
-	public void setTurnPower(double p) {
+	public void setTurnPower(final double p) {
 		this.turn.set(ControlMode.PercentOutput, p);
 	}
 
@@ -157,7 +137,7 @@ public class Module {
 	 * 
 	 * @param p value from -1 to 1
 	 */
-	public void setDrivePower(double p) {
+	public void setDrivePower(final double p) {
 		this.drive.set((isReversed ? -1 : 1) * p);
 	}
 
@@ -185,7 +165,7 @@ public class Module {
 		// uses the calibration value and the actual position
 		// to determine the relative turn position
 
-		double currentPos = getTurnAbsolutePosition();
+		final double currentPos = getTurnAbsolutePosition();
 		if (currentPos - turnZeroPos > 0) {
 			return currentPos - turnZeroPos;
 		} else {
@@ -195,7 +175,7 @@ public class Module {
 
 	public double getTurnAngle() {
 		// returns the angle in -180 to 180 range
-		double turnPos = getTurnPosition();
+		final double turnPos = getTurnPosition();
 		if (turnPos > .5) {
 			return (360 - (turnPos * 360));
 		} else
@@ -214,15 +194,17 @@ public class Module {
 		this.turn.getSensorCollection().setQuadraturePosition(0, 10);
 	}
 
-	public int getDriveEnc() {
-		return drive.getSelectedSensorPosition(0);
+	public double getDriveEnc() {
+		return driveEncoder.getPosition();
+		// return drive.getSelectedSensorPosition(0);
 	}
 
 	public void resetDriveEnc() {
-		this.drive.getSensorCollection().setQuadraturePosition(0, 10);
+		this.driveEncoder.setPosition(0);
+		// this.drive.getSensorCollection().setQuadraturePosition(0, 10);
 	}
 
-	public void setEncPos(int d) {
+	public void setEncPos(final int d) {
 		turn.getSensorCollection().setQuadraturePosition(d, 10);
 	}
 
@@ -254,13 +236,14 @@ public class Module {
 	}
 
 	// These are used for driving and turning in auto.
-	public void setDrivePIDToSetPoint(double setpoint) {
+	public void setDrivePIDToSetPoint(final double setpoint) {
 		currentDriveSetpoint = setpoint;
-		drive.set(ControlMode.MotionMagic, setpoint);
-
+		// drive.set(ControlMode.MotionMagic, setpoint);
+		// drivePID.setReference(setpoint, ControlType.kSmartMotion);
+		drivePID.setReference(setpoint, ControlType.kPosition);
 	}
 
-	public boolean hasDriveCompleted(int allowedError) {
+	public boolean hasDriveCompleted(final int allowedError) {
 		return Math.abs(currentDriveSetpoint - getDriveEnc()) <= allowedError;
 	}
 
@@ -268,11 +251,11 @@ public class Module {
 		return hasDriveCompleted(0);
 	}
 
-	public void setTurnPIDToSetPoint(double setpoint) {
+	public void setTurnPIDToSetPoint(final double setpoint) {
 		turn.set(ControlMode.Position, setpoint);
 	}
 
-	public void setTurnOrientation(double position) {
+	public void setTurnOrientation(final double position) {
 		setTurnOrientation(position, true);
 	}
 
@@ -281,14 +264,14 @@ public class Module {
 	 * 
 	 * @param reqPosition orientation to set to
 	 */
-	public void setTurnOrientation(double reqPosition, boolean optimize) {
+	public void setTurnOrientation(final double reqPosition, final boolean optimize) {
 		int base = getTurnRotations() * FULL_ROTATION;
-		double currentTurnPosition = getTurnPosition();
-		double reverseTurnPosition = (reqPosition + 0.5) % 1.0;
+		final double currentTurnPosition = getTurnPosition();
+		final double reverseTurnPosition = (reqPosition + 0.5) % 1.0;
 		double distanceToNormalPosition;
 		double distanceToReversePosition;
 		double closestTurnPosition = 0; // closest to currentTurnPosition
-		int turnRelativePosition = getTurnRelativePosition();
+		final int turnRelativePosition = getTurnRelativePosition();
 		// double distanceToNormalPosition = Math.abs(currentTurnPosition - position);
 		// double distanceToReversePosition = Math.abs(currentTurnPosition -
 		// reverseTurnPosition);
@@ -375,12 +358,12 @@ public class Module {
 		return turn.getClosedLoopError(0);
 	}
 
-	public double getDriveError() {
-		// note that when using Motion Magic, the error is not what you'd expect
-		// MM sets intermediate set points, so the error is just the error to
-		// that set point, not to the final setpoint.
-		return drive.getClosedLoopError(0);
-	}
+	// public double getDriveError() {
+	// 	// note that when using Motion Magic, the error is not what you'd expect
+	// 	// MM sets intermediate set points, so the error is just the error to
+	// 	// that set point, not to the final setpoint.
+	// 	return drivePID.getClosedLoopError(0);
+	// }
 
 	public void stopDriveAndTurnMotors() {
 		setDrivePower(0);
@@ -391,17 +374,18 @@ public class Module {
 		setDrivePower(0);
 	}
 
-	public void setBrakeMode(boolean b) {
-		drive.setNeutralMode(b ? NeutralMode.Brake : NeutralMode.Coast);
+	public void setBrakeMode(final boolean b) {
+		// drive.setNeutralMode(b ? NeutralMode.Brake : NeutralMode.Coast);
+		drive.setIdleMode(b ? IdleMode.kBrake : IdleMode.kCoast);
 	}
 
-	public void setDrivePIDValues(double p, double i, double d) {
-		m_pidController.setP(p);
-		m_pidController.setI(i);
-		m_pidController.setD(d);
+	public void setDrivePIDValues(final double p, final double i, final double d) {
+		drivePID.setP(p);
+		drivePID.setI(i);
+		drivePID.setD(d);
 	}
 
-	public void setTurnPIDValues(double p, double i, double d) {
+	public void setTurnPIDValues(final double p, final double i, final double d) {
 		turn.config_kP(0, p, 0);
 		turn.config_kI(0, i, 0);
 		turn.config_kD(0, d, 0);
