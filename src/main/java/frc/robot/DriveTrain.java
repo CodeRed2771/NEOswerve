@@ -609,14 +609,14 @@ public class DriveTrain {
 				moduleC.getTurnAbsolutePosition(), moduleD.getTurnAbsolutePosition() };
 	}
 
-	public static void setDrivePIDValues(double p, double i, double d) {
+	public static void setDrivePIDValues(double p, double i, double d, double f) {
 		if (getInstance() == null)
 			return;
 
-		moduleA.setDrivePIDValues(p, i, d);
-		moduleB.setDrivePIDValues(p, i, d);
-		moduleC.setDrivePIDValues(p, i, d);
-		moduleD.setDrivePIDValues(p, i, d);
+		moduleA.setDrivePIDValues(p, i, d, f);
+		moduleB.setDrivePIDValues(p, i, d, f);
+		moduleC.setDrivePIDValues(p, i, d, f);
+		moduleD.setDrivePIDValues(p, i, d, f);
 	}
 
 	public static void setTurnPIDValues(double p, double i, double d) {

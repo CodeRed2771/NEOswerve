@@ -30,7 +30,8 @@ public class DriveAuto {
 		return instance;
 	}
 
-	public DriveAuto() {
+	private DriveAuto() {
+		System.out.println("START OF DRIVEAUTO CONSTRUCTOR");
 		DriveTrain.getInstance();
 
 		rotDrivePID = new PIDController(Calibration.AUTO_ROT_P, Calibration.AUTO_ROT_I, Calibration.AUTO_ROT_D,
@@ -50,26 +51,31 @@ public class DriveAuto {
 		//Yay ~CM
 		driveCurrentBreaker.reset();
 
-		// SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
-		// SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I);
-		// SmartDashboard.putNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D);
+		SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
+		SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I);
+		SmartDashboard.putNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D);
+		SmartDashboard.putNumber("AUTO DRIVE F", Calibration.AUTO_DRIVE_F);
 
 		// SmartDashboard.putNumber("TURN P", Calibration.TURN_P);
 		// SmartDashboard.putNumber("TURN I", Calibration.TURN_I);
 		// SmartDashboard.putNumber("TURN D", Calibration.TURN_D);
 
-		// SmartDashboard.putNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY);
-		// SmartDashboard.putNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL);
+		SmartDashboard.putNumber("DRIVE MM VELOCITY", Calibration.DT_MM_VELOCITY);
+		SmartDashboard.putNumber("DRIVE MM ACCEL", Calibration.DT_MM_ACCEL);
 
 		// SmartDashboard.putNumber("ROT P", Calibration.AUTO_ROT_P);
 		// SmartDashboard.putNumber("ROT I", Calibration.AUTO_ROT_I);
 		// SmartDashboard.putNumber("ROT D", Calibration.AUTO_ROT_D);
 		// SmartDashboard.putNumber("ROT F", Calibration.AUTO_ROT_F);
 
-		// SmartDashboard.putBoolean("Tune Drive/Turn PIDs", true);
+		SmartDashboard.putBoolean("Tune Drive/Turn PIDs", true);
 
 		// SmartDashboard.putNumber("ROT Max Deg/Cycle", maxTurnSpeed);
 		// SmartDashboard.putNumber("ROT Max Acc/Cycle", maxTurnAccel);
+
+		SmartDashboard.updateValues();
+
+		System.out.println("END OF DRIVEAUTO CONSTRUCTOR");
 
 	}
 
@@ -220,7 +226,8 @@ public class DriveAuto {
 
 			DriveTrain.setDrivePIDValues(SmartDashboard.getNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P),
 					SmartDashboard.getNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I),
-					SmartDashboard.getNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D));
+					SmartDashboard.getNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D),
+					SmartDashboard.getNumber("AUTO DRIVE F", Calibration.AUTO_DRIVE_F));
 			//
 			DriveTrain.setTurnPIDValues(SmartDashboard.getNumber("TURN P", Calibration.TURN_P),
 					SmartDashboard.getNumber("TURN I", Calibration.TURN_I),

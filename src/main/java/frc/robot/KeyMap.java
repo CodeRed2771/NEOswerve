@@ -239,21 +239,21 @@ public class KeyMap {
     //     return getHID(gamePadNumber).button(LogitechF310.BUMPER_LEFT);
     // }
 
-    // public boolean getButtonA(int gamePadNumber) {
-    //     return getHID(gamePadNumber).button(LogitechF310.A);
-    // }
+    public boolean getButtonA(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.A);
+    }
 
-    // public boolean getButtonB(int gamePadNumber) {
-    //     return getHID(gamePadNumber).button(LogitechF310.B);
-    // }
+    public boolean getButtonB(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.B);
+    }
 
-    // public boolean getButtonX(int gamePadNumber) {
-    //     return getHID(gamePadNumber).button(LogitechF310.X);
-    // }
+    public boolean getButtonX(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.X);
+    }
 
-    // public boolean getButtonY(int gamePadNumber) {
-    //     return getHID(gamePadNumber).button(LogitechF310.Y);
-    // }
+    public boolean getButtonY(int gamePadNumber) {
+        return getHID(gamePadNumber).button(LogitechF310.Y);
+    }
 
     // public boolean getStartButton(int gamePadNumber) {
     //     return getHID(gamePadNumber).button(LogitechF310.START);

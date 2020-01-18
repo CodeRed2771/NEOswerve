@@ -2,19 +2,25 @@ package frc.robot;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
 	KeyMap gamepad;
+	Joystick js;
+	boolean isAutoRunning = false;
 
 	@Override
 	public void robotInit() {
 
 		gamepad = new KeyMap();
+		js = new Joystick(1);
 
 		RobotGyro.getInstance();
 		DriveTrain.getInstance();
+		DriveAuto.getInstance();
 	
 		Calibration.loadSwerveCalibration();
 
@@ -41,48 +47,64 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		// --------------------------------------------------
-		// RESST - allow manual reset of systems by pressing Start
-		// --------------------------------------------------
-		if (gamepad.getZeroGyro()) {
-			RobotGyro.reset();
-			DriveTrain.allowTurnEncoderReset();
-			DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
-			DriveTrain.setAllTurnOrientation(0, false);
+		if (js.getRawButton(1) && !isAutoRunning) {
+			DriveAuto.driveInches(120, 0, .5);
+			isAutoRunning = true;
+		} else
+		if (js.getRawButton(2) && !isAutoRunning) {
+			DriveAuto.driveInches(-120, 0, .5);
+			isAutoRunning = true;
+		} else {
+			if (!js.getRawButton(1) && !js.getRawButton(2)) {
+				isAutoRunning = false;
+			}
 		}
 
+		DriveAuto.tick();
 
-		// DRIVER CONTROL MODE
-		// Issue the drive command using the parameters from
-		// above that have been tweaked as needed
-		double driveRotAmount;
-		double driveFWDAmount = gamepad.getSwerveYAxis();
-		double driveStrafeAmount = -gamepad.getSwerveXAxis();
-		boolean normalDrive = !gamepad.getDriveModifier();
+		// // --------------------------------------------------
+		// // RESST - allow manual reset of systems by pressing Start
+		// // --------------------------------------------------
+		// if (gamepad.getZeroGyro()) {
+		// 	RobotGyro.reset();
+		// 	DriveTrain.allowTurnEncoderReset();
+		// 	DriveTrain.resetTurnEncoders(); // sets encoders based on absolute encoder positions
+		// 	DriveTrain.setAllTurnOrientation(0, false);
+		// }
 
-		if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
-			driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 
-		driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
+		// // DRIVER CONTROL MODE
+		// // Issue the drive command using the parameters from
+		// // above that have been tweaked as needed
+		// double driveRotAmount;
+		// double driveFWDAmount = gamepad.getSwerveYAxis();
+		// double driveStrafeAmount = -gamepad.getSwerveXAxis();
+		// boolean normalDrive = !gamepad.getDriveModifier();
 
-		driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
+		// if (Math.abs(driveFWDAmount) <= .2 || !normalDrive) // strafe adjust if not driving forward
+		// 	driveStrafeAmount = strafeAdjust(driveStrafeAmount, normalDrive);
 
-		if (gamepad.getRobotCentricModifier())
-			DriveTrain.humanDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
-		else
-			DriveTrain.fieldCentricDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
+		// driveRotAmount = rotationalAdjust(gamepad.getSwerveRotAxis());
 
-		showDashboardInfo();
+		// driveFWDAmount = forwardAdjust(driveFWDAmount, normalDrive);
+
+		// if (gamepad.getRobotCentricModifier())
+		// 	DriveTrain.humanDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
+		// else
+		// 	DriveTrain.fieldCentricDrive(driveFWDAmount, driveStrafeAmount, driveRotAmount);
+
+		// showDashboardInfo();
 	}
 	
 
 	@Override
 	public void autonomousInit() {
-		DriveAuto.driveInches(10, 0, .5);
+		// DriveAuto.driveInches(30, 0, .5);
 	}
 
 	@Override
 	public void autonomousPeriodic() {
+	
 	}
 
 	private void showDashboardInfo() {
@@ -93,7 +115,6 @@ public class Robot extends TimedRobot {
 			DriveTrain.showTurnEncodersOnDash();
 			DriveTrain.showDriveEncodersOnDash();
 		}
-
 	}
 
 	private double rotationalAdjust(double rotateAmt) {

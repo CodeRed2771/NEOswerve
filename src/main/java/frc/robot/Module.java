@@ -239,8 +239,8 @@ public class Module {
 	public void setDrivePIDToSetPoint(final double setpoint) {
 		currentDriveSetpoint = setpoint;
 		// drive.set(ControlMode.MotionMagic, setpoint);
-		// drivePID.setReference(setpoint, ControlType.kSmartMotion);
-		drivePID.setReference(setpoint, ControlType.kPosition);
+		drivePID.setReference(setpoint, ControlType.kSmartMotion);
+		// drivePID.setReference(setpoint, ControlType.kPosition);
 	}
 
 	public boolean hasDriveCompleted(final int allowedError) {
@@ -379,10 +379,11 @@ public class Module {
 		drive.setIdleMode(b ? IdleMode.kBrake : IdleMode.kCoast);
 	}
 
-	public void setDrivePIDValues(final double p, final double i, final double d) {
+	public void setDrivePIDValues(final double p, final double i, final double d, final double f) {
 		drivePID.setP(p);
 		drivePID.setI(i);
 		drivePID.setD(d);
+		drivePID.setFF(f);
 	}
 
 	public void setTurnPIDValues(final double p, final double i, final double d) {
