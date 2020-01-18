@@ -174,12 +174,21 @@ public class Robot extends TimedRobot {
 		DriveTrain.resetDriveEncoders();
 
 		// DriveTrain.disablePID();
+
+		Calibration.initializeSmartDashboard();
 	}
 
 	public void disabledPeriodic() {
 		DriveTrain.resetTurnEncoders(); // happens only once because a flag
 										// prevents multiple calls
 		showDashboardInfo();
+
+		if (Calibration.shouldCalibrateSwerve()) {
+			double[] pos = DriveTrain.getAllAbsoluteTurnOrientations();
+			Calibration.saveSwerveCalibration(pos[0], pos[1], pos[2], pos[3]);
+		}
+
+		Calibration.checkIfShouldResetCalibration();
 	}
 
 	private static Double round2(Double val) {

@@ -171,4 +171,26 @@ public class Calibration {
 		File calibrationFile = new File("/home/lvuser/swerve.calibration");
 		calibrationFile.delete();
 	}
+
+	public static void initializeSmartDashboard() {
+		SmartDashboard.putBoolean("Calibrate Swerve", false);
+		SmartDashboard.putBoolean("Reset Swerve Calibration", false);
+	}
+
+	public static boolean shouldCalibrateSwerve() {
+		boolean calibrateSwerve = SmartDashboard.getBoolean("Calibrate Swerve", false);
+		if (calibrateSwerve) {
+			SmartDashboard.putBoolean("Calibrate Swerve", false);
+			return true;
+		}
+		return false;
+	}
+
+	public static void checkIfShouldResetCalibration() {
+		boolean deleteCalibration = SmartDashboard.getBoolean("Reset Swerve Calibration", false);
+		if (deleteCalibration) {
+			SmartDashboard.putBoolean("Reset Swerve Calibration", false);
+			resetSwerveDriveCalibration();
+		}
+	}
 }
